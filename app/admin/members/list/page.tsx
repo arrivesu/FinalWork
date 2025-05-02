@@ -110,24 +110,23 @@ export default function MembersList() {
         </div>
       </div>
 
+      <div className="relative">
+        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+        <Input
+          type="search"
+          placeholder="搜索党员..."
+          className="pl-8"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+
+
       <Card >
-        <CardHeader className="pb-3">
-          <CardTitle>党员管理</CardTitle>
-          <CardDescription>管理支部内所有党员信息，包括正式党员、预备党员等</CardDescription>
-        </CardHeader>
         <CardContent>
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <div className="relative">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  type="search"
-                  placeholder="搜索党员..."
-                  className="pl-8 w-[250px]"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
+
             </div>
           </div>
           <div className="rounded-md border">

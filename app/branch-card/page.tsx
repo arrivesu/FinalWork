@@ -11,10 +11,10 @@ import Image from "next/image"
 export default function BranchCardPage() {
   // 模拟党支部数据
   const branchData = {
-    name: "计算机科学与技术学院党支部",
+    name: "数据学生党支部",
     code: "CPC-CS-001",
     foundDate: "2010-06-01",
-    location: "计算机科学与技术学院大楼 305 室",
+    location: "计算机科学与技术学院石鳞大楼",
     phone: "010-12345678",
     email: "cs-party@university.edu.cn",
     memberCount: {
@@ -113,7 +113,7 @@ export default function BranchCardPage() {
       {/* 页面标题 */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">党支部名片</h1>
+          <h1 className="text-3xl font-bold tracking-wider">党支部名片</h1>
           <p className="text-muted-foreground mt-1">查看党支部基本信息和工作动态</p>
         </div>
         <div className="flex gap-2">
@@ -131,7 +131,7 @@ export default function BranchCardPage() {
       {/* 党支部基本信息卡片 */}
       <div className="grid gap-6 md:grid-cols-3">
         {/* 党支部信息 */}
-        <Card className="md:col-span-2 border-red-500">
+        <Card className="md:col-span-2 ">
           <CardHeader className="bg-red-50 flex flex-row items-center justify-between pb-2">
             <div>
               <CardTitle className="text-xl text-red-800">{branchData.name}</CardTitle>
@@ -151,29 +151,29 @@ export default function BranchCardPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4 text-red-600" />
+                  <Calendar className="h-4 w-4 " />
                   <span className="font-medium">成立时间:</span>
                   <span>{branchData.foundDate}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-red-600" />
+                  <MapPin className="h-4 w-4" />
                   <span className="font-medium">支部地址:</span>
                   <span>{branchData.location}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Phone className="h-4 w-4 text-red-600" />
+                  <Phone className="h-4 w-4" />
                   <span className="font-medium">联系电话:</span>
                   <span>{branchData.phone}</span>
                 </div>
               </div>
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <Mail className="h-4 w-4 text-red-600" />
+                  <Mail className="h-4 w-4 " />
                   <span className="font-medium">电子邮箱:</span>
                   <span>{branchData.email}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Users className="h-4 w-4 text-red-600" />
+                  <Users className="h-4 w-4 " />
                   <span className="font-medium">党员人数:</span>
                   <span>共 {branchData.memberCount.total} 人</span>
                 </div>
@@ -189,7 +189,7 @@ export default function BranchCardPage() {
         </Card>
 
         {/* 支部书记信息 */}
-        <Card className="border-red-500">
+        <Card className="bt-4">
           <CardHeader className="bg-red-50">
             <CardTitle className="text-lg text-red-800">支部书记</CardTitle>
           </CardHeader>
@@ -209,11 +209,11 @@ export default function BranchCardPage() {
         </Card>
       </div>
 
-      {/* 支部委员会 */}
-      <Card className="border-red-500">
+      {/* 支部委员 */}
+      <Card className="bt-4">
         <CardHeader className="bg-red-50">
-          <CardTitle className="text-lg text-red-800">支部委员会</CardTitle>
-          <CardDescription>党支部委员会成员</CardDescription>
+          <CardTitle className="text-lg text-red-800">支部委员</CardTitle>
+          <CardDescription>党支部委员成员</CardDescription>
         </CardHeader>
         <CardContent className="pt-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -243,7 +243,7 @@ export default function BranchCardPage() {
 
         {/* 支部荣誉 */}
         <TabsContent value="achievements" className="mt-4">
-          <Card className="border-red-500">
+          <Card className="bt-4">
             <CardHeader className="bg-red-50">
               <CardTitle className="text-lg text-red-800">支部荣誉</CardTitle>
               <CardDescription>党支部获得的荣誉和表彰</CardDescription>
@@ -276,7 +276,7 @@ export default function BranchCardPage() {
 
         {/* 近期活动 */}
         <TabsContent value="activities" className="mt-4">
-          <Card className="border-red-500">
+          <Card className="bt-4">
             <CardHeader className="bg-red-50">
               <CardTitle className="text-lg text-red-800">近期活动</CardTitle>
               <CardDescription>党支部近期开展的活动</CardDescription>
@@ -320,7 +320,7 @@ export default function BranchCardPage() {
 
         {/* 支部文档 */}
         <TabsContent value="documents" className="mt-4">
-          <Card className="border-red-500">
+          <Card className="bt-4">
             <CardHeader className="bg-red-50">
               <CardTitle className="text-lg text-red-800">支部文档</CardTitle>
               <CardDescription>党支部相关文档资料</CardDescription>

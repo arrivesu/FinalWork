@@ -94,8 +94,8 @@ export default function AdminProfile() {
                     <Input id="employee-id" defaultValue="20150101" />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="department">所属部门</Label>
-                    <Input id="department" defaultValue="计算机科学与技术学院" />
+                    <Label htmlFor="department">所属党支部</Label>
+                    <Input id="department" defaultValue="数据学生党支部" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="join-date">入党时间</Label>
@@ -121,11 +121,11 @@ export default function AdminProfile() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="bio">个人简介</Label>
+                <Label htmlFor="bio">备注</Label>
                 <Textarea
                   id="bio"
-                  placeholder="请输入个人简介"
-                  defaultValue="我是计算机科学与技术学院党支部书记，负责党支部的日常工作和党员管理。"
+                  placeholder="请输入备注事项"
+                  defaultValue="党支部书记负责党--支部的日常工作和党员管理。"
                   className="min-h-[100px]"
                 />
               </div>

@@ -154,13 +154,29 @@ export default function StatisticsPage() {
           </CardContent>
         </Card>
       </div>
-
       <Tabs defaultValue="membership">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="membership">党员结构</TabsTrigger>
-          <TabsTrigger value="activities">活动统计</TabsTrigger>
-          <TabsTrigger value="development">发展情况</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-3 border rounded-lg p-3 min-h-[72px] items-center">
+          <TabsTrigger 
+            value="membership" 
+            className="py-4 px-8 flex items-center justify-center h-full"
+          >
+            党员结构
+          </TabsTrigger>
+          <TabsTrigger 
+            value="activities" 
+            className="py-4 px-8 flex items-center justify-center h-full"
+          >
+            活动统计
+          </TabsTrigger>
+          <TabsTrigger 
+            value="development" 
+            className="py-4 px-8 flex items-center justify-center h-full"
+          >
+            发展情况
+          </TabsTrigger>
         </TabsList>
+
+        
         <TabsContent value="membership" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             <Card >
@@ -240,10 +256,10 @@ export default function StatisticsPage() {
                 </div>
               </div>
             </Card>
-            <Card className="border-red-500 bg-red-50 md:col-span-2">
+            <Card className="lg:col-span-3">
               <CardHeader>
-                <CardTitle>党员部门分布</CardTitle>
-                <CardDescription>按部门统计党员分布</CardDescription>
+                <CardTitle>党员班级分布</CardTitle>
+                <CardDescription>按班级统计党员分布</CardDescription>
               </CardHeader>
               <CardContent className="flex justify-center">
                 <div className="w-full h-[250px] flex items-center justify-center">
@@ -264,7 +280,7 @@ export default function StatisticsPage() {
                 </div>
               </div>
             </Card>
-            <Card className="border-red-500 bg-red-50 lg:col-span-3">
+            <Card className="lg:col-span-3">
               <CardHeader>
                 <CardTitle>党员入党年份分布</CardTitle>
                 <CardDescription>按入党年份统计党员分布</CardDescription>
@@ -385,7 +401,6 @@ export default function StatisticsPage() {
                 <CardTitle>党员发展情况</CardTitle>
                 <CardDescription>各阶段党员发展数量</CardDescription>
               </CardHeader>
-              <CardContent>
                 <div className="w-full h-[300px] flex items-center justify-center">
                   <BarChart3 className="h-16 w-16 text-muted-foreground" />
                 </div>
@@ -397,7 +412,6 @@ export default function StatisticsPage() {
                     </div>
                   ))}
                 </div>
-              </div>
             </Card>
             <Card >
               <CardHeader>

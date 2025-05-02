@@ -44,7 +44,7 @@ export function SidebarNav({ items, className }: SidebarNavProps) {
 
       {/* 导航菜单 */}
       <ScrollArea className="flex-1">
-        <div className={cn("flex w-full flex-col gap-2 p-2", className)}>
+        <div className={cn("flex w-full flex-col gap-2 p-2 ", className)}>
           {items.map((item) => {
             const isActive = pathname === item.href
 

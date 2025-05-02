@@ -52,7 +52,9 @@ export default function AdminLayout({
               <UserMenu user={user} />
             </div>
           </div>
-          <div className="flex-1 overflow-auto p-6">{children}</div>
+            <div className="space-y-6 bg-white p-6 rounded-lg">
+              {children}
+            </div>
         </div>
       </div>
     </Shell>

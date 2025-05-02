@@ -140,7 +140,7 @@ export default function MemberProfile() {
                 <Textarea
                   id="bio"
                   placeholder="请输入个人简介"
-                  defaultValue="我是一名计算机科学与技术专业的学生，也是一名党员。我热爱编程，希望通过自己的技术为社会做出贡献。"
+                  defaultValue="我是大数据211班学生，是一名正式党员。同时，我担任数据学生党支部党务助理，大数据211班团支书。"
                   className="min-h-[100px]"
                 />
               </div>
@@ -169,24 +169,30 @@ export default function MemberProfile() {
                     </div>
                   </div>
                 </div>
-                <div className="md:w-1/2 space-y-4">
-                  <h3 className="font-medium">画像指标详情</h3>
+                <div className="md:w-1/2 space-y-4 rounded-lg border border-white-100 bg-white p-6 shadow-sm">
+                  <h3 className="mb-6 text-lg font-semibold text-gray-800 border-b-2 border-red-300 pb-3">
+                    画像指标详情
+                  </h3>
                   <div className="space-y-2">
                     <div className="flex justify-between items-center">
                       <span>德育表现</span>
-                      <span className="font-medium">优秀</span>
+                      <span className="font-medium">93分</span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span>学业成绩</span>
-                      <span className="font-medium">良好</span>
+                      <span className="font-medium">90分</span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span>学生干部任职</span>
-                      <span className="font-medium">班长</span>
+                      <span className="font-medium">班长-优秀</span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span>寝室卫生</span>
                       <span className="font-medium">95分</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span>突出行为纪实</span>
+                      <span className="font-medium">无</span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span>群众评价</span>
