@@ -57,8 +57,8 @@ export function SidebarNav({ items, className }: SidebarNavProps) {
                     asChild
                     variant={isParentOfActive ? "secondary" : "ghost"}
                     className={cn(
-                      "w-full justify-start font-medium",
-                      isParentOfActive ? "bg-muted hover:bg-muted" : "",
+                      "w-full justify-start font-medium hover:bg-white",
+                      isParentOfActive ? "bg-white hover:bg-white" : "",
                       item.disabled && "cursor-not-allowed opacity-60",
                     )}
                   >
@@ -77,8 +77,8 @@ export function SidebarNav({ items, className }: SidebarNavProps) {
                           asChild
                           variant={isSubActive ? "secondary" : "ghost"}
                           className={cn(
-                            "w-full justify-start",
-                            isSubActive ? "bg-muted hover:bg-muted" : "",
+                            "w-full justify-start hover:bg-white",
+                            isSubActive ? "bg-white hover:bg-white" : "",
                             subItem.disabled && "cursor-not-allowed opacity-60",
                           )}
                           size="sm"
@@ -101,8 +101,8 @@ export function SidebarNav({ items, className }: SidebarNavProps) {
                 asChild
                 variant={isActive ? "secondary" : "ghost"}
                 className={cn(
-                  "w-full justify-start",
-                  isActive ? "bg-muted hover:bg-muted" : "",
+                  "w-full justify-start hover:bg-white",
+                  isActive ? "bg-white hover:bg-white" : "",
                   item.disabled && "cursor-not-allowed opacity-60",
                 )}
               >

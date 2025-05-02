@@ -4,8 +4,6 @@ import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
 import {
   Dialog,
   DialogContent,
@@ -21,48 +19,61 @@ import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Search, Plus, Edit, Trash2, ArrowRight } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
 // 模拟发展对象数据
 const candidates = [
   {
     id: "1",
     name: "王五",
+    gender: "男",
+    ethnicity: "汉族",
     avatar: "/placeholder.svg?key=d4zqg",
     studentId: "2020010101",
     class: "计算机科学与技术2001班",
     activistDate: "2021-09-15",
     candidateDate: "2022-03-10",
     status: "培养中",
+    contact: "13800138005",
   },
   {
     id: "2",
     name: "赵六",
+    gender: "女",
+    ethnicity: "汉族",
     avatar: "/placeholder.svg?key=xxanz",
     studentId: "2020010102",
     class: "计算机科学与技术2001班",
     activistDate: "2021-09-20",
     candidateDate: "2022-03-15",
     status: "培养中",
+    contact: "13800138006",
   },
   {
     id: "3",
     name: "钱七",
+    gender: "男",
+    ethnicity: "回族",
     avatar: "/placeholder.svg?key=9o9wr",
     studentId: "2020010103",
     class: "计算机科学与技术2001班",
     activistDate: "2021-10-05",
     candidateDate: "2022-04-10",
     status: "培养结束",
+    contact: "13800138007",
   },
   {
     id: "4",
     name: "孙八",
+    gender: "女",
+    ethnicity: "维吾尔族",
     avatar: "/placeholder.svg?key=pqxtu",
     studentId: "2020010104",
     class: "计算机科学与技术2001班",
     activistDate: "2021-10-10",
     candidateDate: "2022-04-15",
     status: "培养结束",
+    contact: "13800138008",
   },
 ]
 
@@ -75,10 +86,10 @@ export default function CandidatesPage() {
 
   // 过滤发展对象
   const filteredCandidates = candidates.filter(
-    (candidate) =>
-      candidate.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      candidate.studentId.includes(searchTerm) ||
-      candidate.class.toLowerCase().includes(searchTerm.toLowerCase()),
+      (candidate) =>
+          candidate.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          candidate.studentId.includes(searchTerm) ||
+          candidate.class.toLowerCase().includes(searchTerm.toLowerCase()),
   )
 
   const handleAddCandidate = () => {
@@ -110,102 +121,119 @@ export default function CandidatesPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">发展对象</h1>
-          <p className="text-muted-foreground">管理发展对象信息</p>
-        </div>
-        <div className="flex space-x-2">
-          <Dialog open={isPromoteDialogOpen} onOpenChange={setIsPromoteDialogOpen}>
-            <DialogTrigger asChild>
-              <Button variant="outline" disabled={selectedCandidates.length === 0}>
-                <ArrowRight className="mr-2 h-4 w-4" />
-                转为预备党员
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>转为预备党员</DialogTitle>
-                <DialogDescription>确认将选中的 {selectedCandidates.length} 名发展对象转为预备党员？</DialogDescription>
-              </DialogHeader>
-              <div className="py-4">
-                <p>选中的发展对象：</p>
-                <ul className="mt-2 space-y-1">
-                  {selectedCandidates.map((id) => {
-                    const candidate = candidates.find((a) => a.id === id)
-                    return (
-                      <li key={id} className="text-sm">
-                        {candidate?.name} - {candidate?.studentId}
-                      </li>
-                    )
-                  })}
-                </ul>
-              </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setIsPromoteDialogOpen(false)}>
-                  取消
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">发展对象</h1>
+            <p className="text-muted-foreground">管理发展对象信息</p>
+          </div>
+          <div className="flex space-x-2">
+            <Dialog open={isPromoteDialogOpen} onOpenChange={setIsPromoteDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline" disabled={selectedCandidates.length === 0}>
+                  <ArrowRight className="mr-2 h-4 w-4" />
+                  转为预备党员
                 </Button>
-                <Button onClick={handlePromote}>确认转为预备党员</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>转为预备党员</DialogTitle>
+                  <DialogDescription>确认将选中的 {selectedCandidates.length} 名发展对象转为预备党员？</DialogDescription>
+                </DialogHeader>
+                <div className="py-4">
+                  <p>选中的发展对象：</p>
+                  <ul className="mt-2 space-y-1">
+                    {selectedCandidates.map((id) => {
+                      const candidate = candidates.find((a) => a.id === id)
+                      return (
+                          <li key={id} className="text-sm">
+                            {candidate?.name} - {candidate?.studentId}
+                          </li>
+                      )
+                    })}
+                  </ul>
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setIsPromoteDialogOpen(false)}>
+                    取消
+                  </Button>
+                  <Button onClick={handlePromote}>确认转为预备党员</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
 
-          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-            <DialogTrigger asChild>
-              <Button>
-                <Plus className="mr-2 h-4 w-4" />
-                添加发展对象
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>添加发展对象</DialogTitle>
-                <DialogDescription>添加新的发展对象信息</DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">姓名</Label>
-                    <Input id="name" placeholder="请输入姓名" />
+            <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+              <DialogTrigger asChild>
+                <Button>
+                  <Plus className="mr-2 h-4 w-4" />
+                  添加发展对象
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>添加发展对象</DialogTitle>
+                  <DialogDescription>添加新的发展对象信息</DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="name">姓名</Label>
+                      <Input id="name" placeholder="请输入姓名" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="gender">性别</Label>
+                      <Select>
+                        <SelectTrigger>
+                          <SelectValue placeholder="选择性别" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="male">男</SelectItem>
+                          <SelectItem value="female">女</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="gender">性别</Label>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="选择性别" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="male">男</SelectItem>
-                        <SelectItem value="female">女</SelectItem>
-                      </SelectContent>
-                    </Select>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="ethnicity">民族</Label>
+                      <Select>
+                        <SelectTrigger>
+                          <SelectValue placeholder="选择民族" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="汉族">汉族</SelectItem>
+                          <SelectItem value="回族">回族</SelectItem>
+                          <SelectItem value="维吾尔族">维吾尔族</SelectItem>
+                          <SelectItem value="藏族">藏族</SelectItem>
+                          <SelectItem value="蒙古族">蒙古族</SelectItem>
+                          <SelectItem value="其他">其他</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="contact">联系方式</Label>
+                      <Input id="contact" placeholder="请输入联系方式" />
+                    </div>
                   </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="student-id">学号</Label>
-                    <Input id="student-id" placeholder="请输入学号" />
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="student-id">学号</Label>
+                      <Input id="student-id" placeholder="请输入学号" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="class">班级</Label>
+                      <Input id="class" placeholder="请输入班级" />
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="class">班级</Label>
-                    <Input id="class" placeholder="请输入班级" />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="activist-date">确定为积极分子日期</Label>
-                    <Input id="activist-date" type="date" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="candidate-date">确定为发展对象日期</Label>
-                    <Input id="candidate-date" type="date" />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="contact">联系方式</Label>
-                    <Input id="contact" placeholder="请输入联系方式" />
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="activist-date">确定为积极分子日期</Label>
+                      <Input id="activist-date" type="date" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="candidate-date">确定为发展对象日期</Label>
+                      <Input id="candidate-date" type="date" />
+                    </div>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="status">状态</Label>
@@ -219,81 +247,108 @@ export default function CandidatesPage() {
                       </SelectContent>
                     </Select>
                   </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="note">备注</Label>
-                  <Textarea id="note" placeholder="请输入备注信息" />
-                </div>
-              </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                  取消
-                </Button>
-                <Button onClick={handleAddCandidate}>添加</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </div>
-      </div>
-
-      <div className="relative">
-        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-        <Input
-          type="search"
-          placeholder="搜索发展对象姓名、学号或班级..."
-          className="pl-8"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>发展对象列表</CardTitle>
-          <CardDescription>共 {filteredCandidates.length} 名发展对象</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4">
-            {filteredCandidates.length > 0 ? (
-              filteredCandidates.map((candidate) => (
-                <div key={candidate.id} className="flex items-center justify-between p-4 border rounded-lg">
-                  <div className="flex items-center space-x-4">
-                    <Checkbox
-                      checked={selectedCandidates.includes(candidate.id)}
-                      onCheckedChange={() => toggleSelectCandidate(candidate.id)}
-                    />
-                    <Avatar>
-                      <AvatarImage src={candidate.avatar || "/placeholder.svg"} alt={candidate.name} />
-                      <AvatarFallback>{candidate.name.charAt(0)}</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="font-medium">{candidate.name}</p>
-                      <p className="text-sm text-muted-foreground">{candidate.studentId}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    <div className="text-sm text-right">
-                      <p>{candidate.class}</p>
-                      <p className="text-muted-foreground">确定为发展对象日期: {candidate.candidateDate}</p>
-                    </div>
-                    <Badge variant={candidate.status === "培养中" ? "secondary" : "outline"}>{candidate.status}</Badge>
-                    <div className="flex space-x-2">
-                      <Button variant="ghost" size="icon">
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon" onClick={() => handleDeleteCandidate(candidate)}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="note">备注</Label>
+                    <Textarea id="note" placeholder="请输入备注信息" />
                   </div>
                 </div>
-              ))
-            ) : (
-              <div className="text-center py-4 text-muted-foreground">未找到符合条件的发展对象</div>
-            )}
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
+                    取消
+                  </Button>
+                  <Button onClick={handleAddCandidate}>添加</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+
+        <div className="relative">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+              type="search"
+              placeholder="搜索发展对象姓名、学号或班级..."
+              className="pl-8"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>发展对象列表</CardTitle>
+            <CardDescription>共 {filteredCandidates.length} 名发展对象</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-12 text-center">
+                      <Checkbox
+                          checked={selectedCandidates.length === filteredCandidates.length && filteredCandidates.length > 0}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              setSelectedCandidates(filteredCandidates.map((c) => c.id))
+                            } else {
+                              setSelectedCandidates([])
+                            }
+                          }}
+                          aria-label="Select all"
+                      />
+                    </TableHead>
+                    <TableHead className="text-center">姓名</TableHead>
+                    <TableHead className="text-center">性别</TableHead>
+                    <TableHead className="text-center">民族</TableHead>
+                    <TableHead className="text-center">学号</TableHead>
+                    <TableHead className="text-center">班级</TableHead>
+                    <TableHead className="text-center">确定为发展对象日期</TableHead>
+                    <TableHead className="text-center">联系方式</TableHead>
+                    <TableHead className="text-right">操作</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredCandidates.length > 0 ? (
+                      filteredCandidates.map((candidate) => (
+                          <TableRow key={candidate.id}>
+                            <TableCell className="text-center">
+                              <Checkbox
+                                  checked={selectedCandidates.includes(candidate.id)}
+                                  onCheckedChange={() => toggleSelectCandidate(candidate.id)}
+                                  aria-label={`Select ${candidate.name}`}
+                              />
+                            </TableCell>
+                            <TableCell className="text-center">{candidate.name}</TableCell>
+                            <TableCell className="text-center">{candidate.gender}</TableCell>
+                            <TableCell className="text-center">{candidate.ethnicity}</TableCell>
+                            <TableCell className="text-center">{candidate.studentId}</TableCell>
+                            <TableCell className="text-center">{candidate.class}</TableCell>
+                            <TableCell className="text-center">{candidate.candidateDate}</TableCell>
+                            <TableCell className="text-center">{candidate.contact}</TableCell>
+                            <TableCell className="text-right">
+                              <div className="flex justify-end gap-2">
+                                <Button variant="ghost" size="icon">
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                                <Button variant="ghost" size="icon" onClick={() => handleDeleteCandidate(candidate)}>
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                      ))
+                  ) : (
+                      <TableRow>
+                        <TableCell colSpan={9} className="h-24 text-center">
+                          未找到符合条件的发展对象
+                        </TableCell>
+                      </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
   )
 }

@@ -7,11 +7,6 @@ export const adminNavItems = [
     icon: LayoutDashboard,
   },
   {
-    title: "个人中心",
-    href: "/admin/profile",
-    icon: User,
-  },
-  {
     title: "党员管理",
     href: "/admin/members",
     icon: Users,

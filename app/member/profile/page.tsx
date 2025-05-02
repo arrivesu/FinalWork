@@ -90,6 +90,10 @@ export default function MemberProfile() {
                     <Input id="birth" type="date" defaultValue="1995-01-01" />
                   </div>
                   <div className="space-y-2">
+                    <Label htmlFor="class">民族</Label>
+                    <Input id="class" defaultValue="汉族" />
+                  </div>
+                  <div className="space-y-2">
                     <Label htmlFor="student-id">学号</Label>
                     <Input id="student-id" defaultValue="2019123456" />
                   </div>
@@ -135,15 +139,15 @@ export default function MemberProfile() {
                   </div>
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="bio">个人简介</Label>
-                <Textarea
-                  id="bio"
-                  placeholder="请输入个人简介"
-                  defaultValue="我是大数据211班学生，是一名正式党员。同时，我担任数据学生党支部党务助理，大数据211班团支书。"
-                  className="min-h-[100px]"
-                />
-              </div>
+              {/*<div className="space-y-2">*/}
+              {/*  <Label htmlFor="bio">个人简介</Label>*/}
+              {/*  <Textarea*/}
+              {/*    id="bio"*/}
+              {/*    placeholder="请输入个人简介"*/}
+              {/*    defaultValue="我是大数据211班学生，是一名正式党员。同时，我担任数据学生党支部党务助理，大数据211班团支书。"*/}
+              {/*    className="min-h-[100px]"*/}
+              {/*  />*/}
+              {/*</div>*/}
             </CardContent>
             <CardFooter className="flex justify-end">
               <Button onClick={handleSave}>保存更改</Button>

@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { MapPin, Phone, Mail, Calendar, Users, Award, BookOpen, FileText, Download, Share2 } from "lucide-react"
+import { MapPin, Phone, Mail, Calendar, Users, Award, BookOpen, FileText, Download, Share2, Building } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
 
@@ -16,6 +16,7 @@ export default function BranchCardPage() {
     foundDate: "2010-06-01",
     location: "计算机科学与技术学院石鳞大楼",
     phone: "010-12345678",
+    hierarchy: "数据学院党委",
     email: "cs-party@university.edu.cn",
     memberCount: {
       total: 45,
@@ -25,25 +26,24 @@ export default function BranchCardPage() {
     },
     secretary: {
       name: "张三",
-      avatar: "/generic-person-portrait.png",
       phone: "13800138001",
       email: "zhangsan@university.edu.cn",
     },
     committees: [
       {
-        name: "李四",
+        name: "李四五",
         position: "组织委员",
-        avatar: "/everyday-life.png",
+        // avatar: "/everyday-life.png",
       },
       {
         name: "王五",
         position: "宣传委员",
-        avatar: "/generic-person-portrait.png",
+        // avatar: "/generic-person-portrait.png",
       },
       {
         name: "赵六",
         position: "纪检委员",
-        avatar: "/elderly-man-tea.png",
+        // avatar: "/elderly-man-tea.png",
       },
     ],
     achievements: [
@@ -132,13 +132,12 @@ export default function BranchCardPage() {
       <div className="grid gap-6 md:grid-cols-3">
         {/* 党支部信息 */}
         <Card className="md:col-span-2 ">
-          <CardHeader className="bg-red-50 flex flex-row items-center justify-between pb-2">
+          <CardHeader className="bg-red-50 flex flex-row items-center justify-between">
             <div>
               <CardTitle className="text-xl text-red-800">{branchData.name}</CardTitle>
               <CardDescription>支部编号: {branchData.code}</CardDescription>
             </div>
-            {/* 党徽图标 */}
-            <div className="flex-shrink-0">
+            <div className="flex items-center flex-shrink-0">
               <Image
                 src="https://p3.img.cctvpic.com/photoworkspace/contentimg/2021/07/09/2021070916100758523.png"
                 alt="中国共产党党徽"
@@ -161,16 +160,16 @@ export default function BranchCardPage() {
                   <span>{branchData.location}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Phone className="h-4 w-4" />
-                  <span className="font-medium">联系电话:</span>
-                  <span>{branchData.phone}</span>
+                  <Mail className="h-4 w-4 " />
+                  <span className="font-medium">电子邮箱:</span>
+                  <span>{branchData.email}</span>
                 </div>
               </div>
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <Mail className="h-4 w-4 " />
-                  <span className="font-medium">电子邮箱:</span>
-                  <span>{branchData.email}</span>
+                  <Building className="h-4 w-4 " />
+                  <span className="font-medium">上级组织:</span>
+                  <span>{branchData.hierarchy}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Users className="h-4 w-4 " />
@@ -196,8 +195,7 @@ export default function BranchCardPage() {
           <CardContent className="pt-4">
             <div className="flex items-center space-x-4">
               <Avatar className="h-16 w-16">
-                <AvatarImage src={branchData.secretary.avatar || "/placeholder.svg"} alt={branchData.secretary.name} />
-                <AvatarFallback>{branchData.secretary.name.charAt(0)}</AvatarFallback>
+                <AvatarFallback>{branchData.secretary.name.substring(branchData.secretary.name.length-2)}</AvatarFallback>
               </Avatar>
               <div>
                 <p className="text-xl font-semibold">{branchData.secretary.name}</p>
@@ -220,8 +218,7 @@ export default function BranchCardPage() {
             {branchData.committees.map((committee, index) => (
               <div key={index} className="flex items-center p-4 border rounded-lg hover:bg-muted/50 transition-colors">
                 <Avatar className="h-12 w-12 mr-4">
-                  <AvatarImage src={committee.avatar || "/placeholder.svg"} alt={committee.name} />
-                  <AvatarFallback>{committee.name.charAt(0)}</AvatarFallback>
+                  <AvatarFallback>{committee.name.substring(committee.name.length-2)}</AvatarFallback>
                 </Avatar>
                 <div>
                   <p className="font-medium">{committee.name}</p>
@@ -234,45 +231,10 @@ export default function BranchCardPage() {
       </Card>
 
       {/* 支部荣誉、近期活动和支部文档 */}
-      <Tabs defaultValue="achievements" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="achievements">支部荣誉</TabsTrigger>
+      <Tabs defaultValue="activities" className="w-full">
+        <TabsList className="grid w-full grid-cols-1">
           <TabsTrigger value="activities">近期活动</TabsTrigger>
-          <TabsTrigger value="documents">支部文档</TabsTrigger>
         </TabsList>
-
-        {/* 支部荣誉 */}
-        <TabsContent value="achievements" className="mt-4">
-          <Card className="bt-4">
-            <CardHeader className="bg-red-50">
-              <CardTitle className="text-lg text-red-800">支部荣誉</CardTitle>
-              <CardDescription>党支部获得的荣誉和表彰</CardDescription>
-            </CardHeader>
-            <CardContent className="pt-4">
-              <div className="space-y-4">
-                {branchData.achievements.map((achievement, index) => (
-                  <div
-                    key={index}
-                    className="flex items-start gap-4 p-4 border rounded-lg hover:bg-muted/50 transition-colors"
-                  >
-                    <div className="bg-red-100 p-2 rounded-full">
-                      <Award className="h-6 w-6 text-red-600" />
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h4 className="font-semibold">{achievement.title}</h4>
-                        <Badge variant="outline" className="ml-2">
-                          {achievement.date}
-                        </Badge>
-                      </div>
-                      <p className="text-sm text-muted-foreground mt-1">{achievement.description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
 
         {/* 近期活动 */}
         <TabsContent value="activities" className="mt-4">
@@ -318,43 +280,6 @@ export default function BranchCardPage() {
           </Card>
         </TabsContent>
 
-        {/* 支部文档 */}
-        <TabsContent value="documents" className="mt-4">
-          <Card className="bt-4">
-            <CardHeader className="bg-red-50">
-              <CardTitle className="text-lg text-red-800">支部文档</CardTitle>
-              <CardDescription>党支部相关文档资料</CardDescription>
-            </CardHeader>
-            <CardContent className="pt-4">
-              <div className="space-y-4">
-                {branchData.documents.map((document, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="bg-red-100 p-2 rounded-full">
-                        <FileText className="h-5 w-5 text-red-600" />
-                      </div>
-                      <div>
-                        <p className="font-medium">{document.title}</p>
-                        <p className="text-xs text-muted-foreground">
-                          上传于 {document.date} · {document.size}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Badge variant="outline">{document.type}</Badge>
-                      <Button variant="ghost" size="icon">
-                        <Download className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
       </Tabs>
     </div>
   )
