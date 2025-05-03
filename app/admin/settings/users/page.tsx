@@ -114,66 +114,6 @@ export default function UsersPage() {
           <h1 className="text-3xl font-bold tracking-tight">用户管理</h1>
           <p className="text-muted-foreground">管理系统用户账号</p>
         </div>
-        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              添加用户
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>添加用户</DialogTitle>
-              <DialogDescription>添加新用户到系统</DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">姓名</Label>
-                  <Input id="name" placeholder="请输入姓名" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="username">用户名</Label>
-                  <Input id="username" placeholder="请输入用户名" />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="password">密码</Label>
-                  <Input id="password" type="password" placeholder="请输入密码" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="confirm-password">确认密码</Label>
-                  <Input id="confirm-password" type="password" placeholder="请再次输入密码" />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="role">角色</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="选择角色" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="admin">管理员</SelectItem>
-                      <SelectItem value="member">党员</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="department">所属部门</Label>
-                  <Input id="department" placeholder="请输入所属部门" />
-                </div>
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                取消
-              </Button>
-              <Button onClick={handleAddUser}>添加</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
       </div>
 
       <div className="relative">

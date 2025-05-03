@@ -18,11 +18,24 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Search, Plus, Edit, Trash2, Calendar, Clock, MapPin, Users } from "lucide-react"
+import { Search, Plus, Edit, Trash2, Calendar, Clock, MapPin, Users, UserCheck } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { MemberAttendanceDialog } from "./member-attendance-dialog"
 
 // 模拟活动数据
-const activities = [
+const activities:{
+  id: string
+  title: string
+  date: string
+  time: string
+  location: string
+  type: string
+  status: string
+  participants: number
+  totalMembers: number
+  content: string
+  memberStatuses: any[]
+}[] = [
   {
     id: "1",
     title: "参观革命历史纪念馆",
@@ -34,6 +47,7 @@ const activities = [
     participants: 35,
     totalMembers: 42,
     content: "组织党员参观革命历史纪念馆，学习革命历史，传承红色基因。",
+    memberStatuses: [],
   },
   {
     id: "2",
@@ -46,6 +60,7 @@ const activities = [
     participants: 30,
     totalMembers: 42,
     content: "组织党员到社区开展志愿服务，包括环境清洁、为老人提供帮助等。",
+    memberStatuses: [],
   },
   {
     id: "3",
@@ -58,6 +73,7 @@ const activities = [
     participants: 40,
     totalMembers: 42,
     content: "组织党员学习贯彻党的二十大精神，深入理解党的二十大报告内容。",
+    memberStatuses: [],
   },
   {
     id: "4",
@@ -70,6 +86,7 @@ const activities = [
     participants: 38,
     totalMembers: 41,
     content: "开展党员先锋岗评选活动，表彰先进党员，激励党员发挥先锋模范作用。",
+    memberStatuses: [],
   },
   {
     id: "5",
@@ -82,6 +99,7 @@ const activities = [
     participants: 0,
     totalMembers: 42,
     content: "组织党员重温入党誓词，牢记入党初心，坚定理想信念。",
+    memberStatuses: [],
   },
 ]
 
@@ -89,20 +107,22 @@ export default function ActivityRecordsPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
+  const [isMemberDialogOpen, setIsMemberDialogOpen] = useState(false)
   const [selectedActivity, setSelectedActivity] = useState<any>(null)
+  const [activitiesList, setActivitiesList] = useState(activities)
   const { toast } = useToast()
 
   // 过滤活动
   const filterActivities = (status: string) => {
-    return activities
-      .filter((activity) => status === "all" || activity.status === status)
-      .filter(
-        (activity) =>
-          activity.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          activity.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          activity.location.toLowerCase().includes(searchTerm.toLowerCase()),
-      )
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()) // 按日期降序排序
+    return activitiesList
+        .filter((activity) => status === "all" || activity.status === status)
+        .filter(
+            (activity) =>
+                activity.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                activity.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                activity.location.toLowerCase().includes(searchTerm.toLowerCase()),
+        )
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()) // 按日期降序排序
   }
 
   const allActivities = filterActivities("all")
@@ -132,371 +152,404 @@ export default function ActivityRecordsPage() {
     })
   }
 
+  const handleOpenMemberDialog = (activity: any) => {
+    setSelectedActivity(activity)
+    setIsMemberDialogOpen(true)
+  }
+
+  const handleSaveMemberAttendance = (members: any[]) => {
+    if (!selectedActivity) return
+
+    // 计算参与人数（状态不为空的成员）
+    const participantsCount = members.filter((m) => m.status).length
+
+    // 更新活动列表中的成员状态和参与人数
+    setActivitiesList(
+        activitiesList.map((activity) =>
+            activity.id === selectedActivity.id
+                ? {
+                  ...activity,
+                  memberStatuses: members,
+                  participants: participantsCount,
+                }
+                : activity,
+        ),
+    )
+
+    toast({
+      title: "保存成功",
+      description: "党员出席情况已成功保存",
+    })
+  }
+
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">活动记载</h1>
-          <p className="text-muted-foreground">管理党组织活动记录</p>
-        </div>
-        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              添加活动
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>添加活动</DialogTitle>
-              <DialogDescription>添加新的党组织活动</DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="space-y-2">
-                <Label htmlFor="title">活动标题</Label>
-                <Input id="title" placeholder="请输入活动标题" />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="date">活动日期</Label>
-                  <Input id="date" type="date" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="time">活动时间</Label>
-                  <Input id="time" placeholder="例如：14:00-16:00" />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="location">活动地点</Label>
-                  <Input id="location" placeholder="请输入活动地点" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="type">活动类型</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="选择活动类型" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="学习活动">学习活动</SelectItem>
-                      <SelectItem value="实践活动">实践活动</SelectItem>
-                      <SelectItem value="志愿服务">志愿服务</SelectItem>
-                      <SelectItem value="组织活动">组织活动</SelectItem>
-                      <SelectItem value="其他">其他</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="status">活动状态</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="选择活动状态" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="未开始">未开始</SelectItem>
-                      <SelectItem value="已完成">已完成</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="participants">参与人数</Label>
-                  <Input id="participants" type="number" placeholder="请输入参与人数" />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="content">活动内容</Label>
-                <Textarea id="content" placeholder="请输入活动内容" className="min-h-[100px]" />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                取消
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">活动记载</h1>
+            <p className="text-muted-foreground">管理党组织活动记录</p>
+          </div>
+          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="mr-2 h-4 w-4" />
+                添加活动
               </Button>
-              <Button onClick={handleAddActivity}>添加</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </div>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>添加活动</DialogTitle>
+                <DialogDescription>添加新的党组织活动</DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="title">活动标题</Label>
+                  <Input id="title" placeholder="请输入活动标题" />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="date">活动日期</Label>
+                    <Input id="date" type="date" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="time">活动时间</Label>
+                    <Input id="time" placeholder="例如：14:00-16:00" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="location">活动地点</Label>
+                    <Input id="location" placeholder="请输入活动地点" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="type">活动类型</Label>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="选择活动类型" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="支部党员大会">支部党员大会</SelectItem>
+                        <SelectItem value="支部委员会">支部委员会</SelectItem>
+                        <SelectItem value="党小组会">党小组会</SelectItem>
+                        <SelectItem value="党课">党课</SelectItem>
+                        <SelectItem value="党日活动">党日活动</SelectItem>
+                        <SelectItem value="其他">其他</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="content">活动内容</Label>
+                  <Textarea id="content" placeholder="请输入活动内容" className="min-h-[100px]" />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
+                  取消
+                </Button>
+                <Button onClick={handleAddActivity}>添加</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
 
-      <div className="relative">
-        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-        <Input
-          type="search"
-          placeholder="搜索活动标题、类型或地点..."
-          className="pl-8"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
+        <div className="relative">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+              type="search"
+              placeholder="搜索活动标题、类型或地点..."
+              className="pl-8"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
 
-      <Tabs defaultValue="all">
-        <TabsList>
-          <TabsTrigger value="all">全部活动</TabsTrigger>
-          <TabsTrigger value="upcoming">未开始</TabsTrigger>
-          <TabsTrigger value="completed">已完成</TabsTrigger>
-        </TabsList>
-        <TabsContent value="all">
-          <div className="grid gap-4">
-            {allActivities.length > 0 ? (
-              allActivities.map((activity) => (
-                <Card key={activity.id}>
-                  <CardHeader className="pb-2">
-                    <div className="flex items-center justify-between">
-                      <CardTitle>{activity.title}</CardTitle>
-                      <Badge variant={activity.status === "已完成" ? "outline" : "secondary"}>{activity.status}</Badge>
-                    </div>
-                    <CardDescription>
-                      <div className="flex flex-wrap gap-4 mt-2">
-                        <div className="flex items-center gap-1">
-                          <Calendar className="h-4 w-4 text-muted-foreground" />
-                          <span>{activity.date}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Clock className="h-4 w-4 text-muted-foreground" />
-                          <span>{activity.time}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <MapPin className="h-4 w-4 text-muted-foreground" />
-                          <span>{activity.location}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Users className="h-4 w-4 text-muted-foreground" />
-                          <span>
-                            {activity.status === "已完成"
-                              ? `${activity.participants}/${activity.totalMembers}人参加`
-                              : `预计${activity.totalMembers}人参加`}
-                          </span>
-                        </div>
-                      </div>
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <Badge>{activity.type}</Badge>
-                        <div className="flex space-x-2">
-                          <Dialog
-                            open={isEditDialogOpen && selectedActivity?.id === activity.id}
-                            onOpenChange={(open) => {
-                              setIsEditDialogOpen(open)
-                              if (open) setSelectedActivity(activity)
-                            }}
-                          >
-                            <DialogTrigger asChild>
-                              <Button variant="outline" size="sm">
-                                <Edit className="mr-2 h-4 w-4" />
-                                编辑
-                              </Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                              <DialogHeader>
-                                <DialogTitle>编辑活动</DialogTitle>
-                                <DialogDescription>编辑活动信息</DialogDescription>
-                              </DialogHeader>
-                              <div className="grid gap-4 py-4">
-                                <div className="space-y-2">
-                                  <Label htmlFor="edit-title">活动标题</Label>
-                                  <Input id="edit-title" defaultValue={activity.title} />
-                                </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                  <div className="space-y-2">
-                                    <Label htmlFor="edit-date">活动日期</Label>
-                                    <Input id="edit-date" type="date" defaultValue={activity.date} />
-                                  </div>
-                                  <div className="space-y-2">
-                                    <Label htmlFor="edit-time">活动时间</Label>
-                                    <Input id="edit-time" defaultValue={activity.time} />
-                                  </div>
-                                </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                  <div className="space-y-2">
-                                    <Label htmlFor="edit-location">活动地点</Label>
-                                    <Input id="edit-location" defaultValue={activity.location} />
-                                  </div>
-                                  <div className="space-y-2">
-                                    <Label htmlFor="edit-type">活动类型</Label>
-                                    <Select defaultValue={activity.type}>
-                                      <SelectTrigger>
-                                        <SelectValue placeholder="选择活动类型" />
-                                      </SelectTrigger>
-                                      <SelectContent>
-                                        <SelectItem value="学习活动">学习活动</SelectItem>
-                                        <SelectItem value="实践活动">实践活动</SelectItem>
-                                        <SelectItem value="志愿服务">志愿服务</SelectItem>
-                                        <SelectItem value="组织活动">组织活动</SelectItem>
-                                        <SelectItem value="其他">其他</SelectItem>
-                                      </SelectContent>
-                                    </Select>
-                                  </div>
-                                </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                  <div className="space-y-2">
-                                    <Label htmlFor="edit-status">活动状态</Label>
-                                    <Select defaultValue={activity.status}>
-                                      <SelectTrigger>
-                                        <SelectValue placeholder="选择活动状态" />
-                                      </SelectTrigger>
-                                      <SelectContent>
-                                        <SelectItem value="未开始">未开始</SelectItem>
-                                        <SelectItem value="已完成">已完成</SelectItem>
-                                      </SelectContent>
-                                    </Select>
-                                  </div>
-                                  <div className="space-y-2">
-                                    <Label htmlFor="edit-participants">参与人数</Label>
-                                    <Input id="edit-participants" type="number" defaultValue={activity.participants} />
-                                  </div>
-                                </div>
-                                <div className="space-y-2">
-                                  <Label htmlFor="edit-content">活动内容</Label>
-                                  <Textarea
-                                    id="edit-content"
-                                    defaultValue={activity.content}
-                                    className="min-h-[100px]"
-                                  />
-                                </div>
+        <Tabs defaultValue="all">
+          <TabsList>
+            <TabsTrigger value="all">全部活动</TabsTrigger>
+            <TabsTrigger value="upcoming">未开始</TabsTrigger>
+            <TabsTrigger value="completed">已完成</TabsTrigger>
+          </TabsList>
+          <TabsContent value="all">
+            <div className="grid gap-4">
+              {allActivities.length > 0 ? (
+                  allActivities.map((activity) => (
+                      <Card key={activity.id}>
+                        <CardHeader className="pb-2">
+                          <div className="flex items-center justify-between">
+                            <CardTitle>{activity.title}</CardTitle>
+                            <Badge variant={activity.status === "已完成" ? "outline" : "secondary"}>{activity.status}</Badge>
+                          </div>
+                          <CardDescription>
+                            <div className="flex flex-wrap gap-4 mt-2">
+                              <div className="flex items-center gap-1">
+                                <Calendar className="h-4 w-4 text-muted-foreground" />
+                                <span>{activity.date}</span>
                               </div>
-                              <DialogFooter>
-                                <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-                                  取消
+                              <div className="flex items-center gap-1">
+                                <Clock className="h-4 w-4 text-muted-foreground" />
+                                <span>{activity.time}</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <MapPin className="h-4 w-4 text-muted-foreground" />
+                                <span>{activity.location}</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Users className="h-4 w-4 text-muted-foreground" />
+                                <span>
+                            {activity.status === "已完成"
+                                ? `${activity.participants}/${activity.totalMembers}人参加`
+                                : `预计${activity.totalMembers}人参加`}
+                          </span>
+                              </div>
+                            </div>
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <Badge>{activity.type}</Badge>
+                              <div className="flex space-x-2">
+                                <Button variant="outline" size="sm" onClick={() => handleOpenMemberDialog(activity)}>
+                                  <UserCheck className="mr-2 h-4 w-4" />
+                                  党员出席
                                 </Button>
-                                <Button onClick={handleEditActivity}>保存</Button>
-                              </DialogFooter>
-                            </DialogContent>
-                          </Dialog>
-                          <Button variant="outline" size="sm" onClick={() => handleDeleteActivity(activity)}>
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            删除
-                          </Button>
-                        </div>
-                      </div>
-                      <p className="text-sm">{activity.content}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-            ) : (
-              <div className="text-center py-4 text-muted-foreground">未找到符合条件的活动</div>
-            )}
-          </div>
-        </TabsContent>
-        <TabsContent value="upcoming">
-          <div className="grid gap-4">
-            {upcomingActivities.length > 0 ? (
-              upcomingActivities.map((activity) => (
-                <Card key={activity.id}>
-                  <CardHeader className="pb-2">
-                    <div className="flex items-center justify-between">
-                      <CardTitle>{activity.title}</CardTitle>
-                      <Badge variant="secondary">{activity.status}</Badge>
-                    </div>
-                    <CardDescription>
-                      <div className="flex flex-wrap gap-4 mt-2">
-                        <div className="flex items-center gap-1">
-                          <Calendar className="h-4 w-4 text-muted-foreground" />
-                          <span>{activity.date}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Clock className="h-4 w-4 text-muted-foreground" />
-                          <span>{activity.time}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <MapPin className="h-4 w-4 text-muted-foreground" />
-                          <span>{activity.location}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Users className="h-4 w-4 text-muted-foreground" />
-                          <span>预计{activity.totalMembers}人参加</span>
-                        </div>
-                      </div>
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <Badge>{activity.type}</Badge>
-                        <div className="flex space-x-2">
-                          <Button variant="outline" size="sm">
-                            <Edit className="mr-2 h-4 w-4" />
-                            编辑
-                          </Button>
-                          <Button variant="outline" size="sm" onClick={() => handleDeleteActivity(activity)}>
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            删除
-                          </Button>
-                        </div>
-                      </div>
-                      <p className="text-sm">{activity.content}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-            ) : (
-              <div className="text-center py-4 text-muted-foreground">未找到符合条件的未开始活动</div>
-            )}
-          </div>
-        </TabsContent>
-        <TabsContent value="completed">
-          <div className="grid gap-4">
-            {completedActivities.length > 0 ? (
-              completedActivities.map((activity) => (
-                <Card key={activity.id}>
-                  <CardHeader className="pb-2">
-                    <div className="flex items-center justify-between">
-                      <CardTitle>{activity.title}</CardTitle>
-                      <Badge variant="outline">{activity.status}</Badge>
-                    </div>
-                    <CardDescription>
-                      <div className="flex flex-wrap gap-4 mt-2">
-                        <div className="flex items-center gap-1">
-                          <Calendar className="h-4 w-4 text-muted-foreground" />
-                          <span>{activity.date}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Clock className="h-4 w-4 text-muted-foreground" />
-                          <span>{activity.time}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <MapPin className="h-4 w-4 text-muted-foreground" />
-                          <span>{activity.location}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Users className="h-4 w-4 text-muted-foreground" />
-                          <span>
+                                <Dialog
+                                    open={isEditDialogOpen && selectedActivity?.id === activity.id}
+                                    onOpenChange={(open) => {
+                                      setIsEditDialogOpen(open)
+                                      if (open) setSelectedActivity(activity)
+                                    }}
+                                >
+                                  <DialogTrigger asChild>
+                                    <Button variant="outline" size="sm">
+                                      <Edit className="mr-2 h-4 w-4" />
+                                      编辑
+                                    </Button>
+                                  </DialogTrigger>
+                                  <DialogContent>
+                                    <DialogHeader>
+                                      <DialogTitle>编辑活动</DialogTitle>
+                                      <DialogDescription>编辑活动信息</DialogDescription>
+                                    </DialogHeader>
+                                    <div className="grid gap-4 py-4">
+                                      <div className="space-y-2">
+                                        <Label htmlFor="edit-title">活动标题</Label>
+                                        <Input id="edit-title" defaultValue={activity.title} />
+                                      </div>
+                                      <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                          <Label htmlFor="edit-date">活动日期</Label>
+                                          <Input id="edit-date" type="date" defaultValue={activity.date} />
+                                        </div>
+                                        <div className="space-y-2">
+                                          <Label htmlFor="edit-time">活动时间</Label>
+                                          <Input id="edit-time" defaultValue={activity.time} />
+                                        </div>
+                                      </div>
+                                      <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                          <Label htmlFor="edit-location">活动地点</Label>
+                                          <Input id="edit-location" defaultValue={activity.location} />
+                                        </div>
+                                        <div className="space-y-2">
+                                          <Label htmlFor="edit-type">活动类型</Label>
+                                          <Select defaultValue={activity.type}>
+                                            <SelectTrigger>
+                                              <SelectValue placeholder="选择活动类型" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                              <SelectItem value="学习活动">学习活动</SelectItem>
+                                              <SelectItem value="实践活动">实践活动</SelectItem>
+                                              <SelectItem value="志愿服务">志愿服务</SelectItem>
+                                              <SelectItem value="组织活动">组织活动</SelectItem>
+                                              <SelectItem value="其他">其他</SelectItem>
+                                            </SelectContent>
+                                          </Select>
+                                        </div>
+                                      </div>
+                                      <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                          <Label htmlFor="edit-status">活动状态</Label>
+                                          <Select defaultValue={activity.status}>
+                                            <SelectTrigger>
+                                              <SelectValue placeholder="选择活动状态" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                              <SelectItem value="未开始">未开始</SelectItem>
+                                              <SelectItem value="已完成">已完成</SelectItem>
+                                            </SelectContent>
+                                          </Select>
+                                        </div>
+                                        <div className="space-y-2">
+                                          <Label htmlFor="edit-participants">参与人数</Label>
+                                          <Input id="edit-participants" type="number" defaultValue={activity.participants} />
+                                        </div>
+                                      </div>
+                                      <div className="space-y-2">
+                                        <Label htmlFor="edit-content">活动内容</Label>
+                                        <Textarea
+                                            id="edit-content"
+                                            defaultValue={activity.content}
+                                            className="min-h-[100px]"
+                                        />
+                                      </div>
+                                    </div>
+                                    <DialogFooter>
+                                      <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+                                        取消
+                                      </Button>
+                                      <Button onClick={handleEditActivity}>保存</Button>
+                                    </DialogFooter>
+                                  </DialogContent>
+                                </Dialog>
+                                <Button variant="outline" size="sm" onClick={() => handleDeleteActivity(activity)}>
+                                  <Trash2 className="mr-2 h-4 w-4" />
+                                  删除
+                                </Button>
+                              </div>
+                            </div>
+                            <p className="text-sm">{activity.content}</p>
+                          </div>
+                        </CardContent>
+                      </Card>
+                  ))
+              ) : (
+                  <div className="text-center py-4 text-muted-foreground">未找到符合条件的活动</div>
+              )}
+            </div>
+          </TabsContent>
+          <TabsContent value="upcoming">
+            <div className="grid gap-4">
+              {upcomingActivities.length > 0 ? (
+                  upcomingActivities.map((activity) => (
+                      <Card key={activity.id}>
+                        <CardHeader className="pb-2">
+                          <div className="flex items-center justify-between">
+                            <CardTitle>{activity.title}</CardTitle>
+                            <Badge variant="secondary">{activity.status}</Badge>
+                          </div>
+                          <CardDescription>
+                            <div className="flex flex-wrap gap-4 mt-2">
+                              <div className="flex items-center gap-1">
+                                <Calendar className="h-4 w-4 text-muted-foreground" />
+                                <span>{activity.date}</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Clock className="h-4 w-4 text-muted-foreground" />
+                                <span>{activity.time}</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <MapPin className="h-4 w-4 text-muted-foreground" />
+                                <span>{activity.location}</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Users className="h-4 w-4 text-muted-foreground" />
+                                <span>预计{activity.totalMembers}人参加</span>
+                              </div>
+                            </div>
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <Badge>{activity.type}</Badge>
+                              <div className="flex space-x-2">
+                                <Button variant="outline" size="sm" onClick={() => handleOpenMemberDialog(activity)}>
+                                  <UserCheck className="mr-2 h-4 w-4" />
+                                  党员出席
+                                </Button>
+                                <Button variant="outline" size="sm">
+                                  <Edit className="mr-2 h-4 w-4" />
+                                  编辑
+                                </Button>
+                                <Button variant="outline" size="sm" onClick={() => handleDeleteActivity(activity)}>
+                                  <Trash2 className="mr-2 h-4 w-4" />
+                                  删除
+                                </Button>
+                              </div>
+                            </div>
+                            <p className="text-sm">{activity.content}</p>
+                          </div>
+                        </CardContent>
+                      </Card>
+                  ))
+              ) : (
+                  <div className="text-center py-4 text-muted-foreground">未找到符合条件的未开始活动</div>
+              )}
+            </div>
+          </TabsContent>
+          <TabsContent value="completed">
+            <div className="grid gap-4">
+              {completedActivities.length > 0 ? (
+                  completedActivities.map((activity) => (
+                      <Card key={activity.id}>
+                        <CardHeader className="pb-2">
+                          <div className="flex items-center justify-between">
+                            <CardTitle>{activity.title}</CardTitle>
+                            <Badge variant="outline">{activity.status}</Badge>
+                          </div>
+                          <CardDescription>
+                            <div className="flex flex-wrap gap-4 mt-2">
+                              <div className="flex items-center gap-1">
+                                <Calendar className="h-4 w-4 text-muted-foreground" />
+                                <span>{activity.date}</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Clock className="h-4 w-4 text-muted-foreground" />
+                                <span>{activity.time}</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <MapPin className="h-4 w-4 text-muted-foreground" />
+                                <span>{activity.location}</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Users className="h-4 w-4 text-muted-foreground" />
+                                <span>
                             {activity.participants}/{activity.totalMembers}人参加
                           </span>
-                        </div>
-                      </div>
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <Badge>{activity.type}</Badge>
-                        <div className="flex space-x-2">
-                          <Button variant="outline" size="sm">
-                            <Edit className="mr-2 h-4 w-4" />
-                            编辑
-                          </Button>
-                          <Button variant="outline" size="sm" onClick={() => handleDeleteActivity(activity)}>
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            删除
-                          </Button>
-                        </div>
-                      </div>
-                      <p className="text-sm">{activity.content}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-            ) : (
-              <div className="text-center py-4 text-muted-foreground">未找到符合条件的已完成活动</div>
-            )}
-          </div>
-        </TabsContent>
-      </Tabs>
-    </div>
+                              </div>
+                            </div>
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <Badge>{activity.type}</Badge>
+                              <div className="flex space-x-2">
+                                <Button variant="outline" size="sm" onClick={() => handleOpenMemberDialog(activity)}>
+                                  <UserCheck className="mr-2 h-4 w-4" />
+                                  党员出席
+                                </Button>
+                                <Button variant="outline" size="sm">
+                                  <Edit className="mr-2 h-4 w-4" />
+                                  编辑
+                                </Button>
+                                <Button variant="outline" size="sm" onClick={() => handleDeleteActivity(activity)}>
+                                  <Trash2 className="mr-2 h-4 w-4" />
+                                  删除
+                                </Button>
+                              </div>
+                            </div>
+                            <p className="text-sm">{activity.content}</p>
+                          </div>
+                        </CardContent>
+                      </Card>
+                  ))
+              ) : (
+                  <div className="text-center py-4 text-muted-foreground">未找到符合条件的已完成活动</div>
+              )}
+            </div>
+          </TabsContent>
+        </Tabs>
+
+        {/* 党员出席情况对话框 */}
+        <MemberAttendanceDialog
+            open={isMemberDialogOpen}
+            onOpenChange={setIsMemberDialogOpen}
+            activityId={selectedActivity?.id}
+            onSave={handleSaveMemberAttendance}
+        />
+      </div>
   )
 }

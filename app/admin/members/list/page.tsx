@@ -27,7 +27,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Textarea } from "@/components/ui/textarea"
 
 // 党员身份类型
 const identityTypes = ["已毕业党员", "正式党员", "预备党员"]
@@ -36,20 +35,149 @@ const identityTypes = ["已毕业党员", "正式党员", "预备党员"]
 const partyPositions = ["党支部书记", "党支部委员", "普通党员"]
 
 // 模拟党员数据
-const members = Array.from({ length: 10 }).map((_, i) => ({
-  id: `M${2023000 + i}`,
-  name: `党员${i + 1}`,
-  gender: i % 2 === 0 ? "男" : "女",
-  ethnicity: i % 5 === 0 ? "回族" : i % 4 === 0 ? "满族" : i % 3 === 0 ? "蒙古族" : "汉族",
-  birthDate: `${1990 + Math.floor(i / 3)}-${String(Math.floor(Math.random() * 12) + 1).padStart(2, "0")}-${String(Math.floor(Math.random() * 28) + 1).padStart(2, "0")}`,
-  studentId: `2023${String(10000 + i).slice(1)}`,
-  className: `计算机科学${Math.floor(i / 3) + 1}班`,
-  joinDate: `${2020 + Math.floor(i / 4)}-${String(Math.floor(Math.random() * 12) + 1).padStart(2, "0")}-${String(Math.floor(Math.random() * 28) + 1).padStart(2, "0")}`,
-  position: partyPositions[i % 3],
-  identityType: identityTypes[i % 6],
-  contact: `1381234${String(5678 + i)}`,
-  hasArchive: i % 3 === 0,
-}))
+const members = [
+  {
+    id: "M2023010",
+    name: "李明",
+    gender: "男",
+    ethnicity: "汉族",
+    birthDate: "1992-03-14",
+    studentId: "202320001",
+    className: "大数据201班",
+    joinDate: "2021-05-20",
+    position: "党支部书记",
+    identityType: "正式党员",
+    contact: "13911110001",
+    hasArchive: true,
+  },
+  {
+    id: "M2023011",
+    name: "张婷",
+    gender: "女",
+    ethnicity: "壮族",
+    birthDate: "1991-07-08",
+    studentId: "202320002",
+    className: "大数据202班",
+    joinDate: "2020-11-03",
+    position: "党支部委员",
+    identityType: "预备党员",
+    contact: "13911110002",
+    hasArchive: false,
+  },
+  {
+    id: "M2023012",
+    name: "王强",
+    gender: "男",
+    ethnicity: "回族",
+    birthDate: "1990-10-23",
+    studentId: "202320003",
+    className: "大数据203班",
+    joinDate: "2021-02-15",
+    position: "普通党员",
+    identityType: "已毕业党员",
+    contact: "13911110003",
+    hasArchive: true,
+  },
+  {
+    id: "M2023013",
+    name: "赵静",
+    gender: "女",
+    ethnicity: "汉族",
+    birthDate: "1993-05-12",
+    studentId: "202320004",
+    className: "大数据204班",
+    joinDate: "2020-08-10",
+    position: "党支部书记",
+    identityType: "正式党员",
+    contact: "13911110004",
+    hasArchive: false,
+  },
+  {
+    id: "M2023014",
+    name: "刘洋",
+    gender: "男",
+    ethnicity: "满族",
+    birthDate: "1990-11-29",
+    studentId: "202320005",
+    className: "大数据205班",
+    joinDate: "2021-04-05",
+    position: "党支部委员",
+    identityType: "预备党员",
+    contact: "13911110005",
+    hasArchive: true,
+  },
+  {
+    id: "M2023015",
+    name: "孙慧",
+    gender: "女",
+    ethnicity: "汉族",
+    birthDate: "1992-06-16",
+    studentId: "202320006",
+    className: "大数据206班",
+    joinDate: "2021-09-12",
+    position: "普通党员",
+    identityType: "已毕业党员",
+    contact: "13911110006",
+    hasArchive: false,
+  },
+  {
+    id: "M2023016",
+    name: "周磊",
+    gender: "男",
+    ethnicity: "土家族",
+    birthDate: "1991-04-03",
+    studentId: "202320007",
+    className: "大数据231班",
+    joinDate: "2022-01-22",
+    position: "党支部书记",
+    identityType: "正式党员",
+    contact: "13911110007",
+    hasArchive: true,
+  },
+  {
+    id: "M2023017",
+    name: "黄雪",
+    gender: "女",
+    ethnicity: "汉族",
+    birthDate: "1993-09-19",
+    studentId: "202320008",
+    className: "大数据241班",
+    joinDate: "2022-03-05",
+    position: "党支部委员",
+    identityType: "预备党员",
+    contact: "13911110008",
+    hasArchive: false,
+  },
+  {
+    id: "M2023018",
+    name: "陈超",
+    gender: "男",
+    ethnicity: "回族",
+    birthDate: "1990-01-31",
+    studentId: "202320009",
+    className: "大数据241班",
+    joinDate: "2022-06-10",
+    position: "普通党员",
+    identityType: "已毕业党员",
+    contact: "13911110009",
+    hasArchive: true,
+  },
+  {
+    id: "M2023019",
+    name: "吴倩",
+    gender: "女",
+    ethnicity: "汉族",
+    birthDate: "1992-12-25",
+    studentId: "202320010",
+    className: "大数据242班",
+    joinDate: "2022-07-30",
+    position: "党支部书记",
+    identityType: "正式党员",
+    contact: "13911110010",
+    hasArchive: false,
+  },
+]
+
 
 export default function MembersList() {
   const [searchTerm, setSearchTerm] = useState("")
@@ -76,7 +204,7 @@ export default function MembersList() {
 
   const handleAddMember = () => {
     setIsAddDialogOpen(!isAddDialogOpen)
-    if(isAddDialogOpen) {
+    if (isAddDialogOpen) {
       toast({
         title: "添加成功",
         description: "党员信息已成功添加",
@@ -156,7 +284,7 @@ export default function MembersList() {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2"></div>
             </div>
-            <div className="rounded-md border">
+            <div className="rounded-md border overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>

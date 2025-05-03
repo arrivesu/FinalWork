@@ -79,7 +79,6 @@ const activists = [
 
 export default function ActivistsPage() {
   const [searchTerm, setSearchTerm] = useState("")
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [isPromoteDialogOpen, setIsPromoteDialogOpen] = useState(false)
   const [selectedActivists, setSelectedActivists] = useState<string[]>([])
   const { toast } = useToast()
@@ -91,14 +90,6 @@ export default function ActivistsPage() {
           activist.studentId.includes(searchTerm) ||
           activist.class.toLowerCase().includes(searchTerm.toLowerCase()),
   )
-
-  const handleAddActivist = () => {
-    setIsAddDialogOpen(false)
-    toast({
-      title: "添加成功",
-      description: "入党积极分子信息已成功添加",
-    })
-  }
 
   const handlePromote = () => {
     setIsPromoteDialogOpen(false)
@@ -160,105 +151,6 @@ export default function ActivistsPage() {
                     取消
                   </Button>
                   <Button onClick={handlePromote}>确认转为发展对象</Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-
-            <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-              <DialogTrigger asChild>
-                <Button>
-                  <Plus className="mr-2 h-4 w-4" />
-                  添加积极分子
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>添加入党积极分子</DialogTitle>
-                  <DialogDescription>添加新的入党积极分子信息</DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="name">姓名</Label>
-                      <Input id="name" placeholder="请输入姓名" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="gender">性别</Label>
-                      <Select>
-                        <SelectTrigger>
-                          <SelectValue placeholder="选择性别" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="male">男</SelectItem>
-                          <SelectItem value="female">女</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="ethnicity">民族</Label>
-                      <Select>
-                        <SelectTrigger>
-                          <SelectValue placeholder="选择民族" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="汉族">汉族</SelectItem>
-                          <SelectItem value="回族">回族</SelectItem>
-                          <SelectItem value="维吾尔族">维吾尔族</SelectItem>
-                          <SelectItem value="藏族">藏族</SelectItem>
-                          <SelectItem value="蒙古族">蒙古族</SelectItem>
-                          <SelectItem value="其他">其他</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="contact">联系方式</Label>
-                      <Input id="contact" placeholder="请输入联系方式" />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="student-id">学号</Label>
-                      <Input id="student-id" placeholder="请输入学号" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="class">班级</Label>
-                      <Input id="class" placeholder="请输入班级" />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="apply-date">申请日期</Label>
-                      <Input id="apply-date" type="date" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="activist-date">确定为积极分子日期</Label>
-                      <Input id="activist-date" type="date" />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="status">状态</Label>
-                    <Select defaultValue="培养中">
-                      <SelectTrigger>
-                        <SelectValue placeholder="选择状态" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="培养中">培养中</SelectItem>
-                        <SelectItem value="培养结束">培养结束</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="note">备注</Label>
-                    <Textarea id="note" placeholder="请输入备注信息" />
-                  </div>
-                </div>
-                <DialogFooter>
-                  <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                    取消
-                  </Button>
-                  <Button onClick={handleAddActivist}>添加</Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>

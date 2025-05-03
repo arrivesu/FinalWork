@@ -1,6 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import type React from "react"
+
+import { useState, useMemo } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
@@ -17,24 +19,26 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { CalendarIcon, Clock, MapPin, Plus, Edit, Trash2 } from "lucide-react"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { CalendarIcon, Clock, MapPin, Plus, Edit, Trash2, CalendarPlus2Icon as CalendarIcon2 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { Badge } from "@/components/ui/badge"
 
-// 模拟活动数据
-const activities = [
+// 模拟活动数据 - 添加了更多事件
+const initialActivities = [
   {
     id: "1",
     title: "支部党员大会",
-    date: "2024-03-15",
+    date: "2025-08-15",
     time: "14:00-16:00",
     location: "第一会议室",
     type: "meeting",
-    content: "1. 学习贯彻党的二十大精神\n2. 总结2023年工作\n3. 讨论2024年工作计划",
+    content: "1. 学习贯彻党的二十大精神\n2. 总结2024年工作\n3. 讨论2025年工作计划",
   },
   {
     id: "2",
     title: "党课学习",
-    date: "2024-03-15",
+    date: "2025-03-15",
     time: "19:00-20:30",
     location: "线上会议",
     type: "lecture",
@@ -43,17 +47,88 @@ const activities = [
   {
     id: "3",
     title: "志愿服务活动",
-    date: "2024-03-20",
+    date: "2025-03-20",
     time: "09:00-12:00",
     location: "社区服务中心",
     type: "activity",
     content: "开展社区环境清洁志愿服务活动",
   },
+  {
+    id: "4",
+    title: "党史学习小组",
+    date: "2025-05-10",
+    time: "15:00-17:00",
+    location: "党员活动室",
+    type: "lecture",
+    content: "学习中国共产党百年奋斗历程",
+  },
+  {
+    id: "5",
+    title: "社区慰问活动",
+    date: "2025-05-15",
+    time: "10:00-12:00",
+    location: "敬老院",
+    type: "activity",
+    content: "慰问社区孤寡老人，开展文艺演出",
+  },
+  {
+    id: "6",
+    title: "党建工作研讨会",
+    date: "2025-05-25",
+    time: "14:00-17:00",
+    location: "第二会议室",
+    type: "meeting",
+    content: "研讨基层党建工作创新方法",
+  },
+  {
+    id: "7",
+    title: "主题党日活动",
+    date: "2025-06-05",
+    time: "09:30-11:30",
+    location: "革命纪念馆",
+    type: "activity",
+    content: "参观革命纪念馆，缅怀革命先烈",
+  },
+  {
+    id: "8",
+    title: "党员发展大会",
+    date: "2025-06-15",
+    time: "14:30-16:30",
+    location: "大会议室",
+    type: "meeting",
+    content: "讨论发展新党员事宜",
+  },
 ]
+
+// 活动类型对应的颜色
+const typeColors = {
+  meeting: "bg-blue-500",
+  lecture: "bg-green-500",
+  activity: "bg-orange-500",
+  other: "bg-purple-500",
+}
+
+// 活动类型对应的中文名称
+const typeNames = {
+  meeting: "会议",
+  lecture: "党课",
+  activity: "党日活动",
+  other: "其他",
+}
 
 export default function WorkCalendarPage() {
   const [date, setDate] = useState<Date | undefined>(new Date())
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
+  const [activities, setActivities] = useState(initialActivities)
+  const [activeTab, setActiveTab] = useState("today")
+  const [newActivity, setNewActivity] = useState({
+    title: "",
+    date: "",
+    time: "",
+    location: "",
+    type: "",
+    content: "",
+  })
   const { toast } = useToast()
 
   // 获取选定日期的活动
@@ -64,10 +139,72 @@ export default function WorkCalendarPage() {
     return activities.filter((activity) => activity.date === dateString)
   }
 
+  // 获取未来的活动
+  const futureActivities = useMemo(() => {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+
+    return activities
+        .filter((activity) => {
+          const activityDate = new Date(activity.date)
+          return activityDate >= today
+        })
+        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+  }, [activities])
+
+  // 获取有活动的日期
+  const eventDates = useMemo(() => {
+    const dates = new Set<string>()
+    activities.forEach((activity) => {
+      dates.add(activity.date)
+    })
+    return Array.from(dates)
+  }, [activities])
+
   const selectedDateActivities = getActivitiesByDate(date)
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { id, value } = e.target
+    setNewActivity((prev) => ({
+      ...prev,
+      [id]: value,
+    }))
+  }
+
+  const handleSelectChange = (value: string) => {
+    setNewActivity((prev) => ({
+      ...prev,
+      type: value,
+    }))
+  }
+
   const handleAddActivity = () => {
+    if (!newActivity.title || !newActivity.date || !newActivity.time || !newActivity.location || !newActivity.type) {
+      toast({
+        title: "添加失败",
+        description: "请填写所有必填字段",
+        variant: "destructive",
+      })
+      return
+    }
+
+    const newId = (activities.length + 1).toString()
+    const activityToAdd = {
+      id: newId,
+      ...newActivity,
+    }
+
+    setActivities((prev) => [...prev, activityToAdd])
     setIsAddDialogOpen(false)
+    setNewActivity({
+      title: "",
+      date: "",
+      time: "",
+      location: "",
+      type: "",
+      content: "",
+    })
+
     toast({
       title: "添加成功",
       description: "活动已成功添加到日历",
@@ -81,152 +218,281 @@ export default function WorkCalendarPage() {
     })
   }
 
-  const handleDeleteActivity = (activity: any) => {
+  const handleDeleteActivity = (activityId: string) => {
+    setActivities((prev) => prev.filter((activity) => activity.id !== activityId))
+
     toast({
       title: "删除成功",
-      description: `活动 "${activity.title}" 已成功删除`,
+      description: "活动已成功删除",
     })
   }
 
-  return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">工作日历</h1>
-          <p className="text-muted-foreground">管理党组织活动安排</p>
+  // 自定义日历渲染，标记有事件的日期
+  const renderCalendarDay = ({displayMonth, date}:{displayMonth: Date; date: Date;}) => {
+    const dateString = date.toISOString().split("T")[0]
+    const hasEvent = eventDates.includes(dateString)
+
+    return (
+        <div className="relative">
+          <div>{date.getDate()}</div>
+          {hasEvent && (
+              <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2">
+                <div className="h-1 w-1 rounded-full bg-primary"></div>
+              </div>
+          )}
         </div>
-        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              添加活动
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>添加活动</DialogTitle>
-              <DialogDescription>添加新活动到工作日历</DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="space-y-2">
-                <Label htmlFor="title">活动标题</Label>
-                <Input id="title" placeholder="请输入活动标题" />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="date">活动日期</Label>
-                  <Input id="date" type="date" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="time">活动时间</Label>
-                  <Input id="time" placeholder="例如：14:00-16:00" />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="location">活动地点</Label>
-                  <Input id="location" placeholder="请输入活动地点" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="type">活动类型</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="选择活动类型" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="meeting">会议</SelectItem>
-                      <SelectItem value="lecture">党课</SelectItem>
-                      <SelectItem value="activity">党日活动</SelectItem>
-                      <SelectItem value="other">其他</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="content">活动内容</Label>
-                <Textarea id="content" placeholder="请输入活动内容" className="min-h-[100px]" />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                取消
-              </Button>
-              <Button onClick={handleAddActivity}>添加</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </div>
+    )
+  }
 
-      <div className="grid gap-6 md:grid-cols-[auto_1fr]">
-        <Card className="md:col-span-1">
-          <CardHeader>
-            <CardTitle>日历</CardTitle>
-            <CardDescription>选择日期查看活动安排</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Calendar mode="single" selected={date} onSelect={setDate} className="rounded-md border" />
-          </CardContent>
-        </Card>
-
-        <Card className="md:col-span-1">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle>
-                  {date?.toLocaleDateString("zh-CN", { year: "numeric", month: "long", day: "numeric" })}活动
-                </CardTitle>
-                <CardDescription>
-                  {selectedDateActivities.length > 0 ? `共 ${selectedDateActivities.length} 个活动` : "暂无活动安排"}
-                </CardDescription>
-              </div>
-              <Button size="sm" variant="outline" onClick={() => setIsAddDialogOpen(true)}>
+  return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">工作日历</h1>
+            <p className="text-muted-foreground">管理党组织活动安排</p>
+          </div>
+          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+            <DialogTrigger asChild>
+              <Button>
                 <Plus className="mr-2 h-4 w-4" />
-                添加
+                添加活动
               </Button>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {selectedDateActivities.length > 0 ? (
-                selectedDateActivities.map((activity) => (
-                  <div key={activity.id} className="border rounded-lg p-4">
-                    <div className="flex justify-between items-start">
-                      <h3 className="font-medium">{activity.title}</h3>
-                      <div className="flex space-x-2">
-                        <Button variant="ghost" size="icon" onClick={() => handleEditActivity(activity)}>
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon" onClick={() => handleDeleteActivity(activity)}>
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                    <div className="flex flex-wrap gap-4 mt-2 text-sm text-muted-foreground">
-                      <div className="flex items-center gap-1">
-                        <Clock className="h-4 w-4" />
-                        <span>{activity.time}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <MapPin className="h-4 w-4" />
-                        <span>{activity.location}</span>
-                      </div>
-                    </div>
-                    <p className="mt-2 text-sm whitespace-pre-line">{activity.content}</p>
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-8 text-muted-foreground">
-                  <CalendarIcon className="mx-auto h-12 w-12 opacity-30" />
-                  <p className="mt-2">当天暂无活动安排</p>
-                  <Button variant="outline" className="mt-4" onClick={() => setIsAddDialogOpen(true)}>
-                    添加活动
-                  </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>添加活动</DialogTitle>
+                <DialogDescription>添加新活动到工作日历</DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="title">活动标题</Label>
+                  <Input id="title" placeholder="请输入活动标题" value={newActivity.title} onChange={handleInputChange} />
                 </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="date">活动日期</Label>
+                    <Input id="date" type="date" value={newActivity.date} onChange={handleInputChange} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="time">活动时间</Label>
+                    <Input
+                        id="time"
+                        placeholder="例如：14:00-16:00"
+                        value={newActivity.time}
+                        onChange={handleInputChange}
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="location">活动地点</Label>
+                    <Input
+                        id="location"
+                        placeholder="请输入活动地点"
+                        value={newActivity.location}
+                        onChange={handleInputChange}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="type">活动类型</Label>
+                    <Select onValueChange={handleSelectChange} value={newActivity.type}>
+                      <SelectTrigger id="type">
+                        <SelectValue placeholder="选择活动类型" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="meeting">会议</SelectItem>
+                        <SelectItem value="lecture">党课</SelectItem>
+                        <SelectItem value="activity">党日活动</SelectItem>
+                        <SelectItem value="other">其他</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="content">活动内容</Label>
+                  <Textarea
+                      id="content"
+                      placeholder="请输入活动内容"
+                      className="min-h-[100px]"
+                      value={newActivity.content}
+                      onChange={handleInputChange}
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
+                  取消
+                </Button>
+                <Button onClick={handleAddActivity}>添加</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-[auto_1fr]">
+          <Card className="md:col-span-1">
+            <CardHeader>
+              <CardTitle>日历</CardTitle>
+              <CardDescription>选择日期查看活动安排</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={setDate}
+                  className="rounded-md border"
+                  components={{
+                    Day: renderCalendarDay,
+                  }}
+              />
+              <div className="mt-4 flex flex-wrap gap-2">
+                <div className="flex items-center gap-2">
+                  <div className="h-3 w-3 rounded-full bg-blue-500"></div>
+                  <span className="text-xs">会议</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="h-3 w-3 rounded-full bg-green-500"></div>
+                  <span className="text-xs">党课</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="h-3 w-3 rounded-full bg-orange-500"></div>
+                  <span className="text-xs">党日活动</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="h-3 w-3 rounded-full bg-purple-500"></div>
+                  <span className="text-xs">其他</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="md:col-span-1">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>活动安排</CardTitle>
+                  <CardDescription>查看和管理活动安排</CardDescription>
+                </div>
+                <Button size="sm" variant="outline" onClick={() => setIsAddDialogOpen(true)}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  添加
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <Tabs defaultValue="today" value={activeTab} onValueChange={setActiveTab}>
+                <TabsList className="mb-4">
+                  <TabsTrigger value="today">当日活动</TabsTrigger>
+                  <TabsTrigger value="upcoming">未来活动</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="today" className="space-y-4">
+                  <div className="text-sm font-medium">
+                    {date?.toLocaleDateString("zh-CN", { year: "numeric", month: "long", day: "numeric" })}
+                  </div>
+
+                  {selectedDateActivities.length > 0 ? (
+                      selectedDateActivities.map((activity) => (
+                          <div key={activity.id} className="border rounded-lg p-4">
+                            <div className="flex justify-between items-start">
+                              <div className="flex items-center gap-2">
+                                <div
+                                    className={`h-3 w-3 rounded-full ${typeColors[activity.type as keyof typeof typeColors]}`}
+                                ></div>
+                                <h3 className="font-medium">{activity.title}</h3>
+                                <Badge variant="outline">{typeNames[activity.type as keyof typeof typeNames]}</Badge>
+                              </div>
+                              <div className="flex space-x-2">
+                                <Button variant="ghost" size="icon" onClick={() => handleEditActivity(activity)}>
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                                <Button variant="ghost" size="icon" onClick={() => handleDeleteActivity(activity.id)}>
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </div>
+                            <div className="flex flex-wrap gap-4 mt-2 text-sm text-muted-foreground">
+                              <div className="flex items-center gap-1">
+                                <Clock className="h-4 w-4" />
+                                <span>{activity.time}</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <MapPin className="h-4 w-4" />
+                                <span>{activity.location}</span>
+                              </div>
+                            </div>
+                            <p className="mt-2 text-sm whitespace-pre-line">{activity.content}</p>
+                          </div>
+                      ))
+                  ) : (
+                      <div className="text-center py-8 text-muted-foreground">
+                        <CalendarIcon className="mx-auto h-12 w-12 opacity-30" />
+                        <p className="mt-2">当天暂无活动安排</p>
+                        <Button variant="outline" className="mt-4" onClick={() => setIsAddDialogOpen(true)}>
+                          添加活动
+                        </Button>
+                      </div>
+                  )}
+                </TabsContent>
+
+                <TabsContent value="upcoming" className="space-y-4">
+                  {futureActivities.length > 0 ? (
+                      futureActivities.map((activity) => (
+                          <div key={activity.id} className="border rounded-lg p-4">
+                            <div className="flex justify-between items-start">
+                              <div className="flex items-center gap-2">
+                                <div
+                                    className={`h-3 w-3 rounded-full ${typeColors[activity.type as keyof typeof typeColors]}`}
+                                ></div>
+                                <h3 className="font-medium">{activity.title}</h3>
+                                <Badge variant="outline">{typeNames[activity.type as keyof typeof typeNames]}</Badge>
+                              </div>
+                              <div className="flex space-x-2">
+                                <Button variant="ghost" size="icon" onClick={() => handleEditActivity(activity)}>
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                                <Button variant="ghost" size="icon" onClick={() => handleDeleteActivity(activity.id)}>
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </div>
+                            <div className="flex flex-wrap gap-4 mt-2 text-sm text-muted-foreground">
+                              <div className="flex items-center gap-1">
+                                <CalendarIcon2 className="h-4 w-4" />
+                                <span>
+                            {new Date(activity.date).toLocaleDateString("zh-CN", {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            })}
+                          </span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Clock className="h-4 w-4" />
+                                <span>{activity.time}</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <MapPin className="h-4 w-4" />
+                                <span>{activity.location}</span>
+                              </div>
+                            </div>
+                            <p className="mt-2 text-sm whitespace-pre-line">{activity.content}</p>
+                          </div>
+                      ))
+                  ) : (
+                      <div className="text-center py-8 text-muted-foreground">
+                        <CalendarIcon className="mx-auto h-12 w-12 opacity-30" />
+                        <p className="mt-2">暂无未来活动安排</p>
+                        <Button variant="outline" className="mt-4" onClick={() => setIsAddDialogOpen(true)}>
+                          添加活动
+                        </Button>
+                      </div>
+                  )}
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+          </Card>
+        </div>
       </div>
-    </div>
   )
 }

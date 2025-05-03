@@ -71,6 +71,26 @@ const logs = [
   },
   {
     id: "7",
+    user: "张三",
+    action: "重置密码",
+    target: "赵六",
+    module: "发展党员管理",
+    ip: "192.168.1.1",
+    time: "2023-12-14 16:20:18",
+    status: "success",
+  },
+  {
+    id: "8",
+    user: "张三",
+    action: "重置密码",
+    target: "赵六",
+    module: "学习资料",
+    ip: "192.168.1.1",
+    time: "2023-12-14 16:20:18",
+    status: "success",
+  },
+  {
+    id: "9",
     user: "李四",
     action: "删除活动",
     target: "党小组会",
@@ -147,7 +167,7 @@ export default function LogsPage() {
           <SelectContent>
             <SelectItem value="all">所有状态</SelectItem>
             <SelectItem value="success">成功</SelectItem>
-            <SelectItem value="failed">失��</SelectItem>
+            <SelectItem value="failed">失败</SelectItem>
           </SelectContent>
         </Select>
       </div>

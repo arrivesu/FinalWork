@@ -72,6 +72,10 @@ export const adminNavItems = [
     icon: BarChart,
     submenu: [
       {
+        title: "支部统计数据录入",
+        href: "/admin/data/portrait-entry",
+      },
+      {
         title: "支部统计概览",
         href: "/admin/data/statistics",
       },
