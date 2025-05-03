@@ -9,8 +9,12 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { useToast } from "@/hooks/use-toast"
+import Image from "next/image"
+
+
 
 export default function LoginPage() {
+  const [captcha, setCaptcha] = useState('')
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
@@ -73,13 +77,25 @@ export default function LoginPage() {
 
   return (
     <div className="flex h-screen w-full items-center justify-center bg-muted/40">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1 text-center">
-          <CardTitle className="text-2xl font-bold">支部党建管理系统</CardTitle>
-          <CardDescription>请输入您的账号和密码登录系统</CardDescription>
+      <Card className="w-full max-w-md bg-red-50">
+        <CardHeader className="space-y-1">
+          {/* 居中的党徽 */}
+          <div className="flex justify-center">  {/* 新增flex容器实现居中 */}
+            <Image
+              src="https://p3.img.cctvpic.com/photoworkspace/contentimg/2021/07/09/2021070916100758523.png"
+              alt="中国共产党党徽"
+              width={80}
+              height={80}
+              className="mb-4"
+            />
+          </div>
+          <CardTitle className="text-2xl font-bold text-red-600 text-center">支部党建管理系统</CardTitle>
+          <CardDescription className="text-center">请输入您的账号和密码登录系统</CardDescription>
         </CardHeader>
+        
         <form onSubmit={handleLogin}>
           <CardContent className="space-y-4">
+            {/* 账号输入 */}
             <div className="space-y-2">
               <Label htmlFor="username">账号</Label>
               <Input
@@ -90,10 +106,10 @@ export default function LoginPage() {
                 required
               />
             </div>
+  
+            {/* 密码输入 */}
             <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password">密码</Label>
-              </div>
+              <Label htmlFor="password">密码</Label>
               <Input
                 id="password"
                 type="password"
@@ -103,10 +119,14 @@ export default function LoginPage() {
                 required
               />
             </div>
-            {/* 移除了管理员登录选项 */}
-          </CardContent>
+          </CardContent>getItem
+           
           <CardFooter>
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button 
+              type="submit" 
+              className="w-full bg-red-600 hover:bg-red-500 transition-colors" 
+              disabled={isLoading}
+            >
               {isLoading ? "登录中..." : "登录"}
             </Button>
           </CardFooter>
@@ -115,3 +135,57 @@ export default function LoginPage() {
     </div>
   )
 }
+//   return (
+//     <div className="flex h-screen w-full items-center justify-center bg-muted/40">
+//       <Card className="w-full max-w-md bg-red-50">
+
+//         <CardHeader className="space-y-1 text-center">
+//           {/* 党徽图标 */}
+//           <div className="flex-shrink-0">
+//             <Image
+//               src="https://p3.img.cctvpic.com/photoworkspace/contentimg/2021/07/09/2021070916100758523.png"
+//               alt="中国共产党党徽"
+//               width={60}
+//               height={60}
+//             />
+//           </div>
+//           <CardTitle className="text-2xl font-bold text-red-600">支部党建管理系统</CardTitle>
+//           <CardDescription>请输入您的账号和密码登录系统</CardDescription>
+//         </CardHeader>
+//         <form onSubmit={handleLogin}>
+//           <CardContent className="space-y-4">
+//             <div className="space-y-2">
+//               <Label htmlFor="username">账号</Label>
+//               <Input
+//                 id="username"
+//                 placeholder="请输入账号"
+//                 value={username}
+//                 onChange={(e) => setUsername(e.target.value)}
+//                 required
+//               />
+//             </div>
+//             <div className="space-y-2">
+//               <div className="flex items-center justify-between">
+//                 <Label htmlFor="password">密码</Label>
+//               </div>
+//               <Input
+//                 id="password"
+//                 type="password"
+//                 placeholder="请输入密码"
+//                 value={password}
+//                 onChange={(e) => setPassword(e.target.value)}
+//                 required
+//               />
+//             </div>
+//             {/* 移除了管理员登录选项 */}
+//           </CardContent>
+//           <CardFooter>
+//             <Button type="submit" className="w-full bg-red-600 hover:bg-red-400" disabled={isLoading}>
+//               {isLoading ? "登录中..." : "登录"}
+//             </Button>
+//           </CardFooter>
+//         </form>
+//       </Card>
+//     </div>
+//   )
+// }
