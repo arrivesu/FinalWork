@@ -12,8 +12,8 @@ import { RoleSwitcher } from "@/components/ui/role-switcher"
 import { UserMenu } from "@/components/ui/user-menu"
 
 export default function MemberLayout({
-  children,
-}: {
+                                       children,
+                                     }: {
   children: React.ReactNode
 }) {
   // 模拟用户数据
@@ -25,14 +25,13 @@ export default function MemberLayout({
   }
 
   return (
-    <Shell>
-      <div className="flex h-screen">
-        <div className="hidden md:block w-64 border-r">
-          
-          <SidebarNav items={memberNavItems} />
-        </div>
-        <div className="flex-1 flex flex-col overflow-hidden">
-          <div className="border-b p-4 flex items-center justify-between">
+      <Shell>
+        <div className="flex h-screen">
+          <div className="hidden md:block w-64 border-r">
+            <SidebarNav items={memberNavItems} />
+          </div>
+          <div className="flex-1 flex flex-col overflow-hidden">
+            <div className="border-b p-4 flex items-center justify-between">
               <Breadcrumb />
               <div className="flex items-center gap-4">
                 {/* 通知按钮 */}
@@ -43,23 +42,21 @@ export default function MemberLayout({
 
                 {/* 角色切换按钮 - 只有管理员可见 */}
                 {user.role.includes("admin") && (
-                  <div className="flex items-center">
-                    <span className="text-sm text-muted-foreground mr-2">党员视图</span>
-                    <RoleSwitcher isAdmin={false} targetPath="/admin/workbench" />
-                  </div>
+                    <div className="flex items-center">
+                      <span className="text-sm text-muted-foreground mr-2">党员视图</span>
+                      <RoleSwitcher isAdmin={false} targetPath="/admin/workbench" />
+                    </div>
                 )}
 
                 {/* 用户头像和下拉菜单 */}
                 <UserMenu user={user} />
               </div>
-          </div>
-          <div className="flex-1 overflow-auto p-6">
-            <div className="space-y-6 bg-white border p-6 rounded-lg">
-              {children}
+            </div>
+            <div className="flex-1 overflow-auto p-6">
+              <div className="space-y-6 bg-white border p-6 rounded-lg">{children}</div>
             </div>
           </div>
         </div>
-      </div>
-    </Shell>
+      </Shell>
   )
 }
