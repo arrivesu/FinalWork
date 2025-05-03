@@ -127,7 +127,7 @@ const members = [
     ethnicity: "土家族",
     birthDate: "1991-04-03",
     studentId: "202320007",
-    className: "大数据231班",
+    className: "大数据210班",
     joinDate: "2022-01-22",
     position: "党支部书记",
     identityType: "正式党员",
@@ -141,7 +141,7 @@ const members = [
     ethnicity: "汉族",
     birthDate: "1993-09-19",
     studentId: "202320008",
-    className: "大数据241班",
+    className: "大数据210班",
     joinDate: "2022-03-05",
     position: "党支部委员",
     identityType: "预备党员",
@@ -155,7 +155,7 @@ const members = [
     ethnicity: "回族",
     birthDate: "1990-01-31",
     studentId: "202320009",
-    className: "大数据241班",
+    className: "大数据211班",
     joinDate: "2022-06-10",
     position: "普通党员",
     identityType: "已毕业党员",
@@ -169,7 +169,7 @@ const members = [
     ethnicity: "汉族",
     birthDate: "1992-12-25",
     studentId: "202320010",
-    className: "大数据242班",
+    className: "大数据211班",
     joinDate: "2022-07-30",
     position: "党支部书记",
     identityType: "正式党员",
@@ -177,7 +177,6 @@ const members = [
     hasArchive: false,
   },
 ]
-
 
 export default function MembersList() {
   const [searchTerm, setSearchTerm] = useState("")

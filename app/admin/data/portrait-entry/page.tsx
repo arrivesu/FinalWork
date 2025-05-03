@@ -15,7 +15,7 @@ const initialPartyMembers = [
     {
         id: 1,
         name: "张三",
-        department: "技术部",
+        department: "大数据201班",
         moralRanking: 0.85, // 德育排名
         academicLevel: 0.78, // 学业水平
         assessmentScore: 87, // 等级考核分
@@ -26,7 +26,7 @@ const initialPartyMembers = [
     {
         id: 2,
         name: "李四",
-        department: "人力资源部",
+        department: "大数据202班",
         moralRanking: 0.92,
         academicLevel: 0.85,
         assessmentScore: 93,
@@ -37,7 +37,7 @@ const initialPartyMembers = [
     {
         id: 3,
         name: "王五",
-        department: "财务部",
+        department: "大数据203班",
         moralRanking: 0.78,
         academicLevel: 0.72,
         assessmentScore: 82,
@@ -48,7 +48,7 @@ const initialPartyMembers = [
     {
         id: 4,
         name: "赵六",
-        department: "市场部",
+        department: "大数据204班",
         moralRanking: 0,
         academicLevel: 0,
         assessmentScore: 0,
@@ -59,7 +59,7 @@ const initialPartyMembers = [
     {
         id: 5,
         name: "钱七",
-        department: "销售部",
+        department: "大数据205班",
         moralRanking: 0,
         academicLevel: 0,
         assessmentScore: 0,
@@ -245,7 +245,8 @@ const PortraitEntryPageContent: React.FC = () => {
 
     // 格式化百分比显示
     const formatPercent = (value: number) => {
-        return `${(value * 100).toFixed(1)}%`
+        return `${value.toFixed(2)}`;
+        // return `${(value * 100).toFixed(1)}%`
     }
 
     // 可编辑字段列表
@@ -263,7 +264,7 @@ const PortraitEntryPageContent: React.FC = () => {
     // 字段标题映射
     const fieldTitles: Record<string, string> = {
         name: "姓名",
-        department: "部门",
+        department: "班级",
         moralRanking: "德育排名",
         academicLevel: "学业水平",
         assessmentScore: "等级考核分",
@@ -275,13 +276,13 @@ const PortraitEntryPageContent: React.FC = () => {
     // 字段提示映射
     const fieldPlaceholders: Record<string, string> = {
         name: "输入姓名",
-        department: "输入部门",
+        department: "输入班级",
         moralRanking: "0-1小数",
         academicLevel: "0-1小数",
         assessmentScore: "0-100整数",
         volunteerHours: "0-100小数",
         dormitoryRanking: "0-1小数",
-        behaviorScore: "0-10整数",
+        behaviorScore: "0-20整数",
     }
 
     // 字段格式化显示
@@ -291,7 +292,7 @@ const PortraitEntryPageContent: React.FC = () => {
         } else if (field === "volunteerHours") {
             return `${value.toFixed(1)}小时`
         } else if (field === "behaviorScore") {
-            return `${value}/10`
+            return `${value}/20`
         } else if (field === "assessmentScore") {
             return `${value}分`
         }
@@ -363,7 +364,7 @@ const PortraitEntryPageContent: React.FC = () => {
                                 <TableRow>
                                     <TableHead className="w-[50px] text-center">#</TableHead>
                                     <TableHead className="text-center">姓名</TableHead>
-                                    <TableHead className="text-center">部门</TableHead>
+                                    <TableHead className="text-center">班级</TableHead>
                                     <TableHead className="text-center">
                                         德育排名
                                         <div className="text-xs text-muted-foreground">百分比小数</div>
@@ -386,7 +387,7 @@ const PortraitEntryPageContent: React.FC = () => {
                                     </TableHead>
                                     <TableHead className="text-center">
                                         行为分数
-                                        <div className="text-xs text-muted-foreground">0-10整数</div>
+                                        <div className="text-xs text-muted-foreground">0-20整数</div>
                                     </TableHead>
                                     <TableHead className="w-[80px] text-center">操作</TableHead>
                                 </TableRow>
