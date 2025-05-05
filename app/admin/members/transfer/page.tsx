@@ -188,9 +188,7 @@ export default function TransferManagementPage() {
 													 className="flex items-center justify-between p-4 border rounded-lg">
 													<div className="flex items-center space-x-4">
 														<Avatar>
-															<AvatarImage src={transfer.avatar || "/placeholder.svg"}
-																		 alt={transfer.name}/>
-															<AvatarFallback>{transfer.name.charAt(0)}</AvatarFallback>
+															<AvatarFallback>{transfer.name.substring(transfer.name.length - 2)}</AvatarFallback>
 														</Avatar>
 														<div>
 															<p className="font-medium">{transfer.name}</p>
@@ -307,9 +305,7 @@ export default function TransferManagementPage() {
 													 className="flex items-center justify-between p-4 border rounded-lg">
 													<div className="flex items-center space-x-4">
 														<Avatar>
-															<AvatarImage src={transfer.avatar || "/placeholder.svg"}
-																		 alt={transfer.name}/>
-															<AvatarFallback>{transfer.name.charAt(0)}</AvatarFallback>
+															<AvatarFallback>{transfer.name.substring(transfer.name.length - 2)}</AvatarFallback>
 														</Avatar>
 														<div>
 															<p className="font-medium">{transfer.name}</p>
@@ -409,9 +405,7 @@ export default function TransferManagementPage() {
 													 className="flex items-center justify-between p-4 border rounded-lg">
 													<div className="flex items-center space-x-4">
 														<Avatar>
-															<AvatarImage src={transfer.avatar || "/placeholder.svg"}
-																		 alt={transfer.name}/>
-															<AvatarFallback>{transfer.name.charAt(0)}</AvatarFallback>
+															<AvatarFallback>{transfer.name.substring(transfer.name.length - 2)}</AvatarFallback>
 														</Avatar>
 														<div>
 															<p className="font-medium">{transfer.name}</p>
@@ -452,9 +446,7 @@ export default function TransferManagementPage() {
 													 className="flex items-center justify-between p-4 border rounded-lg">
 													<div className="flex items-center space-x-4">
 														<Avatar>
-															<AvatarImage src={transfer.avatar || "/placeholder.svg"}
-																		 alt={transfer.name}/>
-															<AvatarFallback>{transfer.name.charAt(0)}</AvatarFallback>
+															<AvatarFallback>{transfer.name.substring(transfer.name.length - 2)}</AvatarFallback>
 														</Avatar>
 														<div>
 															<p className="font-medium">{transfer.name}</p>
@@ -497,9 +489,7 @@ export default function TransferManagementPage() {
 											 className="flex items-center justify-between p-4 border rounded-lg">
 											<div className="flex items-center space-x-4">
 												<Avatar>
-													<AvatarImage src={transfer.avatar || "/placeholder.svg"}
-																 alt={transfer.name}/>
-													<AvatarFallback>{transfer.name.charAt(0)}</AvatarFallback>
+													<AvatarFallback>{transfer.name.substring(transfer.name.length - 2)}</AvatarFallback>
 												</Avatar>
 												<div>
 													<p className="font-medium">{transfer.name}</p>
