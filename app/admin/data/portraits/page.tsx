@@ -1,14 +1,14 @@
 "use client"
 
-import {useState} from "react"
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
-import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
-import {Input} from "@/components/ui/input"
-import {Button} from "@/components/ui/button"
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
-import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"
-import {RadarChart, type RadarChartData} from "@/components/ui/radar-chart"
-import {Download, Filter, Search, UserPlus} from "lucide-react"
+import { useState } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { RadarChart, type RadarChartData } from "@/components/ui/radar-chart"
+import { Download, Filter, Search, UserPlus } from "lucide-react"
 
 // Mock data for party members
 const partyMembers = [
@@ -259,7 +259,7 @@ export default function PartyMemberPortraits() {
 				<h1 className="text-2xl font-bold">党员画像</h1>
 				<div className="flex flex-col sm:flex-row gap-2">
 					<div className="relative">
-						<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"/>
+						<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
 						<Input
 							type="search"
 							placeholder="搜索党员..."
@@ -270,7 +270,7 @@ export default function PartyMemberPortraits() {
 					</div>
 					<Select value={identityType} onValueChange={setIdentityType}>
 						<SelectTrigger className="w-full sm:w-[180px]">
-							<SelectValue placeholder="选择身份类型"/>
+							<SelectValue placeholder="选择身份类型" />
 						</SelectTrigger>
 						<SelectContent>
 							<SelectItem value="all">所有身份类型</SelectItem>
@@ -280,10 +280,10 @@ export default function PartyMemberPortraits() {
 						</SelectContent>
 					</Select>
 					<Button variant="outline" size="icon">
-						<Filter className="h-4 w-4"/>
+						<Filter className="h-4 w-4" />
 					</Button>
 					<Button variant="outline" size="icon">
-						<Download className="h-4 w-4"/>
+						<Download className="h-4 w-4" />
 					</Button>
 				</div>
 			</div>
@@ -295,7 +295,7 @@ export default function PartyMemberPortraits() {
 						<CardDescription>选择党员查看详细画像</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<div className="space-y-4">
+						<div className="space-y-4 max-h-[400px] overflow-y-auto pr-1">
 							{filteredMembers.length === 0 ? (
 								<p className="text-center py-4 text-muted-foreground">未找到符合条件的党员</p>
 							) : (
@@ -308,7 +308,7 @@ export default function PartyMemberPortraits() {
 										onClick={() => setSelectedMember(member)}
 									>
 										<Avatar className="h-10 w-10 mr-3">
-											<AvatarImage src={member.avatar || "/placeholder.svg"} alt={member.name}/>
+											<AvatarImage src={member.avatar || "/placeholder.svg"} alt={member.name} />
 											<AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
 										</Avatar>
 										<div className="flex-1 min-w-0">
@@ -333,8 +333,7 @@ export default function PartyMemberPortraits() {
 									<div className="flex justify-between items-start">
 										<div className="flex items-center">
 											<Avatar className="h-12 w-12 mr-4">
-												<AvatarImage src={selectedMember.avatar || "/placeholder.svg"}
-															 alt={selectedMember.name}/>
+												<AvatarImage src={selectedMember.avatar || "/placeholder.svg"} alt={selectedMember.name} />
 												<AvatarFallback>{selectedMember.name.charAt(0)}</AvatarFallback>
 											</Avatar>
 											<div>
@@ -345,7 +344,7 @@ export default function PartyMemberPortraits() {
 											</div>
 										</div>
 										<Button variant="outline" size="sm">
-											<UserPlus className="h-4 w-4 mr-2"/>
+											<UserPlus className="h-4 w-4 mr-2" />
 											更新画像
 										</Button>
 									</div>
@@ -395,8 +394,7 @@ export default function PartyMemberPortraits() {
 									/>
 								</TabsContent>
 								<TabsContent value="comparison" className="mt-4">
-									<RadarChart title="与组织平均水平对比" data={getComparisonRadarData(selectedMember)}
-												height={400}/>
+									<RadarChart title="与组织平均水平对比" data={getComparisonRadarData(selectedMember)} height={400} />
 								</TabsContent>
 								<TabsContent value="history" className="mt-4">
 									<Card>
@@ -428,41 +426,8 @@ export default function PartyMemberPortraits() {
 					<CardDescription>展示组织所有党员的平均水平</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-						<RadarChart title="组织平均水平" data={getAverageRadarData()} height={350}/>
-						<Card>
-							<CardHeader>
-								<CardTitle>组织画像分析</CardTitle>
-							</CardHeader>
-							<CardContent>
-								<div className="space-y-4">
-									<div>
-										<h4 className="font-medium mb-1">优势领域</h4>
-										<p className="text-sm text-muted-foreground">
-											组织在党性修养和学习态度方面表现突出，平均分分别为{Math.round(getAverageScores().partyDiscipline)}
-											分和{Math.round(getAverageScores().learningAttitude)}分。
-										</p>
-									</div>
-									<div>
-										<h4 className="font-medium mb-1">提升空间</h4>
-										<p className="text-sm text-muted-foreground">
-											社会贡献方面有待提高，平均分为{Math.round(getAverageScores().socialContribution)}
-											分，建议加强社会实践和志愿服务活动。
-										</p>
-									</div>
-									<div>
-										<h4 className="font-medium mb-1">发展建议</h4>
-										<p className="text-sm text-muted-foreground">
-											1. 加强思想政治学习，提高思想觉悟
-											<br/>
-											2. 组织更多团队建设活动，增强团队凝聚力
-											<br/>
-											3. 鼓励党员参与社会公益活动，提升社会贡献度
-										</p>
-									</div>
-								</div>
-							</CardContent>
-						</Card>
+					<div className="grid grid-cols-1 gap-6">
+						<RadarChart title="组织平均水平" data={getAverageRadarData()} height={350} />
 					</div>
 				</CardContent>
 			</Card>
