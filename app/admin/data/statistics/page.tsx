@@ -25,25 +25,13 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarEleme
 
 // Mock data for statistics
 const membershipData = {
-	total: 156,
-	active: 142,
+	total: 34,
+	active: 28,
 	inactive: 14,
-	byGender: {male: 89, female: 67},
-	byAge: {"18-30": 42, "31-40": 58, "41-50": 37, "51+": 19},
-	byEducation: {高中: 15, 大专: 28, 本科: 78, 硕士: 29, 博士: 6},
-	byDepartment: {技术部: 45, 人力资源部: 22, 财务部: 18, 市场部: 32, 销售部: 28, 行政部: 11},
-	byJoinYear: {
-		"2023": 12,
-		"2022": 15,
-		"2021": 18,
-		"2020": 22,
-		"2019": 19,
-		"2018": 17,
-		"2017": 14,
-		"2016": 11,
-		"2015": 9,
-		"2014及以前": 19,
-	},
+	byGender: {male: 15, female: 19},
+	byAge: {"18-30": 33, "31-40": 1, "41-50": 0, "51+": 0},
+	byEducation: {高中: 0, 大专: 0, 本科: 33, 硕士: 1, 博士: 0},
+	byClass: {大数据211班: 13, 大数据212班: 12, 大数据221班: 4, 大数据222班: 5},
 }
 
 const activityData = {
@@ -51,50 +39,35 @@ const activityData = {
 	meetingsAttendance: 87,
 	educationCount: 36,
 	educationAttendance: 92,
-	volunteerCount: 18,
-	volunteerAttendance: 78,
+
 	byMonth: {
-		"1月": {meetings: 2, education: 3, volunteer: 1},
-		"2月": {meetings: 1, education: 2, volunteer: 1},
-		"3月": {meetings: 3, education: 4, volunteer: 2},
-		"4月": {meetings: 2, education: 3, volunteer: 1},
-		"5月": {meetings: 2, education: 3, volunteer: 2},
-		"6月": {meetings: 3, education: 4, volunteer: 2},
-		"7月": {meetings: 1, education: 2, volunteer: 1},
-		"8月": {meetings: 2, education: 3, volunteer: 1},
-		"9月": {meetings: 2, education: 4, volunteer: 2},
-		"10月": {meetings: 3, education: 3, volunteer: 2},
-		"11月": {meetings: 2, education: 3, volunteer: 2},
-		"12月": {meetings: 1, education: 2, volunteer: 1},
+		"1月": {meetings: 2, education: 3},
+		"2月": {meetings: 1, education: 2},
+		"3月": {meetings: 3, education: 4},
+		"4月": {meetings: 2, education: 3},
+		"5月": {meetings: 2, education: 3},
+		"6月": {meetings: 3, education: 4},
+		"7月": {meetings: 1, education: 2},
+		"8月": {meetings: 2, education: 3},
+		"9月": {meetings: 2, education: 4},
+		"10月": {meetings: 3, education: 3},
+		"11月": {meetings: 2, education: 3},
+		"12月": {meetings: 1, education: 2},
 	},
 }
 
 const developmentData = {
-	applicants: 28,
-	activists: 22,
-	candidates: 15,
-	newMembers: 12,
+	applicants: 32,
+	activists: 21,
+	candidates: 11,
+	newMembers: 6,
 	byStage: {
-		申请入党: 28,
-		入党积极分子: 22,
+		入党申请人: 40,
+		入党积极分子: 25,
 		发展对象: 15,
-		预备党员: 8,
-		正式党员: 4,
-	},
-	byMonth: {
-		"1月": {applicants: 2, activists: 1, candidates: 1, newMembers: 1},
-		"2月": {applicants: 1, activists: 2, candidates: 0, newMembers: 0},
-		"3月": {applicants: 3, activists: 2, candidates: 1, newMembers: 1},
-		"4月": {applicants: 2, activists: 1, candidates: 2, newMembers: 0},
-		"5月": {applicants: 3, activists: 2, candidates: 1, newMembers: 1},
-		"6月": {applicants: 4, activists: 3, candidates: 2, newMembers: 2},
-		"7月": {applicants: 2, activists: 1, candidates: 1, newMembers: 1},
-		"8月": {applicants: 1, activists: 2, candidates: 1, newMembers: 0},
-		"9月": {applicants: 3, activists: 2, candidates: 1, newMembers: 2},
-		"10月": {applicants: 2, activists: 2, candidates: 2, newMembers: 1},
-		"11月": {applicants: 3, activists: 2, candidates: 1, newMembers: 2},
-		"12月": {applicants: 2, activists: 2, candidates: 2, newMembers: 1},
-	},
+		预备党员: 10,
+		正式党员: 24,
+	}
 }
 
 // Chart color palette
@@ -144,7 +117,7 @@ export default function StatisticsPage() {
 		datasets: [
 			{
 				data: [membershipData.byGender.male, membershipData.byGender.female],
-				backgroundColor: [chartColors.primary, chartColors.secondary],
+				backgroundColor: [chartColors.secondary, chartColors.primary],
 				borderColor: ["#fff", "#fff"],
 				borderWidth: 2,
 			},
@@ -178,42 +151,28 @@ export default function StatisticsPage() {
 		],
 	}
 
-	// Department distribution chart data
+	// Class distribution chart data
 	const departmentChartData = {
-		labels: Object.keys(membershipData.byDepartment),
+		labels: Object.keys(membershipData.byClass),
 		datasets: [
 			{
 				label: "党员数量",
-				data: Object.values(membershipData.byDepartment),
-				backgroundColor: chartColors.background.slice(0, Object.keys(membershipData.byDepartment).length),
-				borderColor: chartColors.primaryLight,
+				data: Object.values(membershipData.byClass),
+				backgroundColor: chartColors.background.slice(0, Object.keys(membershipData.byClass).length),
+				borderColor: ["#fff", "#fff", "#fff", "#fff"],
 				borderWidth: 1,
 			},
 		],
 	}
+	
 
-	// Join year distribution chart data
-	const joinYearChartData = {
-		labels: Object.keys(membershipData.byJoinYear),
-		datasets: [
-			{
-				label: "党员数量",
-				data: Object.values(membershipData.byJoinYear),
-				backgroundColor: "rgba(220, 38, 38, 0.2)",
-				borderColor: chartColors.primary,
-				borderWidth: 2,
-				tension: 0.3,
-				fill: true,
-			},
-		],
-	}
 
 	// Activity by month chart data
 	const activityByMonthChartData = {
 		labels: Object.keys(activityData.byMonth),
 		datasets: [
 			{
-				label: "组织生活会议",
+				label: "会议",
 				data: Object.values(activityData.byMonth).map((item) => item.meetings),
 				backgroundColor: chartColors.primaryLight,
 				borderColor: chartColors.primary,
@@ -228,14 +187,6 @@ export default function StatisticsPage() {
 				borderWidth: 2,
 				tension: 0.3,
 			},
-			{
-				label: "志愿服务活动",
-				data: Object.values(activityData.byMonth).map((item) => item.volunteer),
-				backgroundColor: chartColors.tertiaryLight,
-				borderColor: chartColors.tertiary,
-				borderWidth: 2,
-				tension: 0.3,
-			},
 		],
 	}
 
@@ -244,7 +195,7 @@ export default function StatisticsPage() {
 		labels: Object.keys(activityData.byMonth),
 		datasets: [
 			{
-				label: "组织生活会议",
+				label: "会议",
 				data: Object.values(activityData.byMonth).map((item) => item.meetings),
 				backgroundColor: chartColors.primary,
 				stack: "Stack 0",
@@ -255,12 +206,7 @@ export default function StatisticsPage() {
 				backgroundColor: chartColors.secondary,
 				stack: "Stack 0",
 			},
-			{
-				label: "志愿服务活动",
-				data: Object.values(activityData.byMonth).map((item) => item.volunteer),
-				backgroundColor: chartColors.tertiary,
-				stack: "Stack 0",
-			},
+
 		],
 	}
 
@@ -278,44 +224,7 @@ export default function StatisticsPage() {
 		],
 	}
 
-	// Development by month chart data
-	const developmentByMonthChartData = {
-		labels: Object.keys(developmentData.byMonth),
-		datasets: [
-			{
-				label: "申请入党",
-				data: Object.values(developmentData.byMonth).map((item) => item.applicants),
-				backgroundColor: chartColors.primaryLight,
-				borderColor: chartColors.primary,
-				borderWidth: 2,
-				tension: 0.3,
-			},
-			{
-				label: "入党积极分子",
-				data: Object.values(developmentData.byMonth).map((item) => item.activists),
-				backgroundColor: chartColors.secondaryLight,
-				borderColor: chartColors.secondary,
-				borderWidth: 2,
-				tension: 0.3,
-			},
-			{
-				label: "发展对象",
-				data: Object.values(developmentData.byMonth).map((item) => item.candidates),
-				backgroundColor: chartColors.tertiaryLight,
-				borderColor: chartColors.tertiary,
-				borderWidth: 2,
-				tension: 0.3,
-			},
-			{
-				label: "新发展党员",
-				data: Object.values(developmentData.byMonth).map((item) => item.newMembers),
-				backgroundColor: chartColors.quaternaryLight,
-				borderColor: chartColors.quaternary,
-				borderWidth: 2,
-				tension: 0.3,
-			},
-		],
-	}
+
 
 	// Chart options
 	const pieChartOptions = {
@@ -384,7 +293,7 @@ export default function StatisticsPage() {
 				</div>
 			</div>
 
-			<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+			<div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
 				<Card>
 					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
 						<CardTitle className="text-sm font-medium">党员总数</CardTitle>
@@ -417,16 +326,6 @@ export default function StatisticsPage() {
 						<p className="text-xs text-muted-foreground">平均参与率: {activityData.educationAttendance}%</p>
 					</CardContent>
 				</Card>
-				<Card>
-					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-						<CardTitle className="text-sm font-medium">志愿服务</CardTitle>
-						<Heart className="h-4 w-4 text-muted-foreground"/>
-					</CardHeader>
-					<CardContent>
-						<div className="text-2xl font-bold">{activityData.volunteerCount}</div>
-						<p className="text-xs text-muted-foreground">平均参与率: {activityData.volunteerAttendance}%</p>
-					</CardContent>
-				</Card>
 			</div>
 			<Tabs defaultValue="membership">
 				<TabsList className="grid w-full grid-cols-3 border rounded-lg p-3 min-h-[72px] items-center">
@@ -455,14 +354,14 @@ export default function StatisticsPage() {
 							</CardContent>
 							<div className="px-6 pb-6">
 								<div className="grid grid-cols-2 gap-4">
-									<div className="flex flex-col">
+									<div className="flex flex-col items-center">
 										<span className="text-sm font-medium">男性</span>
 										<span className="text-2xl font-bold">{membershipData.byGender.male}</span>
 										<span className="text-xs text-muted-foreground">
                       {Math.round((membershipData.byGender.male / membershipData.total) * 100)}%
                     </span>
 									</div>
-									<div className="flex flex-col">
+									<div className="flex flex-col items-center">
 										<span className="text-sm font-medium">女性</span>
 										<span className="text-2xl font-bold">{membershipData.byGender.female}</span>
 										<span className="text-xs text-muted-foreground">
@@ -485,7 +384,7 @@ export default function StatisticsPage() {
 							<div className="px-6 pb-6">
 								<div className="grid grid-cols-4 gap-2">
 									{Object.entries(membershipData.byAge).map(([age, count]) => (
-										<div key={age} className="flex flex-col">
+										<div key={age} className="flex flex-col items-center">
 											<span className="text-xs font-medium">{age}</span>
 											<span className="text-lg font-bold">{count}</span>
 											<span className="text-xs text-muted-foreground">
@@ -507,9 +406,9 @@ export default function StatisticsPage() {
 								</div>
 							</CardContent>
 							<div className="px-6 pb-6">
-								<div className="grid grid-cols-3 gap-2">
+								<div className="grid grid-cols-5 gap-2">
 									{Object.entries(membershipData.byEducation).map(([edu, count]) => (
-										<div key={edu} className="flex flex-col">
+										<div key={edu} className="flex flex-col items-center">
 											<span className="text-xs font-medium">{edu}</span>
 											<span className="text-lg font-bold">{count}</span>
 											<span className="text-xs text-muted-foreground">
@@ -531,34 +430,10 @@ export default function StatisticsPage() {
 								</div>
 							</CardContent>
 							<div className="px-6 pb-6">
-								<div className="grid grid-cols-3 md:grid-cols-6 gap-2">
-									{Object.entries(membershipData.byDepartment).map(([dept, count]) => (
-										<div key={dept} className="flex flex-col">
+								<div className="grid grid-cols-3 md:grid-cols-4 gap-2">
+									{Object.entries(membershipData.byClass).map(([dept, count]) => (
+										<div key={dept} className="flex flex-col items-center">
 											<span className="text-xs font-medium">{dept}</span>
-											<span className="text-lg font-bold">{count}</span>
-											<span className="text-xs text-muted-foreground">
-                        {Math.round((count / membershipData.total) * 100)}%
-                      </span>
-										</div>
-									))}
-								</div>
-							</div>
-						</Card>
-						<Card className="lg:col-span-3">
-							<CardHeader>
-								<CardTitle>党员入党年份分布</CardTitle>
-								<CardDescription>按入党年份统计党员分布</CardDescription>
-							</CardHeader>
-							<CardContent className="flex justify-center">
-								<div className="w-full h-[250px]">
-									<Line data={joinYearChartData} options={lineChartOptions}/>
-								</div>
-							</CardContent>
-							<div className="px-6 pb-6">
-								<div className="grid grid-cols-5 md:grid-cols-10 gap-2">
-									{Object.entries(membershipData.byJoinYear).map(([year, count]) => (
-										<div key={year} className="flex flex-col">
-											<span className="text-xs font-medium">{year}</span>
 											<span className="text-lg font-bold">{count}</span>
 											<span className="text-xs text-muted-foreground">
                         {Math.round((count / membershipData.total) * 100)}%
@@ -573,7 +448,7 @@ export default function StatisticsPage() {
 				<TabsContent value="activities" className="space-y-4">
 					<Card>
 						<CardHeader>
-							<CardTitle>活动统计</CardTitle>
+							<CardTitle>年度活动统计</CardTitle>
 							<CardDescription>各类活动数量和参与情况</CardDescription>
 						</CardHeader>
 						<CardContent>
@@ -581,9 +456,9 @@ export default function StatisticsPage() {
 								<div className="w-full h-[300px]">
 									<Line data={activityByMonthChartData} options={lineChartOptions}/>
 								</div>
-								<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+								<div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
 									<div className="space-y-2">
-										<h4 className="text-sm font-medium">组织生活会议</h4>
+										<h4 className="text-sm font-medium">会议</h4>
 										<div className="grid grid-cols-2 gap-2">
 											<div>
 												<p className="text-xs text-muted-foreground">总次数</p>
@@ -608,52 +483,8 @@ export default function StatisticsPage() {
 											</div>
 										</div>
 									</div>
-									<div className="space-y-2">
-										<h4 className="text-sm font-medium">志愿服务活动</h4>
-										<div className="grid grid-cols-2 gap-2">
-											<div>
-												<p className="text-xs text-muted-foreground">总次数</p>
-												<p className="text-lg font-bold">{activityData.volunteerCount}</p>
-											</div>
-											<div>
-												<p className="text-xs text-muted-foreground">平均参与率</p>
-												<p className="text-lg font-bold">{activityData.volunteerAttendance}%</p>
-											</div>
-										</div>
-									</div>
+
 								</div>
-							</div>
-						</CardContent>
-					</Card>
-					<Card>
-						<CardHeader>
-							<CardTitle>月度活动分布</CardTitle>
-							<CardDescription>各月份活动开展情况</CardDescription>
-						</CardHeader>
-						<CardContent>
-							<div className="w-full h-[300px]">
-								<Bar data={monthlyActivityChartData} options={barChartOptions}/>
-							</div>
-							<div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-12 gap-2 mt-4">
-								{Object.entries(activityData.byMonth).map(([month, data]) => (
-									<div key={month} className="flex flex-col">
-										<span className="text-xs font-medium">{month}</span>
-										<div className="space-y-1 mt-1">
-											<div className="flex justify-between">
-												<span className="text-xs">会议</span>
-												<span className="text-xs font-medium">{data.meetings}</span>
-											</div>
-											<div className="flex justify-between">
-												<span className="text-xs">学习</span>
-												<span className="text-xs font-medium">{data.education}</span>
-											</div>
-											<div className="flex justify-between">
-												<span className="text-xs">志愿</span>
-												<span className="text-xs font-medium">{data.volunteer}</span>
-											</div>
-										</div>
-									</div>
-								))}
 							</div>
 						</CardContent>
 					</Card>
@@ -671,7 +502,7 @@ export default function StatisticsPage() {
 								</div>
 								<div className="grid grid-cols-3 md:grid-cols-5 gap-2 mt-4">
 									{Object.entries(developmentData.byStage).map(([stage, count]) => (
-										<div key={stage} className="flex flex-col">
+										<div key={stage} className="flex flex-col items-center">
 											<span className="text-xs font-medium">{stage}</span>
 											<span className="text-lg font-bold">{count}</span>
 										</div>
@@ -688,7 +519,7 @@ export default function StatisticsPage() {
 								<div className="space-y-4">
 									<div className="grid grid-cols-2 gap-4">
 										<div className="space-y-2">
-											<h4 className="text-sm font-medium">申请入党</h4>
+											<h4 className="text-sm font-medium">入党申请人</h4>
 											<p className="text-2xl font-bold">{developmentData.applicants}</p>
 										</div>
 										<div className="space-y-2">
@@ -709,7 +540,7 @@ export default function StatisticsPage() {
 										<div className="space-y-2">
 											<div>
 												<div className="flex justify-between mb-1">
-													<span className="text-xs">申请入党 → 积极分子</span>
+													<span className="text-xs">入党申请人 → 积极分子</span>
 													<span className="text-xs font-medium">
                             {Math.round((developmentData.activists / developmentData.applicants) * 100)}%
                           </span>
@@ -761,42 +592,7 @@ export default function StatisticsPage() {
 							</CardContent>
 						</Card>
 					</div>
-					<Card>
-						<CardHeader>
-							<CardTitle>月度发展趋势</CardTitle>
-							<CardDescription>各月份党员发展情况</CardDescription>
-						</CardHeader>
-						<CardContent>
-							<div className="w-full h-[300px]">
-								<Line data={developmentByMonthChartData} options={lineChartOptions}/>
-							</div>
-							<div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-12 gap-2 mt-4">
-								{Object.entries(developmentData.byMonth).map(([month, data]) => (
-									<div key={month} className="flex flex-col">
-										<span className="text-xs font-medium">{month}</span>
-										<div className="space-y-1 mt-1">
-											<div className="flex justify-between">
-												<span className="text-xs">申请</span>
-												<span className="text-xs font-medium">{data.applicants}</span>
-											</div>
-											<div className="flex justify-between">
-												<span className="text-xs">积极分子</span>
-												<span className="text-xs font-medium">{data.activists}</span>
-											</div>
-											<div className="flex justify-between">
-												<span className="text-xs">发展对象</span>
-												<span className="text-xs font-medium">{data.candidates}</span>
-											</div>
-											<div className="flex justify-between">
-												<span className="text-xs">新党员</span>
-												<span className="text-xs font-medium">{data.newMembers}</span>
-											</div>
-										</div>
-									</div>
-								))}
-							</div>
-						</CardContent>
-					</Card>
+
 				</TabsContent>
 			</Tabs>
 		</div>

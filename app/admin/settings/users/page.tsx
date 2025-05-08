@@ -24,39 +24,57 @@ import {useToast} from "@/hooks/use-toast"
 const users = [
 	{
 		id: "1",
-		name: "张三",
+		name: "陆晨",
 		avatar: "/placeholder.svg?key=vqmpy",
-		username: "zhangsan",
+		username: "luchen",
 		role: "admin",
-		department: "计算机科学与技术学院",
-		lastLogin: "2023-12-15 14:30",
+		department: "数据学院学工办",
+		lastLogin: "2025-05-03 14:30",
 	},
 	{
 		id: "2",
-		name: "李四",
+		name: "徐若瑄",
 		avatar: "/placeholder.svg?key=k63aq",
-		username: "lisi",
-		role: "admin",
-		department: "计算机科学与技术学院",
-		lastLogin: "2023-12-14 09:15",
+		username: "xuruoxuan",
+		role: "member",
+		department: "大数据211班",
+		lastLogin: "2025-05-03 09:15",
 	},
 	{
 		id: "3",
-		name: "王五",
+		name: "黄俊杰",
 		avatar: "/placeholder.svg?key=3o7yd",
-		username: "wangwu",
+		username: "huangjunjie",
 		role: "member",
-		department: "计算机科学与技术学院",
-		lastLogin: "2023-12-13 16:45",
+		department: "大数据211班",
+		lastLogin: "2025-05-02 16:45",
 	},
 	{
 		id: "4",
-		name: "赵六",
+		name: "林诗涵",
 		avatar: "/placeholder.svg?key=mmh0k",
-		username: "zhaoliu",
+		username: "linshihan",
 		role: "member",
-		department: "计算机科学与技术学院",
-		lastLogin: "2023-12-12 10:20",
+		department: "大数据211班",
+		lastLogin: "2025-05-02 10:20",
+	},
+	{
+		id: "5",
+		name: "郑浩轩",
+		avatar: "/placeholder.svg?key=mmh0k",
+		username: "zhenghaoxuan",
+		role: "member",
+		department: "大数据212班",
+		lastLogin: "2025-05-02 10:14",
+	},
+	{
+		id: "6",
+		name: "孙雨桐",
+		avatar: "/placeholder.svg?key=mmh0k",
+		username: "sunyutong",
+		role: "member",
+		department: "大数据211班",
+		lastLogin: "2025-05-02 09:20",
 	},
 ]
 
@@ -139,8 +157,7 @@ export default function UsersPage() {
 								<div key={user.id} className="flex items-center justify-between p-4 border rounded-lg">
 									<div className="flex items-center space-x-4">
 										<Avatar>
-											<AvatarImage src={user.avatar || "/placeholder.svg"} alt={user.name}/>
-											<AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+											<AvatarFallback>{user.name.substring(user.name.length - 2)}</AvatarFallback>
 										</Avatar>
 										<div>
 											<p className="font-medium">{user.name}</p>

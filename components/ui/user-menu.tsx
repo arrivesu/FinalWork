@@ -35,13 +35,14 @@ export function UserMenu({ user }: UserMenuProps) {
     router.push("/login")
   }
 
+  console.log(user)
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-9 w-9 rounded-full">
           <Avatar className="h-9 w-9">
-            <AvatarImage src={user?.avatar || "/placeholder.svg"} alt={user?.name} />
-            <AvatarFallback>{user?.name?.charAt(0)}</AvatarFallback>
+            <AvatarFallback>{user.name.substring(user.name.length - 2)}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>

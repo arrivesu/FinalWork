@@ -56,7 +56,7 @@ export default function LoginPage() {
 					"user",
 					JSON.stringify({
 						id: "1",
-						name: username,
+						name: username === 'admin' ? '陆晨' : '郑浩轩',
 						role: roles, // 现在是数组
 						avatar: "/placeholder.svg?key=toqw7",
 					}),
@@ -104,7 +104,8 @@ export default function LoginPage() {
 		// Generate random captcha text (4-6 characters)
 		const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789"
 		let captcha = ""
-		const length = Math.floor(Math.random() * 2) + 2 // 3-4 characters
+
+		const length = 4  //验证码长度
 
 		for (let i = 0; i < length; i++) {
 			captcha += chars.charAt(Math.floor(Math.random() * chars.length))

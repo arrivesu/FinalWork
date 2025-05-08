@@ -17,7 +17,7 @@ import {format} from "date-fns"
 import {CalendarIcon, Plus, Trash2} from "lucide-react"
 
 export default function SettingsConfigPage() {
-	const [organizationName, setOrganizationName] = useState("计算机科学与技术学院党支部")
+	const [organizationName, setOrganizationName] = useState("数据学生党支部")
 	const [organizationCode, setOrganizationCode] = useState("CPC-CS-001")
 	const [foundationDate, setFoundationDate] = useState<Date | undefined>(new Date("2010-06-01"))
 	const [location, setLocation] = useState("计算机科学与技术学院石鳞大楼")
@@ -94,14 +94,14 @@ export default function SettingsConfigPage() {
 	return (
 		<div className="space-y-6">
 			<div>
-				<h1 className="text-3xl font-bold tracking-tight">系统设置</h1>
+				<h1 className="text-3xl font-bold tracking-tight">系统配置</h1>
 				<p className="text-muted-foreground">管理系统配置和偏好设置</p>
 			</div>
 
 			<Tabs defaultValue="basic">
 				<TabsList>
 					<TabsTrigger value="basic">党支部信息</TabsTrigger>
-					<TabsTrigger value="leadership">支部领导</TabsTrigger>
+					<TabsTrigger value="leadership">支部委员</TabsTrigger>
 					<TabsTrigger value="notifications">通知设置</TabsTrigger>
 					<TabsTrigger value="data">数据设置</TabsTrigger>
 					<TabsTrigger value="security">安全设置</TabsTrigger>
@@ -177,7 +177,7 @@ export default function SettingsConfigPage() {
 									</div>
 								</div>
 
-								<div className="space-y-2">
+								{/* <div className="space-y-2">
 									<Label htmlFor="organization-description">支部简介</Label>
 									<Textarea
 										id="organization-description"
@@ -185,11 +185,11 @@ export default function SettingsConfigPage() {
 										onChange={(e) => setDescription(e.target.value)}
 										className="min-h-[100px]"
 									/>
-								</div>
+								</div> */}
 
 								<div className="space-y-4 pt-4 border-t">
 									<h3 className="text-lg font-medium">党员人数统计</h3>
-									<div className="grid gap-4 md:grid-cols-4">
+									<div className="grid gap-4 md:grid-cols-3">
 										<div className="space-y-2">
 											<Label htmlFor="member-total">总党员数</Label>
 											<Input
@@ -217,7 +217,7 @@ export default function SettingsConfigPage() {
 												onChange={(e) => setMemberProbationary(e.target.value)}
 											/>
 										</div>
-										<div className="space-y-2">
+										{/* <div className="space-y-2">
 											<Label htmlFor="member-graduated">已毕业党员</Label>
 											<Input
 												id="member-graduated"
@@ -225,7 +225,7 @@ export default function SettingsConfigPage() {
 												value={memberGraduated}
 												onChange={(e) => setMemberGraduated(e.target.value)}
 											/>
-										</div>
+										</div> */}
 									</div>
 								</div>
 							</div>
@@ -236,11 +236,11 @@ export default function SettingsConfigPage() {
 					</Card>
 				</TabsContent>
 
-				{/* 支部领导信息 */}
+				{/* 支部委员信息 */}
 				<TabsContent value="leadership">
 					<Card>
 						<CardHeader>
-							<CardTitle>支部领导信息</CardTitle>
+							<CardTitle>支部委员信息</CardTitle>
 							<CardDescription>管理支部书记和委员信息</CardDescription>
 						</CardHeader>
 						<CardContent className="space-y-6">

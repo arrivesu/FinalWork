@@ -19,29 +19,26 @@ export default function BranchCardPage() {
 		hierarchy: "数据学院党委",
 		email: "cs-party@university.edu.cn",
 		memberCount: {
-			total: 45,
-			formal: 30,
+			total: 34,
+			formal: 24,
 			probationary: 10,
-			graduated: 5,
+
 		},
 		secretary: {
-			name: "张三",
-			phone: "13800138001",
-			email: "zhangsan@university.edu.cn",
+			name: "陆晨",
+			phone: "13712345678",
+			email: "luchen@university.edu.cn",
 		},
+
+
 		committees: [
 			{
-				name: "李四五",
+				name: "徐若瑄",
 				position: "组织委员",
 				// avatar: "/everyday-life.png",
 			},
 			{
-				name: "王五",
-				position: "宣传委员",
-				// avatar: "/generic-person-portrait.png",
-			},
-			{
-				name: "赵六",
+				name: "黄俊杰",
 				position: "纪检委员",
 				// avatar: "/elderly-man-tea.png",
 			},
@@ -69,7 +66,7 @@ export default function BranchCardPage() {
 				date: "2024-03-15",
 				type: "党课",
 				location: "线上会议",
-				participants: 42,
+				participants: 34,
 			},
 			{
 				title: "党员志愿服务活动",
@@ -83,7 +80,7 @@ export default function BranchCardPage() {
 				date: "2024-03-01",
 				type: "党员大会",
 				location: "学院会议室",
-				participants: 45,
+				participants: 34,
 			},
 		],
 		documents: [
@@ -178,8 +175,7 @@ export default function BranchCardPage() {
 								</div>
 								<div className="flex items-center gap-2 pl-6">
                   <span className="text-sm text-muted-foreground">
-                    正式党员 {branchData.memberCount.formal} 人， 预备党员 {branchData.memberCount.probationary} 人，
-                    已毕业党员 {branchData.memberCount.graduated} 人
+                    正式党员 {branchData.memberCount.formal} 人， 预备党员 {branchData.memberCount.probationary} 人
                   </span>
 								</div>
 							</div>
@@ -214,7 +210,7 @@ export default function BranchCardPage() {
 					<CardDescription>党支部委员成员</CardDescription>
 				</CardHeader>
 				<CardContent className="pt-4">
-					<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 						{branchData.committees.map((committee, index) => (
 							<div key={index}
 								 className="flex items-center p-4 border rounded-lg hover:bg-muted/50 transition-colors">
