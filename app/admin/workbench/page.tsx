@@ -30,19 +30,34 @@ interface User {
 // 模拟数据
 const notices = [
 	{
-		title: "关于开展2023年度组织生活会的通知",
-		content: "根据上级党组织要求，我支部将于2023年12月15日开展组织生活会，请全体党员做好准备。",
-		date: "2023-12-01",
+		title: "关于开展中央八项规定精神学习教育的通知",
+		content: "根据上级党组织要求，我支部将于2025年04月12日开展党课学习教育，请全体党员做好准备。",
+		date: "2025-04-05",
+	},
+	{
+		title: "关于开展数据学生党支部党日活动的通知",
+		content: "我支部将于2025年03月26日赴宁波大学开展主题党日活动，请全体党员做好准备。",
+		date: "2025-03-16",
+	},
+	{
+		title: "关于开展2025年第一次支部党员大会的通知",
+		content: "根据上级党组织要求，我支部将于2025年01月24日开展支部党员大会，请全体党员做好准备。",
+		date: "2025-01-15",
+	},
+	{
+		title: "关于开展2024年度组织生活会的通知",
+		content: "根据上级党组织要求，我支部将于2024年12月15日开展组织生活会，请全体党员做好准备。",
+		date: "2024-12-01",
 	},
 	{
 		title: "关于开展党员先锋岗评选活动的通知",
 		content: "为弘扬先进典型，激励党员发挥先锋模范作用，现开展党员先锋岗评选活动。",
-		date: "2023-11-20",
+		date: "2024-11-20",
 	},
 	{
-		title: "关于缴纳2023年度党费的通知",
-		content: "请各位党员于11月30日前完成2023年度党费缴纳工作。",
-		date: "2023-11-10",
+		title: "关于缴纳2024年度党费的通知",
+		content: "请各位党员于11月30日前完成2024年度党费缴纳工作。",
+		date: "2024-11-10",
 	},
 ];
 
@@ -68,8 +83,8 @@ export default function AdminWorkbench() {
 			</div>
 
 			<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 bg-white p-6 rounded-xl shadow-sm">
-				<CardStat title="党员总数" value="42人" icon={Users} description="包含正式党员和预备党员"/>
-				<CardStat title="本月活动" value="5次" icon={Activity} description="本月已开展活动次数"/>
+				<CardStat title="党员总数" value="34人" icon={Users} description="包含正式党员和预备党员"/>
+				<CardStat title="本学期活动" value="5次" icon={Activity} description="本学期已开展活动次数"/>
 				<CardStat title="学习资料" value="36篇" icon={BookOpen} description="已上传的党课资料数量"/>
 				<CardStat title="待办事项" value="7项" icon={Bell} description="您有7项待办需要处理"/>
 			</div>
@@ -237,7 +252,7 @@ export default function AdminWorkbench() {
 									</h3>
 									<div className="space-y-4">
 										{[
-											['正式党员', '32人', 'bg-blue-100'],
+											['正式党员', '24人', 'bg-blue-100'],
 											['预备党员', '10人', 'bg-green-100'],
 											['发展对象', '15人', 'bg-amber-100'],
 											['入党积极分子', '25人', 'bg-purple-100'],

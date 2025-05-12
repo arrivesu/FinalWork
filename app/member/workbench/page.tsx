@@ -17,19 +17,24 @@ interface User {
 // 模拟数据
 const notices = [
 	{
-		title: "关于开展2023年度组织生活会的通知",
-		content: "根据上级党组织要求，我支部将于2023年12月15日开展组织生活会，请全体党员做好准备。",
-		date: "2023-12-01",
+		title: "关于开展中央八项规定精神学习教育的通知",
+		content: "根据上级党组织要求，我支部将于2025年04月12日开展党课学习教育，请全体党员做好准备。",
+		date: "2025-04-05",
 	},
 	{
-		title: "关于开展党员先锋岗评选活动的通知",
-		content: "为弘扬先进典型，激励党员发挥先锋模范作用，现开展党员先锋岗评选活动。",
-		date: "2023-11-20",
+		title: "关于开展数据学生党支部党日活动的通知",
+		content: "我支部将于2025年03月26日赴宁波大学开展主题党日活动，请全体党员做好准备。",
+		date: "2025-03-16",
 	},
 	{
-		title: "关于缴纳2023年度党费的通知",
-		content: "请各位党员于11月30日前完成2023年度党费缴纳工作。",
-		date: "2023-11-10",
+		title: "关于开展2025年第一次支部党员大会的通知",
+		content: "根据上级党组织要求，我支部将于2025年01月24日开展支部党员大会，请全体党员做好准备。",
+		date: "2025-01-15",
+	},
+	{
+		title: "关于开展2024年度组织生活会的通知",
+		content: "根据上级党组织要求，我支部将于2024年12月15日开展组织生活会，请全体党员做好准备。",
+		date: "2024-12-01",
 	},
 ];
 
@@ -66,7 +71,7 @@ export default function MemberWorkbench() {
 				<TabsList>
 					<TabsTrigger value="notices">通知公告</TabsTrigger>
 					<TabsTrigger value="calendar">工作日历</TabsTrigger>
-					<TabsTrigger value="portrait">党员画像</TabsTrigger>
+					{/* <TabsTrigger value="portrait">党员画像</TabsTrigger> */}
 				</TabsList>
 
 				<TabsContent value="notices" className="space-y-4">
@@ -165,63 +170,6 @@ export default function MemberWorkbench() {
 										</div>
 									</div>
 								))}
-							</div>
-						</CardContent>
-					</Card>
-				</TabsContent>
-
-
-				<TabsContent value="portrait">
-					<Card>
-						<CardHeader>
-							<CardTitle>党员画像</CardTitle>
-							<CardDescription>查看您的党员画像数据</CardDescription>
-						</CardHeader>
-						<CardContent>
-							<div className="flex flex-col md:flex-row gap-6">
-								<div className="md:w-1/2">
-									<div className="aspect-square relative">
-										{/* 使用雷达图展示党员画像 */}
-										<div className="absolute inset-0 flex items-center justify-center">
-											<div className="text-center">
-												<p className="text-muted-foreground">2023-2024学年第一学期</p>
-												<p className="text-lg font-bold mt-2">综合评分：92分</p>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div
-									className="md:w-1/2 space-y-4 rounded-lg border border-white-100 bg-white p-6 shadow-sm">
-									<h3 className="mb-6 text-lg font-semibold text-gray-800 border-b-2 border-red-300 pb-3">
-										画像指标详情
-									</h3>
-									<div className="space-y-2">
-										<div className="flex justify-between items-center">
-											<span>德育表现</span>
-											<span className="font-medium">93分</span>
-										</div>
-										<div className="flex justify-between items-center">
-											<span>学业成绩</span>
-											<span className="font-medium">90分</span>
-										</div>
-										<div className="flex justify-between items-center">
-											<span>学生干部任职</span>
-											<span className="font-medium">班长-优秀</span>
-										</div>
-										<div className="flex justify-between items-center">
-											<span>寝室卫生</span>
-											<span className="font-medium">95分</span>
-										</div>
-										<div className="flex justify-between items-center">
-											<span>突出行为纪实</span>
-											<span className="font-medium">无</span>
-										</div>
-										<div className="flex justify-between items-center">
-											<span>群众评价</span>
-											<span className="font-medium">90分</span>
-										</div>
-									</div>
-								</div>
 							</div>
 						</CardContent>
 					</Card>

@@ -17,12 +17,7 @@ export default function MemberLayout({
 	children: React.ReactNode
 }) {
 	// 模拟用户数据
-	const user = {
-		id: "1",
-		name: "张三",
-		role: ["member", "admin"], // 设置为管理员以显示角色切换按钮
-		avatar: "/placeholder.svg",
-	}
+	const user = JSON.parse(localStorage?.getItem('user')??'{}')
 
 	return (
 		<Shell>

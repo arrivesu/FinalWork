@@ -17,12 +17,7 @@ export default function AdminLayout({
 	children: React.ReactNode
 }) {
 	// 模拟管理员用户数据
-	const user = {
-		id: "1",
-		name: "李四",
-		role: ["member", "admin"], // 管理员
-		avatar: "/placeholder.svg",
-	}
+	const user = JSON.parse(localStorage?.getItem('user')??'{}')
 
 	return (
 		<Shell>

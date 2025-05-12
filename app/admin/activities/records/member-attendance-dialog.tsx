@@ -18,16 +18,16 @@ import {Check, Search, UserCheck} from "lucide-react"
 
 // 模拟党员数据
 const partyMembers = [
-	{id: 1, studentId: "2020001", name: "张三", status: "正常参会"},
-	{id: 2, studentId: "2020002", name: "李四", status: "正常参会"},
-	{id: 3, studentId: "2020003", name: "王五", status: "正常参会"},
-	{id: 4, studentId: "2020004", name: "赵六", status: "正常参会"},
-	{id: 5, studentId: "2020005", name: "钱七", status: "正常参会"},
-	{id: 6, studentId: "2020006", name: "孙八", status: "正常参会"},
-	{id: 7, studentId: "2020007", name: "周九", status: "正常参会"},
-	{id: 8, studentId: "2020008", name: "吴十", status: "正常参会"},
-	{id: 9, studentId: "2020009", name: "郑十一", status: "正常参会"},
-	{id: 10, studentId: "2020010", name: "王十二", status: "正常参会"},
+	{id: 1, studentId: "3210439004", name: "徐若瑄", status: "正常参会"},
+	{id: 2, studentId: "3210439015", name: "黄俊杰", status: "正常参会"},
+	{id: 3, studentId: "3210439037", name: "林诗涵", status: "正常参会"},
+	{id: 4, studentId: "3190439012", name: "郑浩轩", status: "正常参会"},
+	{id: 5, studentId: "3210439013", name: "孙雨桐", status: "正常参会"},
+	{id: 6, studentId: "3210439058", name: "马文博", status: "正常参会"},
+	{id: 7, studentId: "3220439015", name: "何心怡", status: "正常参会"},
+	{id: 8, studentId: "3220439016", name: "罗一鸣", status: "正常参会"},
+	{id: 9, studentId: "3220439020", name: "蔡宇航", status: "正常参会"},
+	{id: 10, studentId: "3220439034", name: "梁思琪", status: "正常参会"},
 ]
 
 const attendanceStatuses = [

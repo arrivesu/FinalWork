@@ -22,71 +22,100 @@ const memberTypes = [
 
 // 模拟党员数据
 const initialPartyMembers = [
+
 	{
 		id: 1,
-		name: "张三",
-		department: "大数据201班",
-		moralRanking: 0.85, // 德育排名
-		academicLevel: 0.78, // 学业水平
-		assessmentScore: 87, // 等级考核分
+		name: "王俊吉",
+		department: "大数据212班",
+		moralRanking: 0.15, // 德育排名
+		academicLevel: 0.14, // 学业水平
+		assessmentScore: 85, // 等级考核分
 		volunteerHours: 45.5, // 志愿服务时长
-		dormitoryRanking: 0.92, // 寝室卫生排名
-		behaviorScore: 8, // 行为分数
-		massResearchScore: 4.25, // 群众调研分数
-		memberType: "activist", // 党员身份类型
+		dormitoryRanking: 0.06, // 寝室卫生排名
+		behaviorScore: 0, // 行为分数
+		massResearchScore: 4.30, // 群众调研分数
+		memberType: "development", // 党员身份类型
 	},
 	{
 		id: 2,
-		name: "李四",
-		department: "大数据202班",
-		moralRanking: 0.92,
-		academicLevel: 0.85,
-		assessmentScore: 93,
-		volunteerHours: 62.5,
-		dormitoryRanking: 0.88,
-		behaviorScore: 9,
-		massResearchScore: 3.75,
+		name: "赵晨迪",
+		department: "大数据212班",
+		moralRanking: 0.03,
+		academicLevel: 0.53,
+		assessmentScore: 85,
+		volunteerHours: 76.5,
+		dormitoryRanking: 0.25,
+		behaviorScore: 0,
+		massResearchScore: 4.40,
 		memberType: "development",
+
 	},
 	{
 		id: 3,
-		name: "王五",
-		department: "大数据203班",
-		moralRanking: 0.78,
-		academicLevel: 0.72,
-		assessmentScore: 82,
-		volunteerHours: 38.0,
-		dormitoryRanking: 0.75,
-		behaviorScore: 7,
-		massResearchScore: 2.85,
-		memberType: "applicant",
+		name: "苏青荣",
+		department: "大数据221班",
+		moralRanking: 0.26,
+		academicLevel: 0.20,
+		assessmentScore: 60,
+		volunteerHours: 14.0,
+		dormitoryRanking: 0.01,
+		behaviorScore: 0,
+		massResearchScore: 4.48,
+		memberType: "development",
 	},
 	{
 		id: 4,
-		name: "赵六",
-		department: "大数据204班",
-		moralRanking: 0,
-		academicLevel: 0,
-		assessmentScore: 0,
-		volunteerHours: 0,
-		dormitoryRanking: 0,
+		name: "赵斌",
+		department: "大数据221班",
+		moralRanking: 21.00,
+		academicLevel: 8.00,
+		assessmentScore: 85,
+		volunteerHours: 30.5,
+		dormitoryRanking: 0.55,
 		behaviorScore: 0,
-		massResearchScore: 0,
-		memberType: "probationary",
+		massResearchScore: 4.57,
+		memberType: "development",
 	},
 	{
 		id: 5,
-		name: "钱七",
-		department: "大数据205班",
-		moralRanking: 0,
-		academicLevel: 0,
-		assessmentScore: 0,
-		volunteerHours: 0,
-		dormitoryRanking: 0,
-		behaviorScore: 0,
-		massResearchScore: 0,
-		memberType: "formal",
+		name: "申兰路",
+		department: "大数据221班",
+		moralRanking: 0.03,
+		academicLevel: 0.42,
+		assessmentScore: 95,
+		volunteerHours: 98.0,
+		dormitoryRanking: 0.19,
+		behaviorScore: 20,
+		massResearchScore: 4.58,
+		memberType: "development",
 	},
+	{
+		id: 6,
+		name: "陈东琪",
+		department: "大数据222班",
+		moralRanking: 0.03,
+		academicLevel: 0.03,
+		assessmentScore: 60,
+		volunteerHours: 112.0,
+		dormitoryRanking: 0.33,
+		behaviorScore: 0,
+		massResearchScore: 4.60,
+		memberType: "development",
+	},
+	{
+		id: 7,
+		name: "陆清妍",
+		department: "大数据211班",
+		moralRanking: 0.10,
+		academicLevel: 0.27,
+		assessmentScore: 85,
+		volunteerHours: 8.5,
+		dormitoryRanking: 0.74,
+		behaviorScore: 0,
+		massResearchScore: 4.36,
+		memberType: "activist",
+	}
+
 ]
 
 // 空行模板
@@ -466,7 +495,7 @@ const PortraitEntryPageContent: React.FC = () => {
 										<div className="text-xs text-muted-foreground">0-1小数</div>
 									</TableHead>
 									<TableHead className="text-center">
-										等级考核分
+										干部考核分
 										<div className="text-xs text-muted-foreground">0-100整数</div>
 									</TableHead>
 									<TableHead className="text-center">

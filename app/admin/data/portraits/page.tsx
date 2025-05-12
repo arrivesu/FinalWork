@@ -14,27 +14,27 @@ import { Download, Filter, Search, UserPlus } from "lucide-react"
 const partyMembers = [
 	{
 		id: 1,
-		name: "张三",
-		department: "技术部",
+		name: "王俊吉",
+		department: "大数据212班",
 		joinDate: "2018-05-15",
-		position: "高级工程师",
+		position: "班级组织委员",
 		avatar: "/calligraphy-zhang.png",
 		identityType: "full", // 添加身份类型
 		scores: {
 			ideologicalAwareness: 85,
-			partyDiscipline: 90,
-			workPerformance: 88,
+			partyDiscipline: 86,
+			workPerformance: 91,
 			learningAttitude: 92,
-			socialContribution: 78,
-			teamworkSpirit: 86,
+			socialContribution: 97,
+			teamworkSpirit: 88,
 		},
 	},
 	{
 		id: 2,
-		name: "李四",
-		department: "人力资源部",
+		name: "赵晨迪",
+		department: "大数据212班",
 		joinDate: "2015-03-22",
-		position: "人力资源经理",
+		position: "学生发展中心主任",
 		avatar: "/calligraphy-li.png",
 		identityType: "graduated", // 添加身份类型
 		scores: {
@@ -48,10 +48,10 @@ const partyMembers = [
 	},
 	{
 		id: 3,
-		name: "王五",
-		department: "财务部",
+		name: "苏青荣",
+		department: "大数据221班",
 		joinDate: "2019-11-08",
-		position: "财务主管",
+		position: "无",
 		avatar: "/Chinese-Character-King.png",
 		identityType: "probationary", // 添加身份类型
 		scores: {
@@ -65,10 +65,10 @@ const partyMembers = [
 	},
 	{
 		id: 4,
-		name: "赵六",
-		department: "市场部",
+		name: "赵斌",
+		department: "大数据221班",
 		joinDate: "2017-07-30",
-		position: "市场专员",
+		position: "班级生活委员",
 		avatar: "/calligraphy-zhao.png",
 		identityType: "full", // 添加身份类型
 		scores: {
@@ -82,10 +82,10 @@ const partyMembers = [
 	},
 	{
 		id: 5,
-		name: "钱七",
-		department: "销售部",
+		name: "申兰路",
+		department: "大数据221班",
 		joinDate: "2020-02-14",
-		position: "销售经理",
+		position: "班长",
 		avatar: "/golden-coins-pile.png",
 		identityType: "probationary", // 添加身份类型
 		scores: {
@@ -97,18 +97,52 @@ const partyMembers = [
 			teamworkSpirit: 87,
 		},
 	},
+	{
+		id: 6,
+		name: "陈东琪",
+		department: "大数据222班",
+		joinDate: "2020-02-14",
+		position: "无",
+		avatar: "/golden-coins-pile.png",
+		identityType: "probationary", // 添加身份类型
+		scores: {
+			ideologicalAwareness: 90,
+			partyDiscipline: 88,
+			workPerformance: 93,
+			learningAttitude: 85,
+			socialContribution: 92,
+			teamworkSpirit: 87,
+		},
+	},
+	{
+		id: 7,
+		name: "陆清妍",
+		department: "大数据211班",
+		joinDate: "2020-02-14",
+		position: "无",
+		avatar: "/golden-coins-pile.png",
+		identityType: "probationary", // 添加身份类型
+		scores: {
+			ideologicalAwareness: 90,
+			partyDiscipline: 88,
+			workPerformance: 93,
+			learningAttitude: 85,
+			socialContribution: 92,
+			teamworkSpirit: 87,
+		},
+	},
+
 ]
 
 // Function to convert member scores to radar chart data
 const getMemberRadarData = (member: (typeof partyMembers)[0]): RadarChartData => {
 	return {
 		labels: [
-			"思想觉悟", // Ideological Awareness
-			"党性修养", // Party Discipline
-			"工作表现", // Work Performance
-			"学习态度", // Learning Attitude
-			"社会贡献", // Social Contribution
-			"团队精神", // Teamwork Spirit
+			"思想锋领指数", // Ideological Awareness
+			"学业锋领指数", // Party Discipline
+			"服务锋领指数", // Work Performance
+			"作风锋领指数", // Learning Attitude
+			"群众锋领指数", // Social Contribution
 		],
 		datasets: [
 			{
@@ -119,7 +153,6 @@ const getMemberRadarData = (member: (typeof partyMembers)[0]): RadarChartData =>
 					member.scores.workPerformance,
 					member.scores.learningAttitude,
 					member.scores.socialContribution,
-					member.scores.teamworkSpirit,
 				],
 				backgroundColor: "rgba(255, 99, 132, 0.2)",
 				borderColor: "rgba(255, 99, 132, 1)",
@@ -166,12 +199,11 @@ const getAverageRadarData = (): RadarChartData => {
 
 	return {
 		labels: [
-			"思想觉悟", // Ideological Awareness
-			"党性修养", // Party Discipline
-			"工作表现", // Work Performance
-			"学习态度", // Learning Attitude
-			"社会贡献", // Social Contribution
-			"团队精神", // Teamwork Spirit
+			"思想锋领指数", // Ideological Awareness
+			"学业锋领指数", // Party Discipline
+			"服务锋领指数", // Work Performance
+			"作风锋领指数", // Learning Attitude
+			"群众锋领指数", // Social Contribution
 		],
 		datasets: [
 			{
@@ -182,7 +214,6 @@ const getAverageRadarData = (): RadarChartData => {
 					avgScores.workPerformance,
 					avgScores.learningAttitude,
 					avgScores.socialContribution,
-					avgScores.teamworkSpirit,
 				],
 				backgroundColor: "rgba(54, 162, 235, 0.2)",
 				borderColor: "rgba(54, 162, 235, 1)",
@@ -198,12 +229,11 @@ const getComparisonRadarData = (member: (typeof partyMembers)[0]): RadarChartDat
 
 	return {
 		labels: [
-			"思想觉悟", // Ideological Awareness
-			"党性修养", // Party Discipline
-			"工作表现", // Work Performance
-			"学习态度", // Learning Attitude
-			"社会贡献", // Social Contribution
-			"团队精神", // Teamwork Spirit
+			"思想锋领指数", // Ideological Awareness
+			"学业锋领指数", // Party Discipline
+			"服务锋领指数", // Work Performance
+			"作风锋领指数", // Learning Attitude
+			"群众锋领指数", // Social Contribution
 		],
 		datasets: [
 			{
@@ -214,7 +244,6 @@ const getComparisonRadarData = (member: (typeof partyMembers)[0]): RadarChartDat
 					member.scores.workPerformance,
 					member.scores.learningAttitude,
 					member.scores.socialContribution,
-					member.scores.teamworkSpirit,
 				],
 				backgroundColor: "rgba(255, 99, 132, 0.2)",
 				borderColor: "rgba(255, 99, 132, 1)",
@@ -228,7 +257,6 @@ const getComparisonRadarData = (member: (typeof partyMembers)[0]): RadarChartDat
 					avgScores.workPerformance,
 					avgScores.learningAttitude,
 					avgScores.socialContribution,
-					avgScores.teamworkSpirit,
 				],
 				backgroundColor: "rgba(54, 162, 235, 0.2)",
 				borderColor: "rgba(54, 162, 235, 1)",
@@ -351,16 +379,16 @@ export default function PartyMemberPortraits() {
 								</CardHeader>
 								<CardContent>
 									<div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-4">
-										<div>
+										{/* <div>
 											<p className="text-sm text-muted-foreground">入党日期</p>
 											<p className="font-medium">{selectedMember.joinDate}</p>
-										</div>
-										<div>
+										</div> */}
+										{/* <div>
 											<p className="text-sm text-muted-foreground">党龄</p>
 											<p className="font-medium">
 												{new Date().getFullYear() - new Date(selectedMember.joinDate).getFullYear()}年
 											</p>
-										</div>
+										</div> */}
 										<div>
 											<p className="text-sm text-muted-foreground">综合评分</p>
 											<p className="font-medium">
@@ -427,10 +455,12 @@ export default function PartyMemberPortraits() {
 				</CardHeader>
 				<CardContent>
 					<div className="grid grid-cols-1 gap-6">
-						<RadarChart title="组织平均水平" data={getAverageRadarData()} height={350} />
+						<RadarChart title="" data={getAverageRadarData()} height={350}/>
 					</div>
 				</CardContent>
 			</Card>
+
+
 		</div>
 	)
 }

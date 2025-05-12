@@ -16,16 +16,16 @@ import {useToast} from "@/hooks/use-toast"
 const transferApplications = [
 	{
 		id: "1",
-		targetOrganization: "北京大学计算机学院党支部",
+		targetOrganization: "宁波大学计算机学院党支部",
 		reason: "考研升学",
-		applyDate: "2023-11-15",
+		applyDate: "2024-06-15",
 		status: "审核中",
 	},
 	{
 		id: "2",
 		targetOrganization: "华为技术有限公司党支部",
 		reason: "工作就业",
-		applyDate: "2023-06-20",
+		applyDate: "2024-08-20",
 		status: "已通过",
 	},
 ]
@@ -79,7 +79,7 @@ export default function TransferPage() {
 							<CardContent className="space-y-4">
 								<div className="space-y-2">
 									<Label htmlFor="current-organization">当前党组织</Label>
-									<Input id="current-organization" value="计算机科学与技术学院第一党支部" disabled/>
+									<Input id="current-organization" value="数据学生党支部" disabled/>
 								</div>
 								<div className="space-y-2">
 									<Label htmlFor="target-organization">目标党组织</Label>

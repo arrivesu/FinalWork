@@ -9,6 +9,7 @@ import {Progress} from "@/components/ui/progress"
 export default function PartyLecturePage() {
 	// 模拟党课数据
 	const upcomingLectures = [
+		
 		{
 			id: "pl-001",
 			title: "学习贯彻习近平新时代中国特色社会主义思想专题党课",
@@ -42,8 +43,19 @@ export default function PartyLecturePage() {
 	]
 
 	const completedLectures = [
+		
 		{
 			id: "pl-004",
+			title: "中央八项规定精神学习教育",
+			date: "2025-04-05",
+			time: "09:00-11:00",
+			location: "石麟大楼412会议室",
+			lecturer: "陆书记",
+			status: "completed",
+			type: "必修",
+		},
+		{
+			id: "pl-005",
 			title: "党员先锋模范作用专题党课",
 			date: "2025-04-10",
 			time: "14:00-16:00",
@@ -55,7 +67,7 @@ export default function PartyLecturePage() {
 			attendance: true,
 		},
 		{
-			id: "pl-005",
+			id: "pl-006",
 			title: "党风廉政建设专题党课",
 			date: "2025-03-25",
 			time: "15:00-17:00",
@@ -67,7 +79,7 @@ export default function PartyLecturePage() {
 			attendance: true,
 		},
 		{
-			id: "pl-006",
+			id: "pl-007",
 			title: "基层党建工作经验交流",
 			date: "2025-03-05",
 			time: "14:30-16:30",
@@ -170,11 +182,11 @@ export default function PartyLecturePage() {
 						upcomingLectures.map((lecture) => (
 							<Card key={lecture.id}>
 								<CardHeader>
-									<div className="flex justify-between items-start">
+									{/* <div className="flex justify-between items-start">
 										<CardTitle className="mr-2">{lecture.title}</CardTitle>
 										<Badge
 											variant={lecture.type === "必修" ? "destructive" : "secondary"}>{lecture.type}</Badge>
-									</div>
+									</div> */}
 									<CardDescription className="flex items-center mt-2">
 										<CalendarIcon className="mr-2 h-4 w-4"/>
 										{lecture.date} {lecture.time}
@@ -213,8 +225,8 @@ export default function PartyLecturePage() {
 								<CardHeader>
 									<div className="flex justify-between items-start">
 										<CardTitle className="mr-2">{lecture.title}</CardTitle>
-										<Badge
-											variant={lecture.type === "必修" ? "destructive" : "secondary"}>{lecture.type}</Badge>
+										{/* <Badge
+											variant={lecture.type === "必修" ? "destructive" : "secondary"}>{lecture.type}</Badge> */}
 									</div>
 									<CardDescription className="flex items-center mt-2">
 										<CalendarIcon className="mr-2 h-4 w-4"/>
@@ -231,10 +243,10 @@ export default function PartyLecturePage() {
 											<UserIcon className="mr-2 h-4 w-4"/>
 											<span>讲师: {lecture.lecturer}</span>
 										</div>
-										<div className="flex items-center text-sm">
+										{/* <div className="flex items-center text-sm">
 											<GraduationCapIcon className="mr-2 h-4 w-4"/>
 											<span>学习成绩: {lecture.score}分</span>
-										</div>
+										</div> */}
 									</div>
 								</CardContent>
 								<CardFooter className="flex justify-between">

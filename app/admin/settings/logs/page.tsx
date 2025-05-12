@@ -11,67 +11,67 @@ import {Calendar, Search, Settings, User} from "lucide-react"
 const logs = [
 	{
 		id: "1",
-		user: "张三",
-		action: "添加党员",
-		target: "李四",
-		module: "党员管理",
+		user: "陆晨",
+		action: "添加入党申请人",
+		target: "刘晨渡",
+		module: "发展党员管理",
 		ip: "192.168.1.1",
-		time: "2023-12-15 14:30:25",
+		time: "2025-05-05 14:30:25",
 		status: "success",
 	},
 	{
 		id: "2",
-		user: "张三",
+		user: "陆晨",
 		action: "修改党员信息",
-		target: "王五",
+		target: "郑浩轩",
 		module: "党员管理",
 		ip: "192.168.1.1",
-		time: "2023-12-15 14:25:10",
+		time: "2025-05-05 14:25:10",
 		status: "success",
 	},
 	{
 		id: "3",
-		user: "李四",
+		user: "陆晨",
 		action: "添加活动",
 		target: "支部党员大会",
 		module: "活动管理",
 		ip: "192.168.1.2",
-		time: "2023-12-15 10:15:30",
+		time: "2025-05-05 10:15:30",
 		status: "success",
 	},
 	{
 		id: "4",
-		user: "王五",
+		user: "陆晨",
 		action: "登录系统",
 		target: "",
 		module: "系统",
 		ip: "192.168.1.3",
-		time: "2023-12-15 09:05:12",
+		time: "2025-05-05 09:45:12",
 		status: "success",
 	},
 	{
 		id: "5",
-		user: "赵六",
+		user: "陆晨",
 		action: "登录系统",
 		target: "",
 		module: "系统",
 		ip: "192.168.1.4",
-		time: "2023-12-15 08:30:45",
+		time: "2025-05-02 08:30:45",
 		status: "failed",
 	},
 	{
 		id: "6",
-		user: "张三",
+		user: "陆晨",
 		action: "重置密码",
-		target: "赵六",
+		target: "何心怡",
 		module: "用户管理",
 		ip: "192.168.1.1",
-		time: "2023-12-14 16:20:18",
+		time: "2025-05-01 16:20:18",
 		status: "success",
 	},
 	{
 		id: "7",
-		user: "张三",
+		user: "陆晨",
 		action: "重置密码",
 		target: "赵六",
 		module: "发展党员管理",
@@ -81,7 +81,7 @@ const logs = [
 	},
 	{
 		id: "8",
-		user: "张三",
+		user: "陆晨",
 		action: "重置密码",
 		target: "赵六",
 		module: "学习资料",
@@ -91,7 +91,7 @@ const logs = [
 	},
 	{
 		id: "9",
-		user: "李四",
+		user: "陆晨",
 		action: "删除活动",
 		target: "党小组会",
 		module: "活动管理",
@@ -175,7 +175,7 @@ export default function LogsPage() {
 			<Card>
 				<CardHeader>
 					<CardTitle>操作日志列表</CardTitle>
-					<CardDescription>系统操作日志记录，共 {filteredLogs.length} 条</CardDescription>
+					<CardDescription>系统操作日志记录，共 186条</CardDescription>
 				</CardHeader>
 				<CardContent>
 					<div className="grid gap-4">

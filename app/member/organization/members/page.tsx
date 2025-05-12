@@ -12,66 +12,102 @@ import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/c
 const members = [
 	{
 		id: "1",
-		name: "张三",
+		name: "陆晨",
 		avatar: "/placeholder.svg?key=qdszg",
 		position: "党支部书记",
 		identity: "正式党员",
-		joinDate: "2015-06-15",
-		department: "大数据201班",
+		joinDate: "2015-09-10",
+		department: "数据学院学工办",
 	},
 	{
 		id: "2",
-		name: "李四",
+		name: "徐若瑄",
 		avatar: "/placeholder.svg?key=n3fup",
 		position: "组织委员",
 		identity: "正式党员",
-		joinDate: "2016-09-20",
-		department: "大数据202班",
+		joinDate: "2023-06-02",
+		department: "大数据211班",
 	},
 	{
 		id: "3",
-		name: "王五",
+		name: "黄俊杰",
 		avatar: "/placeholder.svg?key=g1vak",
-		position: "宣传委员",
+		position: "纪检委员",
 		identity: "正式党员",
-		joinDate: "2017-03-10",
-		department: "大数据203班",
+		joinDate: "2023-06-02",
+		department: "大数据211班",
 	},
 	{
 		id: "4",
-		name: "赵六",
+		name: "林诗涵",
 		avatar: "/placeholder.svg?key=d22yx",
 		position: "普通党员",
 		identity: "正式党员",
-		joinDate: "2018-05-22",
-		department: "大数据204班",
+		joinDate: "2023-12-03",
+		department: "大数据211班",
 	},
 	{
 		id: "5",
-		name: "钱七",
+		name: "郑浩轩",
 		avatar: "/placeholder.svg?key=lud82",
 		position: "普通党员",
-		identity: "预备党员",
-		joinDate: "2022-11-05",
-		department: "大数据205班",
+		identity: "正式党员",
+		joinDate: "2023-08-30",
+		department: "大数据212班",
 	},
 	{
 		id: "6",
-		name: "孙八",
+		name: "孙雨桐",
 		avatar: "/placeholder.svg?key=58qcx",
 		position: "普通党员",
-		identity: "预备党员",
-		joinDate: "2023-01-18",
-		department: "大数据210班",
+		identity: "正式党员",
+		joinDate: "2024-06-12",
+		department: "大数据211班",
 	},
 	{
 		id: "7",
-		name: "周九",
+		name: "邓雅萱",
+		avatar: "/placeholder.svg?key=58qcx",
+		position: "普通党员",
+		identity: "正式党员",
+		joinDate: "2024-06-12",
+		department: "大数据212班",
+	},
+	{
+		id: "8",
+		name: "崔世奇",
+		avatar: "/placeholder.svg?key=58qcx",
+		position: "普通党员",
+		identity: "正式党员",
+		joinDate: "2024-06-12",
+		department: "大数据212班",
+	},
+	{
+		id: "9",
+		name: "钱三一",
+		avatar: "/placeholder.svg?key=58qcx",
+		position: "普通党员",
+		identity: "正式党员",
+		joinDate: "2024-06-12",
+		department: "大数据212班",
+	},
+	{
+		id: "10",
+		name: "陈诗梦",
+		avatar: "/placeholder.svg?key=58qcx",
+		position: "普通党员",
+		identity: "正式党员",
+		joinDate: "2024-06-12",
+		department: "大数据212班",
+	},
+	{
+		id: "11",
+		name: "马文博",
 		avatar: "/placeholder.svg?key=h3oyi",
 		position: "普通党员",
-		identity: "已毕业党员",
-		joinDate: "2019-06-30",
-		department: "大数据211班",
+		identity: "预备党员",
+		joinDate: "2024-06-12",
+		department: "大数据212班",
 	},
 ]
 
@@ -114,11 +150,9 @@ export default function OrganizationMembers() {
 								<TableRow key={member.id}>
 									<TableCell>
 										<div className="flex items-center space-x-3">
-											<Avatar className="h-8 w-8">
-												<AvatarImage src={member.avatar || "/placeholder.svg"}
-															 alt={member.name}/>
-												<AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
-											</Avatar>
+											{/* <Avatar className="h-8 w-8">
+												<AvatarFallback>{member.name.substring(member.name.length - 2)}</AvatarFallback>
+											</Avatar> */}
 											<span className="font-medium">{member.name}</span>
 										</div>
 									</TableCell>

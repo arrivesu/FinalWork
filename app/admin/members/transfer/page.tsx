@@ -1,11 +1,11 @@
 "use client"
 
-import {useState} from "react"
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
-import {Input} from "@/components/ui/input"
-import {Button} from "@/components/ui/button"
-import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"
-import {Badge} from "@/components/ui/badge"
+import { useState } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
 import {
 	Dialog,
 	DialogContent,
@@ -15,77 +15,133 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog"
-import {Label} from "@/components/ui/label"
-import {Textarea} from "@/components/ui/textarea"
-import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
-import {CheckCircle, Search, XCircle} from "lucide-react"
-import {useToast} from "@/hooks/use-toast"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { CheckCircle, Search, XCircle } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
 
 // 模拟转接申请数据
 const transferApplications = [
 	{
 		id: "1",
-		name: "张三",
-		avatar: "/placeholder.svg?key=xwxiy",
-		studentId: "2019010101",
-		targetOrganization: "北京大学计算机学院党支部",
-		reason: "考研升学",
-		applyDate: "2023-11-15",
-		status: "pending",
+		name: "吴天宇",
+		avatar: "/placeholder.svg?key=gbmz3",
+		studentId: "3200439056",
+		targetOrganization: "浙江工业大学软件学院党支部",
+		reason: "工作就业",
+		applyDate: "2024-09-25",
+		status: "approved",
 	},
 	{
 		id: "2",
-		name: "李四",
+		name: "周晓萌",
+		avatar: "/placeholder.svg?key=gbmz3",
+		studentId: "3200439041",
+		targetOrganization: "腾讯科技有限公司党支部",
+		reason: "工作就业",
+		applyDate: "2024-07-28",
+		status: "approved",
+	},
+	{
+		id: "3",
+		name: "刘泽宇",
+		avatar: "/placeholder.svg?key=gbmz3",
+		studentId: "3200439006",
+		targetOrganization: "杭州爱声科技有限公司党支部",
+		reason: "工作就业",
+		applyDate: "2024-07-12",
+		status: "approved",
+	},
+
+	{
+		id: "4",
+		name: "李明壹",
+		avatar: "/placeholder.svg?key=xwxiy",
+		studentId: "3190439001",
+		targetOrganization: "宁波大学计算机学院学生党支部",
+		reason: "考研升学",
+		applyDate: "2023-08-15",
+		status: "approved",
+	},
+	{
+		id: "5",
+		name: "王思远",
 		avatar: "/placeholder.svg?key=kedzx",
-		studentId: "2019010102",
+		studentId: "3190439002",
 		targetOrganization: "华为技术有限公司党支部",
 		reason: "工作就业",
 		applyDate: "2023-06-20",
 		status: "approved",
 	},
 	{
-		id: "3",
-		name: "王五",
+		id: "6",
+		name: "陈雨欣",
 		avatar: "/placeholder.svg?key=1eufs",
-		studentId: "2019010103",
-		targetOrganization: "上海交通大学电子信息学院党支部",
+		studentId: "3190439023",
+		targetOrganization: "浙江理工大学电子信息学院党支部",
+		reason: "考研升学",
+		applyDate: "2023-10-05",
+		status: "approved",
+	},
+	{
+		id: "7",
+		name: "陈雨欣",
+		avatar: "/placeholder.svg?key=1eufs",
+		studentId: "3190439023",
+		targetOrganization: "浙江理工大学电子信息学院软件学生党支部",
 		reason: "考研升学",
 		applyDate: "2023-10-05",
 		status: "rejected",
 	},
 	{
-		id: "4",
-		name: "赵六",
+		id: "8",
+		name: "张浩然",
 		avatar: "/placeholder.svg?key=gbmz3",
-		studentId: "2019010104",
+		studentId: "3190439056",
 		targetOrganization: "腾讯科技有限公司党支部",
 		reason: "工作就业",
 		applyDate: "2023-12-01",
 		status: "pending",
 	},
+	{
+		id: "9",
+		name: "赵雅婷",
+		avatar: "/placeholder.svg?key=gbmz3",
+		studentId: "3200439005",
+		targetOrganization: "郑州大学计算机学生党支部",
+		reason: "考研升学",
+		applyDate: "2023-12-01",
+		status: "pending",
+	},
+
+
+
+
+
 ]
 
 // 模拟转入申请数据
 const incomingTransfers = [
 	{
 		id: "1",
-		name: "钱七",
+		name: "钱潮生",
 		avatar: "/placeholder.svg?key=9o9wr",
 		studentId: "2020010101",
-		sourceOrganization: "清华大学计算机系党支部",
+		sourceOrganization: "宁波万里学院计算机系党支部",
 		reason: "考研升学",
-		applyDate: "2023-11-20",
-		status: "pending",
+		applyDate: "2024-11-20",
+		status: "approved",
 	},
 	{
 		id: "2",
-		name: "孙八",
+		name: "孙万璐",
 		avatar: "/placeholder.svg?key=pqxtu",
 		studentId: "2020010102",
 		sourceOrganization: "阿里巴巴集团党支部",
 		reason: "工作变动",
 		applyDate: "2023-10-15",
-		status: "approved",
+		status: "pending",
 	},
 ]
 
@@ -94,7 +150,7 @@ export default function TransferManagementPage() {
 	const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false)
 	const [selectedTransfer, setSelectedTransfer] = useState<any>(null)
 	const [reviewComment, setReviewComment] = useState("")
-	const {toast} = useToast()
+	const { toast } = useToast()
 
 	// 过滤转出申请
 	const filterTransfers = (status: string) => {
@@ -151,7 +207,7 @@ export default function TransferManagementPage() {
 			</div>
 
 			<div className="relative">
-				<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"/>
+				<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
 				<Input
 					type="search"
 					placeholder="搜索党员姓名、学号或组织..."
@@ -185,7 +241,7 @@ export default function TransferManagementPage() {
 										{allTransfers.length > 0 ? (
 											allTransfers.map((transfer) => (
 												<div key={transfer.id}
-													 className="flex items-center justify-between p-4 border rounded-lg">
+													className="flex items-center justify-between p-4 border rounded-lg">
 													<div className="flex items-center space-x-4">
 														<Avatar>
 															<AvatarFallback>{transfer.name.substring(transfer.name.length - 2)}</AvatarFallback>
@@ -268,11 +324,11 @@ export default function TransferManagementPage() {
 																	<DialogFooter
 																		className="flex space-x-2 justify-end">
 																		<Button variant="outline"
-																				onClick={() => setIsReviewDialogOpen(false)}>
+																			onClick={() => setIsReviewDialogOpen(false)}>
 																			取消
 																		</Button>
 																		<Button variant="destructive"
-																				onClick={handleReject}>
+																			onClick={handleReject}>
 																			拒绝
 																		</Button>
 																		<Button onClick={handleApprove}>批准</Button>
@@ -302,7 +358,7 @@ export default function TransferManagementPage() {
 										{pendingTransfers.length > 0 ? (
 											pendingTransfers.map((transfer) => (
 												<div key={transfer.id}
-													 className="flex items-center justify-between p-4 border rounded-lg">
+													className="flex items-center justify-between p-4 border rounded-lg">
 													<div className="flex items-center space-x-4">
 														<Avatar>
 															<AvatarFallback>{transfer.name.substring(transfer.name.length - 2)}</AvatarFallback>
@@ -369,11 +425,11 @@ export default function TransferManagementPage() {
 																</div>
 																<DialogFooter className="flex space-x-2 justify-end">
 																	<Button variant="outline"
-																			onClick={() => setIsReviewDialogOpen(false)}>
+																		onClick={() => setIsReviewDialogOpen(false)}>
 																		取消
 																	</Button>
 																	<Button variant="destructive"
-																			onClick={handleReject}>
+																		onClick={handleReject}>
 																		拒绝
 																	</Button>
 																	<Button onClick={handleApprove}>批准</Button>
@@ -402,7 +458,7 @@ export default function TransferManagementPage() {
 										{approvedTransfers.length > 0 ? (
 											approvedTransfers.map((transfer) => (
 												<div key={transfer.id}
-													 className="flex items-center justify-between p-4 border rounded-lg">
+													className="flex items-center justify-between p-4 border rounded-lg">
 													<div className="flex items-center space-x-4">
 														<Avatar>
 															<AvatarFallback>{transfer.name.substring(transfer.name.length - 2)}</AvatarFallback>
@@ -443,7 +499,7 @@ export default function TransferManagementPage() {
 										{rejectedTransfers.length > 0 ? (
 											rejectedTransfers.map((transfer) => (
 												<div key={transfer.id}
-													 className="flex items-center justify-between p-4 border rounded-lg">
+													className="flex items-center justify-between p-4 border rounded-lg">
 													<div className="flex items-center space-x-4">
 														<Avatar>
 															<AvatarFallback>{transfer.name.substring(transfer.name.length - 2)}</AvatarFallback>
@@ -486,7 +542,7 @@ export default function TransferManagementPage() {
 								{filteredIncomingTransfers.length > 0 ? (
 									filteredIncomingTransfers.map((transfer) => (
 										<div key={transfer.id}
-											 className="flex items-center justify-between p-4 border rounded-lg">
+											className="flex items-center justify-between p-4 border rounded-lg">
 											<div className="flex items-center space-x-4">
 												<Avatar>
 													<AvatarFallback>{transfer.name.substring(transfer.name.length - 2)}</AvatarFallback>
@@ -528,7 +584,7 @@ export default function TransferManagementPage() {
 																})
 															}
 														>
-															<XCircle className="mr-2 h-4 w-4"/>
+															<XCircle className="mr-2 h-4 w-4" />
 															拒绝
 														</Button>
 														<Button
@@ -540,7 +596,7 @@ export default function TransferManagementPage() {
 																})
 															}
 														>
-															<CheckCircle className="mr-2 h-4 w-4"/>
+															<CheckCircle className="mr-2 h-4 w-4" />
 															批准
 														</Button>
 													</div>
