@@ -1,0 +1,82 @@
+/**
+ * @file type.d.ts
+ * @description
+ * @author rainbowx
+ * @date 2025/5/12
+ */
+
+type RoleType = 'admin' | 'member'
+
+interface BranchType {
+	id: number,									// 党支部id
+	name: string,								// 党支部名
+	superior_org: string						// 上级组织
+}
+
+interface MemberType {
+	userId: number,								// 用户id
+	username: string,							// 用户名
+	avatar: string,								// 用户头像
+	name: string,								// 名字
+	gender: '男' | '女',							// 性别
+	birth_date: Date,							// 生日
+	student_number: string,						// 学号
+	class_name: string,							// 班级
+	join_date: Date,							// 入党时间
+	party_position: string| null,				// 党内职位(如支部书记等)
+	identity_type: '正式党员' | '预备党员',		// 党员类别
+	phone: string,								// 电话号码
+	profile_file: string,						// 电子档案地址
+	branch_id: number,							// 党支部编号
+	role: RoleType[]
+}
+
+interface ActivityType {
+	id: number,									// 活动id
+	name: string,								// 活动名
+	type: string,								// 活动类型
+	date: Date,									// 活动时间
+	location: string,							// 活动地点
+	content: string,							// 活动内容
+	remark: string,								// 活动备注
+	branch: BranchType							// 负责活动的支部
+}
+
+interface ActivityJoinType {
+	id: number,									// 活动参加id
+	members: MemberType,						// 参加的成员
+	status: string,								// 参加状态
+}
+
+interface EventType {
+	id: number									// 事件id
+	user: MemberType							// 事件所属用户
+	time: Date									// 事件时间
+	content: string								// 事件内容
+}
+
+interface MaterialType {
+	id: number,									// 学习资料id
+	content: string,							// 资料内容
+	branch: BranchType,							// 资料所属支部
+}
+
+interface NoticeType {
+	id: number,									// 公告id
+	title: string,								// 公告标题
+	content: string,							// 公告内容
+	publish_date: Date,							// 公告发出时间
+	publisher: MemberType						// 公告发起者
+}
+
+interface UserDataType {
+	id: number,									// 用户数据id
+	user: MemberType,							// 数据所属用户
+	record_time: string,						// 数据产生时间
+	moral_rank: number,							// 德育排名百分比
+	academic_rank: number,						// 学业排名百分比
+	assessment_score: number,					// 考核得分
+	dorm_score: number,							// 寝室卫生得分
+	behavior_score: number,						// 行为纪实得分
+	public_opinion_score: number,				// 群众调研得分
+}
