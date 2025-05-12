@@ -36,7 +36,7 @@ const partyPositions = ["党支部书记", "党支部委员", "普通党员"]
 
 // 模拟党员数据
 const members = [
-	  {
+	{
 		"id": "S0000000001",
 		"name": "陆晨",
 		"gender": "男",
@@ -49,8 +49,8 @@ const members = [
 		"identityType": "正式党员",
 		"contact": "13712345678",
 		"hasArchive": true
-	  },
-	  {
+	},
+	{
 		"id": "S3210439004",
 		"name": "徐若瑄",
 		"gender": "女",
@@ -63,8 +63,8 @@ const members = [
 		"identityType": "正式党员",
 		"contact": "13901234567",
 		"hasArchive": true
-	  },
-	  {
+	},
+	{
 		"id": "S3210439015",
 		"name": "黄俊杰",
 		"gender": "男",
@@ -77,8 +77,8 @@ const members = [
 		"identityType": "正式党员",
 		"contact": "13654321987",
 		"hasArchive": true
-	  },
-	  {
+	},
+	{
 		"id": "S3210439037",
 		"name": "林诗涵",
 		"gender": "女",
@@ -91,8 +91,8 @@ const members = [
 		"identityType": "正式党员",
 		"contact": "15012345678",
 		"hasArchive": true
-	  },
-	  {
+	},
+	{
 		"id": "S3210439062",
 		"name": "郑浩轩",
 		"gender": "男",
@@ -105,8 +105,8 @@ const members = [
 		"identityType": "正式党员",
 		"contact": "13876543210",
 		"hasArchive": true
-	  },
-	  {
+	},
+	{
 		"id": "S3210439013",
 		"name": "孙雨桐",
 		"gender": "女",
@@ -119,8 +119,8 @@ const members = [
 		"identityType": "预备党员",
 		"contact": "15901234567",
 		"hasArchive": true
-	  },
-	  {
+	},
+	{
 		"id": "S3210439058",
 		"name": "马文博",
 		"gender": "男",
@@ -133,8 +133,8 @@ const members = [
 		"identityType": "预备党员",
 		"contact": "13567890123",
 		"hasArchive": true
-	  },
-	  {
+	},
+	{
 		"id": "S3220439015",
 		"name": "何心怡",
 		"gender": "女",
@@ -147,8 +147,8 @@ const members = [
 		"identityType": "预备党员",
 		"contact": "13765432109",
 		"hasArchive": true
-	  },
-	  {
+	},
+	{
 		"id": "S3220439016",
 		"name": "罗一鸣",
 		"gender": "男",
@@ -161,8 +161,8 @@ const members = [
 		"identityType": "预备党员",
 		"contact": "13609876543",
 		"hasArchive": true
-	  },
-	  {
+	},
+	{
 		"id": "S3220439020",
 		"name": "蔡宇航",
 		"gender": "男",
@@ -175,8 +175,8 @@ const members = [
 		"identityType": "预备党员",
 		"contact": "13543210987",
 		"hasArchive": true
-	  },
-	  {
+	},
+	{
 		"id": "S3220439034",
 		"name": "梁思琪",
 		"gender": "女",
@@ -189,8 +189,8 @@ const members = [
 		"identityType": "预备党员",
 		"contact": "15801234567",
 		"hasArchive": true
-	  },
-	  {
+	},
+	{
 		"id": "S3220439069",
 		"name": "郭子豪",
 		"gender": "男",
@@ -203,8 +203,8 @@ const members = [
 		"identityType": "预备党员",
 		"contact": "13987654321",
 		"hasArchive": true
-	  },
-	  {
+	},
+	{
 		"id": "S3220439071",
 		"name": "高梦瑶",
 		"gender": "女",
@@ -217,9 +217,9 @@ const members = [
 		"identityType": "预备党员",
 		"contact": "15098761234",
 		"hasArchive": true
-	  },
-	  
-	  {
+	},
+
+	{
 		"id": "S3190439001",
 		"name": "李明壹",
 		"gender": "男",
@@ -302,8 +302,8 @@ const members = [
 		"identityType": "已毕业党员",
 		"contact": "13524681357",
 		"hasArchive": true
-	  },
-	  {
+	},
+	{
 		"id": "S3200439041",
 		"name": "周晓萌",
 		"gender": "女",
@@ -316,8 +316,8 @@ const members = [
 		"identityType": "已毕业党员",
 		"contact": "13798765432",
 		"hasArchive": true
-	  },
-	  {
+	},
+	{
 		"id": "S3200439056",
 		"name": "吴天宇",
 		"gender": "男",
@@ -330,7 +330,7 @@ const members = [
 		"identityType": "已毕业党员",
 		"contact": "15876543210",
 		"hasArchive": true
-	  }
+	}
 ]
 
 export default function MembersList() {

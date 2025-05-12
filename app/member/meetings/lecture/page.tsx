@@ -8,7 +8,7 @@ import {Progress} from "@/components/ui/progress"
 export default function PartyLecturePage() {
 	// 模拟党课数据
 	const upcomingLectures = [
-		
+
 		{
 			id: "pl-001",
 			title: "学习贯彻习近平新时代中国特色社会主义思想专题党课",
@@ -42,7 +42,7 @@ export default function PartyLecturePage() {
 	]
 
 	const completedLectures = [
-		
+
 		{
 			id: "pl-004",
 			title: "中央八项规定精神学习教育",

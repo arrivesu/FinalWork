@@ -17,7 +17,7 @@ export default function MemberLayout({
 	children: React.ReactNode
 }) {
 	// 模拟用户数据
-	const user = JSON.parse(localStorage?.getItem('user')??'{}')
+	const user = JSON.parse(localStorage?.getItem('user') ?? '{}')
 
 	return (
 		<Shell>

@@ -106,8 +106,7 @@ const applicants = [
 		"applyDate": "2023-09-19",
 		"status": "已存档",
 		"contact": "13566778899"
-	  }
-
+	}
 
 
 ]

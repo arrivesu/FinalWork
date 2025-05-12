@@ -116,9 +116,6 @@ const transferApplications = [
 	},
 
 
-
-
-
 ]
 
 // 模拟转入申请数据
@@ -150,7 +147,7 @@ export default function TransferManagementPage() {
 	const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false)
 	const [selectedTransfer, setSelectedTransfer] = useState<any>(null)
 	const [reviewComment, setReviewComment] = useState("")
-	const { toast } = useToast()
+	const {toast} = useToast()
 
 	// 过滤转出申请
 	const filterTransfers = (status: string) => {
@@ -207,7 +204,7 @@ export default function TransferManagementPage() {
 			</div>
 
 			<div className="relative">
-				<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+				<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"/>
 				<Input
 					type="search"
 					placeholder="搜索党员姓名、学号或组织..."
@@ -241,7 +238,7 @@ export default function TransferManagementPage() {
 										{allTransfers.length > 0 ? (
 											allTransfers.map((transfer) => (
 												<div key={transfer.id}
-													className="flex items-center justify-between p-4 border rounded-lg">
+													 className="flex items-center justify-between p-4 border rounded-lg">
 													<div className="flex items-center space-x-4">
 														<Avatar>
 															<AvatarFallback>{transfer.name.substring(transfer.name.length - 2)}</AvatarFallback>
@@ -324,11 +321,11 @@ export default function TransferManagementPage() {
 																	<DialogFooter
 																		className="flex space-x-2 justify-end">
 																		<Button variant="outline"
-																			onClick={() => setIsReviewDialogOpen(false)}>
+																				onClick={() => setIsReviewDialogOpen(false)}>
 																			取消
 																		</Button>
 																		<Button variant="destructive"
-																			onClick={handleReject}>
+																				onClick={handleReject}>
 																			拒绝
 																		</Button>
 																		<Button onClick={handleApprove}>批准</Button>
@@ -358,7 +355,7 @@ export default function TransferManagementPage() {
 										{pendingTransfers.length > 0 ? (
 											pendingTransfers.map((transfer) => (
 												<div key={transfer.id}
-													className="flex items-center justify-between p-4 border rounded-lg">
+													 className="flex items-center justify-between p-4 border rounded-lg">
 													<div className="flex items-center space-x-4">
 														<Avatar>
 															<AvatarFallback>{transfer.name.substring(transfer.name.length - 2)}</AvatarFallback>
@@ -425,11 +422,11 @@ export default function TransferManagementPage() {
 																</div>
 																<DialogFooter className="flex space-x-2 justify-end">
 																	<Button variant="outline"
-																		onClick={() => setIsReviewDialogOpen(false)}>
+																			onClick={() => setIsReviewDialogOpen(false)}>
 																		取消
 																	</Button>
 																	<Button variant="destructive"
-																		onClick={handleReject}>
+																			onClick={handleReject}>
 																		拒绝
 																	</Button>
 																	<Button onClick={handleApprove}>批准</Button>
@@ -458,7 +455,7 @@ export default function TransferManagementPage() {
 										{approvedTransfers.length > 0 ? (
 											approvedTransfers.map((transfer) => (
 												<div key={transfer.id}
-													className="flex items-center justify-between p-4 border rounded-lg">
+													 className="flex items-center justify-between p-4 border rounded-lg">
 													<div className="flex items-center space-x-4">
 														<Avatar>
 															<AvatarFallback>{transfer.name.substring(transfer.name.length - 2)}</AvatarFallback>
@@ -499,7 +496,7 @@ export default function TransferManagementPage() {
 										{rejectedTransfers.length > 0 ? (
 											rejectedTransfers.map((transfer) => (
 												<div key={transfer.id}
-													className="flex items-center justify-between p-4 border rounded-lg">
+													 className="flex items-center justify-between p-4 border rounded-lg">
 													<div className="flex items-center space-x-4">
 														<Avatar>
 															<AvatarFallback>{transfer.name.substring(transfer.name.length - 2)}</AvatarFallback>
@@ -542,7 +539,7 @@ export default function TransferManagementPage() {
 								{filteredIncomingTransfers.length > 0 ? (
 									filteredIncomingTransfers.map((transfer) => (
 										<div key={transfer.id}
-											className="flex items-center justify-between p-4 border rounded-lg">
+											 className="flex items-center justify-between p-4 border rounded-lg">
 											<div className="flex items-center space-x-4">
 												<Avatar>
 													<AvatarFallback>{transfer.name.substring(transfer.name.length - 2)}</AvatarFallback>
@@ -584,7 +581,7 @@ export default function TransferManagementPage() {
 																})
 															}
 														>
-															<XCircle className="mr-2 h-4 w-4" />
+															<XCircle className="mr-2 h-4 w-4"/>
 															拒绝
 														</Button>
 														<Button
@@ -596,7 +593,7 @@ export default function TransferManagementPage() {
 																})
 															}
 														>
-															<CheckCircle className="mr-2 h-4 w-4" />
+															<CheckCircle className="mr-2 h-4 w-4"/>
 															批准
 														</Button>
 													</div>

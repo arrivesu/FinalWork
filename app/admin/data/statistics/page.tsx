@@ -164,7 +164,6 @@ export default function StatisticsPage() {
 			},
 		],
 	}
-	
 
 
 	// Activity by month chart data
@@ -223,7 +222,6 @@ export default function StatisticsPage() {
 			},
 		],
 	}
-
 
 
 	// Chart options

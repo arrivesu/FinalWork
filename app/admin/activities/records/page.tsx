@@ -38,8 +38,6 @@ const activities: {
 }[] = [
 
 
-
-
 	{
 		id: "1",
 		title: "中央八项规定精神学习教育",

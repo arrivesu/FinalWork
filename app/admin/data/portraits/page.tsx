@@ -287,7 +287,7 @@ export default function PartyMemberPortraits() {
 				<h1 className="text-2xl font-bold">党员画像</h1>
 				<div className="flex flex-col sm:flex-row gap-2">
 					<div className="relative">
-						<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+						<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"/>
 						<Input
 							type="search"
 							placeholder="搜索党员..."
@@ -298,7 +298,7 @@ export default function PartyMemberPortraits() {
 					</div>
 					<Select value={identityType} onValueChange={setIdentityType}>
 						<SelectTrigger className="w-full sm:w-[180px]">
-							<SelectValue placeholder="选择身份类型" />
+							<SelectValue placeholder="选择身份类型"/>
 						</SelectTrigger>
 						<SelectContent>
 							<SelectItem value="all">所有身份类型</SelectItem>
@@ -308,10 +308,10 @@ export default function PartyMemberPortraits() {
 						</SelectContent>
 					</Select>
 					<Button variant="outline" size="icon">
-						<Filter className="h-4 w-4" />
+						<Filter className="h-4 w-4"/>
 					</Button>
 					<Button variant="outline" size="icon">
-						<Download className="h-4 w-4" />
+						<Download className="h-4 w-4"/>
 					</Button>
 				</div>
 			</div>
@@ -336,7 +336,7 @@ export default function PartyMemberPortraits() {
 										onClick={() => setSelectedMember(member)}
 									>
 										<Avatar className="h-10 w-10 mr-3">
-											<AvatarImage src={member.avatar || "/placeholder.svg"} alt={member.name} />
+											<AvatarImage src={member.avatar || "/placeholder.svg"} alt={member.name}/>
 											<AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
 										</Avatar>
 										<div className="flex-1 min-w-0">
@@ -361,7 +361,8 @@ export default function PartyMemberPortraits() {
 									<div className="flex justify-between items-start">
 										<div className="flex items-center">
 											<Avatar className="h-12 w-12 mr-4">
-												<AvatarImage src={selectedMember.avatar || "/placeholder.svg"} alt={selectedMember.name} />
+												<AvatarImage src={selectedMember.avatar || "/placeholder.svg"}
+															 alt={selectedMember.name}/>
 												<AvatarFallback>{selectedMember.name.charAt(0)}</AvatarFallback>
 											</Avatar>
 											<div>
@@ -372,7 +373,7 @@ export default function PartyMemberPortraits() {
 											</div>
 										</div>
 										<Button variant="outline" size="sm">
-											<UserPlus className="h-4 w-4 mr-2" />
+											<UserPlus className="h-4 w-4 mr-2"/>
 											更新画像
 										</Button>
 									</div>
@@ -422,7 +423,8 @@ export default function PartyMemberPortraits() {
 									/>
 								</TabsContent>
 								<TabsContent value="comparison" className="mt-4">
-									<RadarChart title="与组织平均水平对比" data={getComparisonRadarData(selectedMember)} height={400} />
+									<RadarChart title="与组织平均水平对比" data={getComparisonRadarData(selectedMember)}
+												height={400}/>
 								</TabsContent>
 								<TabsContent value="history" className="mt-4">
 									<Card>

@@ -12,12 +12,12 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/c
 
 // 党员身份类型
 const memberTypes = [
-	{ id: "all", name: "全部" },
-	{ id: "applicant", name: "入党申请人" },
-	{ id: "activist", name: "入党积极分子" },
-	{ id: "development", name: "发展对象" },
-	{ id: "probationary", name: "预备党员" },
-	{ id: "formal", name: "正式党员" },
+	{id: "all", name: "全部"},
+	{id: "applicant", name: "入党申请人"},
+	{id: "activist", name: "入党积极分子"},
+	{id: "development", name: "发展对象"},
+	{id: "probationary", name: "预备党员"},
+	{id: "formal", name: "正式党员"},
 ]
 
 // 模拟党员数据
@@ -158,7 +158,7 @@ const PortraitEntryPageContent: React.FC = () => {
 		field: null,
 	})
 	const inputRef = useRef<HTMLInputElement>(null)
-	const { toast } = useToast()
+	const {toast} = useToast()
 
 	// 过滤党员
 	const filteredMembers = partyMembers.filter((member) => {
@@ -175,7 +175,7 @@ const PortraitEntryPageContent: React.FC = () => {
 
 	// 处理单元格点击
 	const handleCellClick = (memberId: number, field: string) => {
-		setEditingCell({ rowId: memberId, field })
+		setEditingCell({rowId: memberId, field})
 		// 聚焦到输入框
 		setTimeout(() => {
 			if (inputRef.current) {
@@ -234,7 +234,7 @@ const PortraitEntryPageContent: React.FC = () => {
 
 	// 处理单元格失去焦点
 	const handleCellBlur = () => {
-		setEditingCell({ rowId: null, field: null })
+		setEditingCell({rowId: null, field: null})
 	}
 
 	// 处理键盘导航
@@ -266,7 +266,7 @@ const PortraitEntryPageContent: React.FC = () => {
 				const nextField = fields[nextFieldIndex]
 
 				// 设置下一个编辑单元格
-				setEditingCell({ rowId: nextMember.id, field: nextField })
+				setEditingCell({rowId: nextMember.id, field: nextField})
 
 				// 聚焦到下一个输入框
 				setTimeout(() => {
@@ -282,11 +282,11 @@ const PortraitEntryPageContent: React.FC = () => {
 	// 添加新行
 	const addNewRow = () => {
 		const newId = Math.max(...partyMembers.map((m) => m.id)) + 1
-		setPartyMembers([...partyMembers, { ...emptyMemberTemplate, id: newId }])
+		setPartyMembers([...partyMembers, {...emptyMemberTemplate, id: newId}])
 
 		// 聚焦到新行的姓名字段
 		setTimeout(() => {
-			setEditingCell({ rowId: newId, field: "name" })
+			setEditingCell({rowId: newId, field: "name"})
 			if (inputRef.current) {
 				inputRef.current.focus()
 			}
@@ -389,7 +389,7 @@ const PortraitEntryPageContent: React.FC = () => {
 				}}
 			>
 				<SelectTrigger className="h-8 w-full">
-					<SelectValue placeholder="选择身份类型" />
+					<SelectValue placeholder="选择身份类型"/>
 				</SelectTrigger>
 				<SelectContent>
 					{memberTypes
@@ -411,7 +411,7 @@ const PortraitEntryPageContent: React.FC = () => {
 					<h1 className="text-2xl font-bold">党员画像数据录入</h1>
 					<div className="flex gap-2">
 						<div className="relative">
-							<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+							<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"/>
 							<Input
 								type="search"
 								placeholder="搜索党员..."
@@ -422,7 +422,7 @@ const PortraitEntryPageContent: React.FC = () => {
 						</div>
 						<Select value={selectedMemberType} onValueChange={setSelectedMemberType}>
 							<SelectTrigger className="w-[140px]">
-								<SelectValue placeholder="选择身份类型" />
+								<SelectValue placeholder="选择身份类型"/>
 							</SelectTrigger>
 							<SelectContent>
 								{memberTypes.map((type) => (
@@ -433,11 +433,11 @@ const PortraitEntryPageContent: React.FC = () => {
 							</SelectContent>
 						</Select>
 						<Button variant="outline" onClick={addNewRow}>
-							<Plus className="h-4 w-4 mr-2" />
+							<Plus className="h-4 w-4 mr-2"/>
 							添加行
 						</Button>
 						<Button onClick={saveAllData}>
-							<Save className="h-4 w-4 mr-2" />
+							<Save className="h-4 w-4 mr-2"/>
 							保存数据
 						</Button>
 					</div>
@@ -600,7 +600,7 @@ const PortraitEntryPageContent: React.FC = () => {
 													className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-100"
 													onClick={() => deleteRow(member.id)}
 												>
-													<Trash2 className="h-4 w-4" />
+													<Trash2 className="h-4 w-4"/>
 												</Button>
 											</TableCell>
 										</TableRow>
@@ -617,11 +617,11 @@ const PortraitEntryPageContent: React.FC = () => {
 						</div>
 						<div className="flex gap-2">
 							<Button variant="outline" size="sm">
-								<FileUp className="h-4 w-4 mr-2" />
+								<FileUp className="h-4 w-4 mr-2"/>
 								导入数据
 							</Button>
 							<Button variant="outline" size="sm">
-								<FileDown className="h-4 w-4 mr-2" />
+								<FileDown className="h-4 w-4 mr-2"/>
 								导出数据
 							</Button>
 						</div>
@@ -633,5 +633,5 @@ const PortraitEntryPageContent: React.FC = () => {
 }
 
 export default function PortraitEntryPage() {
-	return <PortraitEntryPageContent />
+	return <PortraitEntryPageContent/>
 }
