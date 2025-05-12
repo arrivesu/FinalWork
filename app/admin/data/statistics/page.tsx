@@ -5,7 +5,7 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/compo
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
 import {Button} from "@/components/ui/button"
-import {BookOpen, Calendar, Download, Heart, Users} from "lucide-react"
+import {BookOpen, Calendar, Download, Users} from "lucide-react"
 import {
 	ArcElement,
 	BarElement,

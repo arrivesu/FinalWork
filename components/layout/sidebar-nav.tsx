@@ -29,7 +29,7 @@ export function SidebarNav({ items, className }: SidebarNavProps) {
     <div className="flex flex-col h-full">
       {/* 添加系统名称和党徽到侧边栏顶部 */}
       <div className="p-4 border-b flex flex-col items-center">
-        <Link href="/branch-card" className="flex flex-col items-center">
+        <Link href="/card" className="flex flex-col items-center">
           {/* 中国共产党党徽 */}
           <Image
             src="https://p3.img.cctvpic.com/photoworkspace/contentimg/2021/07/09/2021070916100758523.png"

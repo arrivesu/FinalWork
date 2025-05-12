@@ -1,11 +1,11 @@
 "use client"
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
+import {useState} from "react"
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
+import {Input} from "@/components/ui/input"
+import {Button} from "@/components/ui/button"
+import {Avatar, AvatarFallback} from "@/components/ui/avatar"
+import {Badge} from "@/components/ui/badge"
 import {
 	Dialog,
 	DialogContent,
@@ -15,11 +15,11 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { CheckCircle, Search, XCircle } from "lucide-react"
-import { useToast } from "@/hooks/use-toast"
+import {Label} from "@/components/ui/label"
+import {Textarea} from "@/components/ui/textarea"
+import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
+import {CheckCircle, Search, XCircle} from "lucide-react"
+import {useToast} from "@/hooks/use-toast"
 
 // 模拟转接申请数据
 const transferApplications = [

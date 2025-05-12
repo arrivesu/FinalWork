@@ -2,7 +2,6 @@
 
 import {useState} from "react"
 import {Input} from "@/components/ui/input"
-import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
 import {Badge} from "@/components/ui/badge"
 import {Search} from "lucide-react"
