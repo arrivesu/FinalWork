@@ -19,64 +19,10 @@ import {Label} from "@/components/ui/label"
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
 import {Edit, Key, Search, Trash2} from "lucide-react"
 import {useToast} from "@/hooks/use-toast"
+import {MemberAPI} from "@/lib/api";
 
 // 模拟用户数据
-const users = [
-	{
-		id: "1",
-		name: "陆晨",
-		avatar: "/placeholder.svg?key=vqmpy",
-		username: "luchen",
-		role: "admin",
-		department: "数据学院学工办",
-		lastLogin: "2025-05-03 14:30",
-	},
-	{
-		id: "2",
-		name: "徐若瑄",
-		avatar: "/placeholder.svg?key=k63aq",
-		username: "xuruoxuan",
-		role: "member",
-		department: "大数据211班",
-		lastLogin: "2025-05-03 09:15",
-	},
-	{
-		id: "3",
-		name: "黄俊杰",
-		avatar: "/placeholder.svg?key=3o7yd",
-		username: "huangjunjie",
-		role: "member",
-		department: "大数据211班",
-		lastLogin: "2025-05-02 16:45",
-	},
-	{
-		id: "4",
-		name: "林诗涵",
-		avatar: "/placeholder.svg?key=mmh0k",
-		username: "linshihan",
-		role: "member",
-		department: "大数据211班",
-		lastLogin: "2025-05-02 10:20",
-	},
-	{
-		id: "5",
-		name: "郑浩轩",
-		avatar: "/placeholder.svg?key=mmh0k",
-		username: "zhenghaoxuan",
-		role: "member",
-		department: "大数据212班",
-		lastLogin: "2025-05-02 10:14",
-	},
-	{
-		id: "6",
-		name: "孙雨桐",
-		avatar: "/placeholder.svg?key=mmh0k",
-		username: "sunyutong",
-		role: "member",
-		department: "大数据211班",
-		lastLogin: "2025-05-02 09:20",
-	},
-]
+const users = MemberAPI.get()
 
 export default function UsersPage() {
 	const [searchTerm, setSearchTerm] = useState("")
@@ -91,7 +37,7 @@ export default function UsersPage() {
 		(user) =>
 			user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
 			user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			user.department.toLowerCase().includes(searchTerm.toLowerCase()),
+			user.class_name.toLowerCase().includes(searchTerm.toLowerCase()),
 	)
 
 	const handleAddUser = () => {
@@ -165,12 +111,8 @@ export default function UsersPage() {
 										</div>
 									</div>
 									<div className="flex items-center space-x-4">
-										<div className="text-sm text-right">
-											<p>{user.department}</p>
-											<p className="text-muted-foreground">上次登录: {user.lastLogin}</p>
-										</div>
-										<Badge variant={user.role === "admin" ? "default" : "outline"}>
-											{user.role === "admin" ? "管理员" : "党员"}
+										<Badge variant={user.role.includes("admin") ? "default" : "outline"}>
+											{user.role.includes("admin") ? "管理员" : "党员"}
 										</Badge>
 										<div className="flex space-x-2">
 											<Dialog
@@ -243,6 +185,7 @@ export default function UsersPage() {
 														<div className="grid grid-cols-2 gap-4">
 															<div className="space-y-2">
 																<Label htmlFor="edit-role">角色</Label>
+																{/*TODO 将这里改为多选*/}
 																<Select defaultValue={user.role}>
 																	<SelectTrigger>
 																		<SelectValue placeholder="选择角色"/>
@@ -256,7 +199,7 @@ export default function UsersPage() {
 															<div className="space-y-2">
 																<Label htmlFor="edit-department">所属部门</Label>
 																<Input id="edit-department"
-																	   defaultValue={user.department}/>
+																	   defaultValue={user.class_name}/>
 															</div>
 														</div>
 													</div>

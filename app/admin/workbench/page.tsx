@@ -19,6 +19,7 @@ import {Input} from "@/components/ui/input"
 import {Label} from "@/components/ui/label"
 import {Textarea} from "@/components/ui/textarea"
 import {Activity, Bell, BookOpen, CalendarIcon, Clock, MapPin, Plus, Users} from "lucide-react"
+import {NoticeAPI} from "@/lib/api";
 
 interface User {
 	id: string
@@ -28,38 +29,7 @@ interface User {
 }
 
 // 模拟数据
-const notices = [
-	{
-		title: "关于开展中央八项规定精神学习教育的通知",
-		content: "根据上级党组织要求，我支部将于2025年04月12日开展党课学习教育，请全体党员做好准备。",
-		date: "2025-04-05",
-	},
-	{
-		title: "关于开展数据学生党支部党日活动的通知",
-		content: "我支部将于2025年03月26日赴宁波大学开展主题党日活动，请全体党员做好准备。",
-		date: "2025-03-16",
-	},
-	{
-		title: "关于开展2025年第一次支部党员大会的通知",
-		content: "根据上级党组织要求，我支部将于2025年01月24日开展支部党员大会，请全体党员做好准备。",
-		date: "2025-01-15",
-	},
-	{
-		title: "关于开展2024年度组织生活会的通知",
-		content: "根据上级党组织要求，我支部将于2024年12月15日开展组织生活会，请全体党员做好准备。",
-		date: "2024-12-01",
-	},
-	{
-		title: "关于开展党员先锋岗评选活动的通知",
-		content: "为弘扬先进典型，激励党员发挥先锋模范作用，现开展党员先锋岗评选活动。",
-		date: "2024-11-20",
-	},
-	{
-		title: "关于缴纳2024年度党费的通知",
-		content: "请各位党员于11月30日前完成2024年度党费缴纳工作。",
-		date: "2024-11-10",
-	},
-];
+const notices = NoticeAPI.get()
 
 export default function AdminWorkbench() {
 	const [user, setUser] = useState<User | null>(null)
@@ -145,7 +115,7 @@ export default function AdminWorkbench() {
 										<h3 className="font-semibold text-base">{notice.title}</h3>
 										<div className="flex items-center text-sm text-muted-foreground">
 											<CalendarIcon className="h-4 w-4 mr-1"/>
-											{notice.date}
+											{notice.publish_date.toDateString()}
 										</div>
 									</div>
 									<p className="text-sm text-muted-foreground">{notice.content}</p>

@@ -9,133 +9,72 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/c
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"
 import {RadarChart, type RadarChartData} from "@/components/ui/radar-chart"
 import {Download, Filter, Search, UserPlus} from "lucide-react"
+import {MemberAPI, UserDataAPI} from "@/lib/api";
 
 // Mock data for party members
-const partyMembers = [
-	{
-		id: 1,
-		name: "王俊吉",
-		department: "大数据212班",
-		joinDate: "2018-05-15",
-		position: "班级组织委员",
-		avatar: "/calligraphy-zhang.png",
-		identityType: "full", // 添加身份类型
-		scores: {
-			ideologicalAwareness: 85,
-			partyDiscipline: 86,
-			workPerformance: 91,
-			learningAttitude: 92,
-			socialContribution: 97,
-			teamworkSpirit: 88,
-		},
-	},
-	{
-		id: 2,
-		name: "赵晨迪",
-		department: "大数据212班",
-		joinDate: "2015-03-22",
-		position: "学生发展中心主任",
-		avatar: "/calligraphy-li.png",
-		identityType: "graduated", // 添加身份类型
-		scores: {
-			ideologicalAwareness: 92,
-			partyDiscipline: 95,
-			workPerformance: 82,
-			learningAttitude: 88,
-			socialContribution: 90,
-			teamworkSpirit: 93,
-		},
-	},
-	{
-		id: 3,
-		name: "苏青荣",
-		department: "大数据221班",
-		joinDate: "2019-11-08",
-		position: "无",
-		avatar: "/Chinese-Character-King.png",
-		identityType: "probationary", // 添加身份类型
-		scores: {
-			ideologicalAwareness: 78,
-			partyDiscipline: 85,
-			workPerformance: 90,
-			learningAttitude: 75,
-			socialContribution: 82,
-			teamworkSpirit: 80,
-		},
-	},
-	{
-		id: 4,
-		name: "赵斌",
-		department: "大数据221班",
-		joinDate: "2017-07-30",
-		position: "班级生活委员",
-		avatar: "/calligraphy-zhao.png",
-		identityType: "full", // 添加身份类型
-		scores: {
-			ideologicalAwareness: 88,
-			partyDiscipline: 82,
-			workPerformance: 95,
-			learningAttitude: 80,
-			socialContribution: 85,
-			teamworkSpirit: 90,
-		},
-	},
-	{
-		id: 5,
-		name: "申兰路",
-		department: "大数据221班",
-		joinDate: "2020-02-14",
-		position: "班长",
-		avatar: "/golden-coins-pile.png",
-		identityType: "probationary", // 添加身份类型
-		scores: {
-			ideologicalAwareness: 90,
-			partyDiscipline: 88,
-			workPerformance: 93,
-			learningAttitude: 85,
-			socialContribution: 92,
-			teamworkSpirit: 87,
-		},
-	},
-	{
-		id: 6,
-		name: "陈东琪",
-		department: "大数据222班",
-		joinDate: "2020-02-14",
-		position: "无",
-		avatar: "/golden-coins-pile.png",
-		identityType: "probationary", // 添加身份类型
-		scores: {
-			ideologicalAwareness: 90,
-			partyDiscipline: 88,
-			workPerformance: 93,
-			learningAttitude: 85,
-			socialContribution: 92,
-			teamworkSpirit: 87,
-		},
-	},
-	{
-		id: 7,
-		name: "陆清妍",
-		department: "大数据211班",
-		joinDate: "2020-02-14",
-		position: "无",
-		avatar: "/golden-coins-pile.png",
-		identityType: "probationary", // 添加身份类型
-		scores: {
-			ideologicalAwareness: 90,
-			partyDiscipline: 88,
-			workPerformance: 93,
-			learningAttitude: 85,
-			socialContribution: 92,
-			teamworkSpirit: 87,
-		},
-	},
+const partyMembers = MemberAPI.get();
+const record_time = '2023年第2学期'
 
-]
+type MemberData = {
+	ideologicalAwareness: number
+	partyDiscipline: number
+	workPerformance: number
+	learningAttitude: number
+	socialContribution: number
+}
+
+const getMemberData = (member: MemberType): MemberData| null => {
+	const data = UserDataAPI.get();
+
+	const userdata = data.filter((data) => (data.record_time === record_time) && (data.user.id === member.id));
+
+	if(userdata.length !== 1) {
+		return null;
+	}
+
+	const calcData = {
+		ideologicalAwareness: 0,
+		partyDiscipline: 0,
+		workPerformance: 0,
+		learningAttitude: 0,
+		socialContribution: 0
+	}
+
+	return calcData;
+}
+
+const getMemberAvgData = (member: MemberType): number => {
+	const data = getMemberData(member);
+	if(data === null) return 0;
+
+	return Math.round(
+		(
+			data.ideologicalAwareness +
+			data.partyDiscipline +
+			data.workPerformance +
+			data.learningAttitude +
+			data.socialContribution) /
+		5,
+	)
+}
 
 // Function to convert member scores to radar chart data
-const getMemberRadarData = (member: (typeof partyMembers)[0]): RadarChartData => {
+const getMemberRadarData = (member: MemberType): RadarChartData => {
+	const calcData = getMemberData(member);
+
+	if(calcData === null) {
+		return {
+			labels: [
+				"思想锋领指数", // Ideological Awareness
+				"学业锋领指数", // Party Discipline
+				"服务锋领指数", // Work Performance
+				"作风锋领指数", // Learning Attitude
+				"群众锋领指数", // Social Contribution
+			],
+			datasets: [],
+		}
+	}
+
 	return {
 		labels: [
 			"思想锋领指数", // Ideological Awareness
@@ -148,11 +87,11 @@ const getMemberRadarData = (member: (typeof partyMembers)[0]): RadarChartData =>
 			{
 				label: member.name,
 				data: [
-					member.scores.ideologicalAwareness,
-					member.scores.partyDiscipline,
-					member.scores.workPerformance,
-					member.scores.learningAttitude,
-					member.scores.socialContribution,
+					calcData.ideologicalAwareness,
+					calcData.partyDiscipline,
+					calcData.workPerformance,
+					calcData.learningAttitude,
+					calcData.socialContribution,
 				],
 				backgroundColor: "rgba(255, 99, 132, 0.2)",
 				borderColor: "rgba(255, 99, 132, 1)",
@@ -169,17 +108,18 @@ const getAverageScores = () => {
 		partyDiscipline: 0,
 		workPerformance: 0,
 		learningAttitude: 0,
-		socialContribution: 0,
-		teamworkSpirit: 0,
+		socialContribution: 0
 	}
 
 	partyMembers.forEach((member) => {
-		avgScores.ideologicalAwareness += member.scores.ideologicalAwareness
-		avgScores.partyDiscipline += member.scores.partyDiscipline
-		avgScores.workPerformance += member.scores.workPerformance
-		avgScores.learningAttitude += member.scores.learningAttitude
-		avgScores.socialContribution += member.scores.socialContribution
-		avgScores.teamworkSpirit += member.scores.teamworkSpirit
+		const scores = getMemberData(member);
+		if(scores === null) return;
+
+		avgScores.ideologicalAwareness += scores.ideologicalAwareness
+		avgScores.partyDiscipline += scores.partyDiscipline
+		avgScores.workPerformance += scores.workPerformance
+		avgScores.learningAttitude += scores.learningAttitude
+		avgScores.socialContribution += scores.socialContribution
 	})
 
 	const count = partyMembers.length
@@ -189,7 +129,6 @@ const getAverageScores = () => {
 		workPerformance: avgScores.workPerformance / count,
 		learningAttitude: avgScores.learningAttitude / count,
 		socialContribution: avgScores.socialContribution / count,
-		teamworkSpirit: avgScores.teamworkSpirit / count,
 	}
 }
 
@@ -224,8 +163,36 @@ const getAverageRadarData = (): RadarChartData => {
 }
 
 // Get comparison radar data for a member and the average
-const getComparisonRadarData = (member: (typeof partyMembers)[0]): RadarChartData => {
+const getComparisonRadarData = (member: MemberType): RadarChartData => {
+	const memberData = getMemberData(member);
 	const avgScores = getAverageScores()
+
+	if(memberData === null) {
+		return {
+			labels: [
+				"思想锋领指数", // Ideological Awareness
+				"学业锋领指数", // Party Discipline
+				"服务锋领指数", // Work Performance
+				"作风锋领指数", // Learning Attitude
+				"群众锋领指数", // Social Contribution
+			],
+			datasets: [
+				{
+					label: "组织平均",
+					data: [
+						avgScores.ideologicalAwareness,
+						avgScores.partyDiscipline,
+						avgScores.workPerformance,
+						avgScores.learningAttitude,
+						avgScores.socialContribution,
+					],
+					backgroundColor: "rgba(54, 162, 235, 0.2)",
+					borderColor: "rgba(54, 162, 235, 1)",
+					borderWidth: 2,
+				},
+			],
+		}
+	}
 
 	return {
 		labels: [
@@ -239,11 +206,11 @@ const getComparisonRadarData = (member: (typeof partyMembers)[0]): RadarChartDat
 			{
 				label: member.name,
 				data: [
-					member.scores.ideologicalAwareness,
-					member.scores.partyDiscipline,
-					member.scores.workPerformance,
-					member.scores.learningAttitude,
-					member.scores.socialContribution,
+					memberData.ideologicalAwareness,
+					memberData.partyDiscipline,
+					memberData.workPerformance,
+					memberData.learningAttitude,
+					memberData.socialContribution,
 				],
 				backgroundColor: "rgba(255, 99, 132, 0.2)",
 				borderColor: "rgba(255, 99, 132, 1)",
@@ -274,12 +241,10 @@ export default function PartyMemberPortraits() {
 
 	// Filter members based on search term and department
 	const filteredMembers = partyMembers.filter((member) => {
-		const matchesSearch = member.name.includes(searchTerm) || member.position.includes(searchTerm)
-		const matchesIdentityType = identityType === "all" || member.identityType === identityType
+		const matchesSearch = member.name.includes(searchTerm) || (member.party_position?.includes(searchTerm) ?? false)
+		const matchesIdentityType = identityType === "all" || (member.identity_type === identityType)
 		return matchesSearch && matchesIdentityType
 	})
-
-	// 不再需要从数据中获取身份类型列表，因为我们已经硬编码了
 
 	return (
 		<div className="container mx-auto py-6 space-y-6">
@@ -342,9 +307,9 @@ export default function PartyMemberPortraits() {
 										<div className="flex-1 min-w-0">
 											<div className="flex justify-between">
 												<p className="font-medium truncate">{member.name}</p>
-												<p className="text-sm text-muted-foreground">{member.department}</p>
+												<p className="text-sm text-muted-foreground">{member.class_name}</p>
 											</div>
-											<p className="text-sm text-muted-foreground truncate">{member.position}</p>
+											<p className="text-sm text-muted-foreground truncate">{member.party_position}</p>
 										</div>
 									</div>
 								))
@@ -368,7 +333,7 @@ export default function PartyMemberPortraits() {
 											<div>
 												<CardTitle>{selectedMember.name}</CardTitle>
 												<CardDescription>
-													{selectedMember.department} - {selectedMember.position}
+													{selectedMember.class_name} - {selectedMember.party_position}
 												</CardDescription>
 											</div>
 										</div>
@@ -393,15 +358,7 @@ export default function PartyMemberPortraits() {
 										<div>
 											<p className="text-sm text-muted-foreground">综合评分</p>
 											<p className="font-medium">
-												{Math.round(
-													(selectedMember.scores.ideologicalAwareness +
-														selectedMember.scores.partyDiscipline +
-														selectedMember.scores.workPerformance +
-														selectedMember.scores.learningAttitude +
-														selectedMember.scores.socialContribution +
-														selectedMember.scores.teamworkSpirit) /
-													6,
-												)}
+												{ getMemberAvgData(selectedMember) }
 												分
 											</p>
 										</div>

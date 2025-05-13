@@ -9,6 +9,7 @@ import {FileDown, FileUp, Plus, Save, Search, Trash2} from "lucide-react"
 import {useToast} from "@/hooks/use-toast"
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table"
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
+import {MemberAPI} from "@/lib/api";
 
 // 党员身份类型
 const memberTypes = [
@@ -21,116 +22,28 @@ const memberTypes = [
 ]
 
 // 模拟党员数据
-const initialPartyMembers = [
+const initialPartyMembers = MemberAPI.get();
 
-	{
-		id: 1,
-		name: "王俊吉",
-		department: "大数据212班",
-		moralRanking: 0.15, // 德育排名
-		academicLevel: 0.14, // 学业水平
-		assessmentScore: 85, // 等级考核分
-		volunteerHours: 45.5, // 志愿服务时长
-		dormitoryRanking: 0.06, // 寝室卫生排名
-		behaviorScore: 0, // 行为分数
-		massResearchScore: 4.30, // 群众调研分数
-		memberType: "development", // 党员身份类型
-	},
-	{
-		id: 2,
-		name: "赵晨迪",
-		department: "大数据212班",
-		moralRanking: 0.03,
-		academicLevel: 0.53,
-		assessmentScore: 85,
-		volunteerHours: 76.5,
-		dormitoryRanking: 0.25,
-		behaviorScore: 0,
-		massResearchScore: 4.40,
-		memberType: "development",
-
-	},
-	{
-		id: 3,
-		name: "苏青荣",
-		department: "大数据221班",
-		moralRanking: 0.26,
-		academicLevel: 0.20,
-		assessmentScore: 60,
-		volunteerHours: 14.0,
-		dormitoryRanking: 0.01,
-		behaviorScore: 0,
-		massResearchScore: 4.48,
-		memberType: "development",
-	},
-	{
-		id: 4,
-		name: "赵斌",
-		department: "大数据221班",
-		moralRanking: 21.00,
-		academicLevel: 8.00,
-		assessmentScore: 85,
-		volunteerHours: 30.5,
-		dormitoryRanking: 0.55,
-		behaviorScore: 0,
-		massResearchScore: 4.57,
-		memberType: "development",
-	},
-	{
-		id: 5,
-		name: "申兰路",
-		department: "大数据221班",
-		moralRanking: 0.03,
-		academicLevel: 0.42,
-		assessmentScore: 95,
-		volunteerHours: 98.0,
-		dormitoryRanking: 0.19,
-		behaviorScore: 20,
-		massResearchScore: 4.58,
-		memberType: "development",
-	},
-	{
-		id: 6,
-		name: "陈东琪",
-		department: "大数据222班",
-		moralRanking: 0.03,
-		academicLevel: 0.03,
-		assessmentScore: 60,
-		volunteerHours: 112.0,
-		dormitoryRanking: 0.33,
-		behaviorScore: 0,
-		massResearchScore: 4.60,
-		memberType: "development",
-	},
-	{
-		id: 7,
-		name: "陆清妍",
-		department: "大数据211班",
-		moralRanking: 0.10,
-		academicLevel: 0.27,
-		assessmentScore: 85,
-		volunteerHours: 8.5,
-		dormitoryRanking: 0.74,
-		behaviorScore: 0,
-		massResearchScore: 4.36,
-		memberType: "activist",
-	}
-
-]
-
-// 空行模板
-const emptyMemberTemplate = {
+const emptyMemberTemplate: MemberType = {
 	id: 0,
-	name: "",
-	department: "",
-	moralRanking: 0,
-	academicLevel: 0,
-	assessmentScore: 0,
-	volunteerHours: 0,
-	dormitoryRanking: 0,
-	behaviorScore: 0,
-	massResearchScore: 0,
-	memberType: "applicant",
+	username: '',
+	avatar: '',
+	name: '',
+	gender: "男",
+	birth_date: new Date(),
+	student_number: "",
+	class_name: "",
+	join_date: new Date(),
+	party_position: null,
+	identity_type: "正式党员",
+	phone: '',
+	profile_file: '',
+	branch: {
+		id: 0,
+		name: '',
+		superior_org: '',
+	},
+	role: [],
 }
 
 // 生成学年选项
@@ -165,10 +78,10 @@ const PortraitEntryPageContent: React.FC = () => {
 		// 先按搜索词过滤
 		const matchesSearch =
 			member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			member.department.toLowerCase().includes(searchTerm.toLowerCase())
+			member.class_name.toLowerCase().includes(searchTerm.toLowerCase())
 
 		// 再按身份类型过滤
-		const matchesType = selectedMemberType === "all" || member.memberType === selectedMemberType
+		const matchesType = selectedMemberType === "all" || member.identity_type === selectedMemberType
 
 		return matchesSearch && matchesType
 	})
@@ -318,45 +231,55 @@ const PortraitEntryPageContent: React.FC = () => {
 	}
 
 	// 可编辑字段列表
-	const editableFields = [
+	const editableFields: (keyof MemberType| keyof UserDataType)[] = [
 		"name",
-		"department",
-		"memberType",
-		"moralRanking",
-		"academicLevel",
-		"assessmentScore",
-		"volunteerHours",
-		"dormitoryRanking",
-		"behaviorScore",
-		"massResearchScore",
-	]
+		"class_name",
+		"identity_type",
+		"moral_rank",
+		"academic_rank",
+		"assessment_score",
+		"dorm_score",
+		"behavior_score",
+		"public_opinion_score"
+	] as const;
 
 	// 字段标题映射
-	const fieldTitles: Record<string, string> = {
+	const fieldTitles: Partial<Record<typeof editableFields[number], string>> = {
 		name: "姓名",
-		department: "班级",
-		memberType: "身份类型",
-		moralRanking: "德育排名",
-		academicLevel: "学业水平",
-		assessmentScore: "等级考核分",
-		volunteerHours: "志愿服务时长",
-		dormitoryRanking: "寝室卫生排名",
-		behaviorScore: "行为分数",
-		massResearchScore: "群众调研分数",
+		class_name: "班级",
+		identity_type: "身份类型",
+		moral_rank: "德育排名百分比",
+		academic_rank: "学业排名百分比",
+		assessment_score: "考核得分",
+		dorm_score: "寝室卫生得分",
+		behavior_score: "行动纪实得分",
+		public_opinion_score: "群众调研得分",
 	}
 
 	// 字段提示映射
-	const fieldPlaceholders: Record<string, string> = {
+	const fieldPlaceholders: Partial<Record<typeof editableFields[number], string>> = {
 		name: "输入姓名",
-		department: "输入班级",
-		memberType: "选择身份类型",
-		moralRanking: "0-1小数",
-		academicLevel: "0-1小数",
-		assessmentScore: "0-100整数",
-		volunteerHours: "0-100小数",
-		dormitoryRanking: "0-1小数",
-		behaviorScore: "0-20整数",
-		massResearchScore: "0-5小数",
+		class_name: "输入班级",
+		identity_type: "选择身份类型",
+		moral_rank: "0-1小数",
+		academic_rank: "0-1小数",
+		assessment_score: "0-100整数",
+		dorm_score: "0-100整数",
+		behavior_score: "0-20整数",
+		public_opinion_score: "0-5小数",
+	}
+
+	// 字段提示映射
+	const fieldMaxVal: Partial<Record<typeof editableFields[number], number| undefined>> = {
+		name: undefined,
+		class_name: undefined,
+		identity_type: undefined,
+		moral_rank: 1.0,
+		academic_rank: 1.0,
+		assessment_score: 100,
+		dorm_score: 100,
+		behavior_score: 20,
+		public_opinion_score: 5,
 	}
 
 	// 字段格式化显示
@@ -535,49 +458,15 @@ const PortraitEntryPageContent: React.FC = () => {
 													onClick={() => handleCellClick(member.id, field)}
 												>
 													{editingCell.rowId === member.id && editingCell.field === field ? (
-														field === "memberType" ? (
+														field === "identity_type" ? (
 															renderMemberTypeSelector(member, field)
 														) : (
 															<Input
 																ref={inputRef}
-																type={
-																	field === "assessmentScore" || field === "behaviorScore"
-																		? "number"
-																		: field === "moralRanking" ||
-																		field === "academicLevel" ||
-																		field === "volunteerHours" ||
-																		field === "dormitoryRanking" ||
-																		field === "massResearchScore"
-																			? "number"
-																			: "text"
-																}
-																step={
-																	field === "volunteerHours"
-																		? "0.5"
-																		: field === "moralRanking" ||
-																		field === "academicLevel" ||
-																		field === "dormitoryRanking"
-																			? "0.01"
-																			: field === "massResearchScore"
-																				? "0.01"
-																				: "1"
-																}
-																min={0}
-																max={
-																	field === "assessmentScore"
-																		? 100
-																		: field === "behaviorScore"
-																			? 10
-																			: field === "volunteerHours"
-																				? 100
-																				: field === "moralRanking" ||
-																				field === "academicLevel" ||
-																				field === "dormitoryRanking"
-																					? 1
-																					: field === "massResearchScore"
-																						? 5
-																						: undefined
-																}
+																type={ field === 'name' || field === 'class_name' ? 'text' : 'number' }
+																step={ 1 }
+																min={ 0 }
+																max={ fieldMaxVal[field] }
 																className="h-8 text-center"
 																value={String(member[field as keyof typeof member])}
 																onChange={(e) => handleCellChange(e.target.value, member.id, field)}

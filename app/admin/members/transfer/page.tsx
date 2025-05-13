@@ -20,103 +20,10 @@ import {Textarea} from "@/components/ui/textarea"
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
 import {CheckCircle, Search, XCircle} from "lucide-react"
 import {useToast} from "@/hooks/use-toast"
+import {TransferAPI} from "@/lib/api/transfer";
 
 // 模拟转接申请数据
-const transferApplications = [
-	{
-		id: "1",
-		name: "吴天宇",
-		avatar: "/placeholder.svg?key=gbmz3",
-		studentId: "3200439056",
-		targetOrganization: "浙江工业大学软件学院党支部",
-		reason: "工作就业",
-		applyDate: "2024-09-25",
-		status: "approved",
-	},
-	{
-		id: "2",
-		name: "周晓萌",
-		avatar: "/placeholder.svg?key=gbmz3",
-		studentId: "3200439041",
-		targetOrganization: "腾讯科技有限公司党支部",
-		reason: "工作就业",
-		applyDate: "2024-07-28",
-		status: "approved",
-	},
-	{
-		id: "3",
-		name: "刘泽宇",
-		avatar: "/placeholder.svg?key=gbmz3",
-		studentId: "3200439006",
-		targetOrganization: "杭州爱声科技有限公司党支部",
-		reason: "工作就业",
-		applyDate: "2024-07-12",
-		status: "approved",
-	},
-
-	{
-		id: "4",
-		name: "李明壹",
-		avatar: "/placeholder.svg?key=xwxiy",
-		studentId: "3190439001",
-		targetOrganization: "宁波大学计算机学院学生党支部",
-		reason: "考研升学",
-		applyDate: "2023-08-15",
-		status: "approved",
-	},
-	{
-		id: "5",
-		name: "王思远",
-		avatar: "/placeholder.svg?key=kedzx",
-		studentId: "3190439002",
-		targetOrganization: "华为技术有限公司党支部",
-		reason: "工作就业",
-		applyDate: "2023-06-20",
-		status: "approved",
-	},
-	{
-		id: "6",
-		name: "陈雨欣",
-		avatar: "/placeholder.svg?key=1eufs",
-		studentId: "3190439023",
-		targetOrganization: "浙江理工大学电子信息学院党支部",
-		reason: "考研升学",
-		applyDate: "2023-10-05",
-		status: "approved",
-	},
-	{
-		id: "7",
-		name: "陈雨欣",
-		avatar: "/placeholder.svg?key=1eufs",
-		studentId: "3190439023",
-		targetOrganization: "浙江理工大学电子信息学院软件学生党支部",
-		reason: "考研升学",
-		applyDate: "2023-10-05",
-		status: "rejected",
-	},
-	{
-		id: "8",
-		name: "张浩然",
-		avatar: "/placeholder.svg?key=gbmz3",
-		studentId: "3190439056",
-		targetOrganization: "腾讯科技有限公司党支部",
-		reason: "工作就业",
-		applyDate: "2023-12-01",
-		status: "pending",
-	},
-	{
-		id: "9",
-		name: "赵雅婷",
-		avatar: "/placeholder.svg?key=gbmz3",
-		studentId: "3200439005",
-		targetOrganization: "郑州大学计算机学生党支部",
-		reason: "考研升学",
-		applyDate: "2023-12-01",
-		status: "pending",
-	},
-
-
-]
+const transferApplications = TransferAPI.get()
 
 // 模拟转入申请数据
 const incomingTransfers = [
@@ -155,9 +62,9 @@ export default function TransferManagementPage() {
 			.filter((transfer) => status === "all" || transfer.status === status)
 			.filter(
 				(transfer) =>
-					transfer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-					transfer.studentId.includes(searchTerm) ||
-					transfer.targetOrganization.toLowerCase().includes(searchTerm.toLowerCase()),
+					transfer.user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+					transfer.user.student_number.includes(searchTerm) ||
+					transfer.targetOrganization.name.toLowerCase().includes(searchTerm.toLowerCase()),
 			)
 	}
 
@@ -241,17 +148,17 @@ export default function TransferManagementPage() {
 													 className="flex items-center justify-between p-4 border rounded-lg">
 													<div className="flex items-center space-x-4">
 														<Avatar>
-															<AvatarFallback>{transfer.name.substring(transfer.name.length - 2)}</AvatarFallback>
+															<AvatarFallback>{transfer.user.name.substring(transfer.user.name.length - 2)}</AvatarFallback>
 														</Avatar>
 														<div>
-															<p className="font-medium">{transfer.name}</p>
-															<p className="text-sm text-muted-foreground">{transfer.studentId}</p>
+															<p className="font-medium">{transfer.user.name}</p>
+															<p className="text-sm text-muted-foreground">{transfer.user.student_number}</p>
 														</div>
 													</div>
 													<div className="flex items-center space-x-4">
 														<div className="text-sm text-right">
-															<p>目标组织: {transfer.targetOrganization}</p>
-															<p className="text-muted-foreground">申请日期: {transfer.applyDate}</p>
+															<p>目标组织: {transfer.targetOrganization.name}</p>
+															<p className="text-muted-foreground">申请日期: {transfer.applyDate.toDateString()}</p>
 														</div>
 														<Badge
 															variant={
@@ -283,22 +190,22 @@ export default function TransferManagementPage() {
 																<DialogContent>
 																	<DialogHeader>
 																		<DialogTitle>审核转接申请</DialogTitle>
-																		<DialogDescription>审核 {transfer.name} 的组织关系转接申请</DialogDescription>
+																		<DialogDescription>审核 {transfer.user.name} 的组织关系转接申请</DialogDescription>
 																	</DialogHeader>
 																	<div className="grid gap-4 py-4">
 																		<div className="grid grid-cols-2 gap-4">
 																			<div>
 																				<Label>申请人</Label>
-																				<p className="text-sm font-medium">{transfer.name}</p>
+																				<p className="text-sm font-medium">{transfer.user.name}</p>
 																			</div>
 																			<div>
 																				<Label>学号</Label>
-																				<p className="text-sm font-medium">{transfer.studentId}</p>
+																				<p className="text-sm font-medium">{transfer.user.student_number}</p>
 																			</div>
 																		</div>
 																		<div>
 																			<Label>目标组织</Label>
-																			<p className="text-sm font-medium">{transfer.targetOrganization}</p>
+																			<p className="text-sm font-medium">{transfer.targetOrganization.name}</p>
 																		</div>
 																		<div>
 																			<Label>申请原因</Label>
@@ -306,7 +213,7 @@ export default function TransferManagementPage() {
 																		</div>
 																		<div>
 																			<Label>申请日期</Label>
-																			<p className="text-sm font-medium">{transfer.applyDate}</p>
+																			<p className="text-sm font-medium">{transfer.applyDate.toDateString()}</p>
 																		</div>
 																		<div className="space-y-2">
 																			<Label htmlFor="comment">审核意见</Label>
@@ -358,17 +265,17 @@ export default function TransferManagementPage() {
 													 className="flex items-center justify-between p-4 border rounded-lg">
 													<div className="flex items-center space-x-4">
 														<Avatar>
-															<AvatarFallback>{transfer.name.substring(transfer.name.length - 2)}</AvatarFallback>
+															<AvatarFallback>{transfer.user.name.substring(transfer.user.name.length - 2)}</AvatarFallback>
 														</Avatar>
 														<div>
-															<p className="font-medium">{transfer.name}</p>
-															<p className="text-sm text-muted-foreground">{transfer.studentId}</p>
+															<p className="font-medium">{transfer.user.name}</p>
+															<p className="text-sm text-muted-foreground">{transfer.user.student_number}</p>
 														</div>
 													</div>
 													<div className="flex items-center space-x-4">
 														<div className="text-sm text-right">
-															<p>目标组织: {transfer.targetOrganization}</p>
-															<p className="text-muted-foreground">申请日期: {transfer.applyDate}</p>
+															<p>目标组织: {transfer.targetOrganization.name}</p>
+															<p className="text-muted-foreground">申请日期: {transfer.applyDate.toDateString()}</p>
 														</div>
 														<Badge variant="secondary">待审核</Badge>
 														<Dialog
@@ -385,22 +292,22 @@ export default function TransferManagementPage() {
 															<DialogContent>
 																<DialogHeader>
 																	<DialogTitle>审核转接申请</DialogTitle>
-																	<DialogDescription>审核 {transfer.name} 的组织关系转接申请</DialogDescription>
+																	<DialogDescription>审核 {transfer.user.name} 的组织关系转接申请</DialogDescription>
 																</DialogHeader>
 																<div className="grid gap-4 py-4">
 																	<div className="grid grid-cols-2 gap-4">
 																		<div>
 																			<Label>申请人</Label>
-																			<p className="text-sm font-medium">{transfer.name}</p>
+																			<p className="text-sm font-medium">{transfer.user.name}</p>
 																		</div>
 																		<div>
 																			<Label>学号</Label>
-																			<p className="text-sm font-medium">{transfer.studentId}</p>
+																			<p className="text-sm font-medium">{transfer.user.student_number}</p>
 																		</div>
 																	</div>
 																	<div>
 																		<Label>目标组织</Label>
-																		<p className="text-sm font-medium">{transfer.targetOrganization}</p>
+																		<p className="text-sm font-medium">{transfer.targetOrganization.name}</p>
 																	</div>
 																	<div>
 																		<Label>申请原因</Label>
@@ -408,7 +315,7 @@ export default function TransferManagementPage() {
 																	</div>
 																	<div>
 																		<Label>申请日期</Label>
-																		<p className="text-sm font-medium">{transfer.applyDate}</p>
+																		<p className="text-sm font-medium">{transfer.applyDate.toDateString()}</p>
 																	</div>
 																	<div className="space-y-2">
 																		<Label htmlFor="comment">审核意见</Label>
@@ -458,17 +365,17 @@ export default function TransferManagementPage() {
 													 className="flex items-center justify-between p-4 border rounded-lg">
 													<div className="flex items-center space-x-4">
 														<Avatar>
-															<AvatarFallback>{transfer.name.substring(transfer.name.length - 2)}</AvatarFallback>
+															<AvatarFallback>{transfer.user.name.substring(transfer.user.name.length - 2)}</AvatarFallback>
 														</Avatar>
 														<div>
-															<p className="font-medium">{transfer.name}</p>
-															<p className="text-sm text-muted-foreground">{transfer.studentId}</p>
+															<p className="font-medium">{transfer.user.name}</p>
+															<p className="text-sm text-muted-foreground">{transfer.user.student_number}</p>
 														</div>
 													</div>
 													<div className="flex items-center space-x-4">
 														<div className="text-sm text-right">
-															<p>目标组织: {transfer.targetOrganization}</p>
-															<p className="text-muted-foreground">申请日期: {transfer.applyDate}</p>
+															<p>目标组织: {transfer.targetOrganization.name}</p>
+															<p className="text-muted-foreground">申请日期: {transfer.applyDate.toDateString()}</p>
 														</div>
 														<Badge variant="outline">已批准</Badge>
 														<Button variant="outline" size="sm">
@@ -499,17 +406,17 @@ export default function TransferManagementPage() {
 													 className="flex items-center justify-between p-4 border rounded-lg">
 													<div className="flex items-center space-x-4">
 														<Avatar>
-															<AvatarFallback>{transfer.name.substring(transfer.name.length - 2)}</AvatarFallback>
+															<AvatarFallback>{transfer.user.name.substring(transfer.user.name.length - 2)}</AvatarFallback>
 														</Avatar>
 														<div>
-															<p className="font-medium">{transfer.name}</p>
-															<p className="text-sm text-muted-foreground">{transfer.studentId}</p>
+															<p className="font-medium">{transfer.user.name}</p>
+															<p className="text-sm text-muted-foreground">{transfer.user.student_number}</p>
 														</div>
 													</div>
 													<div className="flex items-center space-x-4">
 														<div className="text-sm text-right">
-															<p>目标组织: {transfer.targetOrganization}</p>
-															<p className="text-muted-foreground">申请日期: {transfer.applyDate}</p>
+															<p>目标组织: {transfer.targetOrganization.name}</p>
+															<p className="text-muted-foreground">申请日期: {transfer.applyDate.toDateString()}</p>
 														</div>
 														<Badge variant="destructive">已拒绝</Badge>
 														<Button variant="outline" size="sm">

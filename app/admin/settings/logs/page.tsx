@@ -6,100 +6,10 @@ import {Input} from "@/components/ui/input"
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
 import {Badge} from "@/components/ui/badge"
 import {Calendar, Search, Settings, User} from "lucide-react"
+import {EventAPI} from "@/lib/api";
 
 // 模拟操作日志数据
-const logs = [
-	{
-		id: "1",
-		user: "陆晨",
-		action: "添加入党申请人",
-		target: "刘晨渡",
-		module: "发展党员管理",
-		ip: "192.168.1.1",
-		time: "2025-05-05 14:30:25",
-		status: "success",
-	},
-	{
-		id: "2",
-		user: "陆晨",
-		action: "修改党员信息",
-		target: "郑浩轩",
-		module: "党员管理",
-		ip: "192.168.1.1",
-		time: "2025-05-05 14:25:10",
-		status: "success",
-	},
-	{
-		id: "3",
-		user: "陆晨",
-		action: "添加活动",
-		target: "支部党员大会",
-		module: "活动管理",
-		ip: "192.168.1.2",
-		time: "2025-05-05 10:15:30",
-		status: "success",
-	},
-	{
-		id: "4",
-		user: "陆晨",
-		action: "登录系统",
-		target: "",
-		module: "系统",
-		ip: "192.168.1.3",
-		time: "2025-05-05 09:45:12",
-		status: "success",
-	},
-	{
-		id: "5",
-		user: "陆晨",
-		action: "登录系统",
-		target: "",
-		module: "系统",
-		ip: "192.168.1.4",
-		time: "2025-05-02 08:30:45",
-		status: "failed",
-	},
-	{
-		id: "6",
-		user: "陆晨",
-		action: "重置密码",
-		target: "何心怡",
-		module: "用户管理",
-		ip: "192.168.1.1",
-		time: "2025-05-01 16:20:18",
-		status: "success",
-	},
-	{
-		id: "7",
-		user: "陆晨",
-		action: "重置密码",
-		target: "赵六",
-		module: "发展党员管理",
-		ip: "192.168.1.1",
-		time: "2023-12-14 16:20:18",
-		status: "success",
-	},
-	{
-		id: "8",
-		user: "陆晨",
-		action: "重置密码",
-		target: "赵六",
-		module: "学习资料",
-		ip: "192.168.1.1",
-		time: "2023-12-14 16:20:18",
-		status: "success",
-	},
-	{
-		id: "9",
-		user: "陆晨",
-		action: "删除活动",
-		target: "党小组会",
-		module: "活动管理",
-		ip: "192.168.1.2",
-		time: "2023-12-14 15:10:05",
-		status: "success",
-	},
-]
+const logs = EventAPI.get();
 
 export default function LogsPage() {
 	const [searchTerm, setSearchTerm] = useState("")
@@ -110,10 +20,10 @@ export default function LogsPage() {
 	const filteredLogs = logs.filter((log) => {
 		// 搜索过滤
 		const matchesSearch =
-			log.user.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			log.action.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			log.target.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			log.time.includes(searchTerm)
+			log.user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			log.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			log.target?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			log.time.toDateString().includes(searchTerm)
 
 		// 模块过滤
 		const matchesModule = moduleFilter === "all" || log.module === moduleFilter
@@ -154,7 +64,7 @@ export default function LogsPage() {
 						{modules
 							.filter((m) => m !== "all")
 							.map((module) => (
-								<SelectItem key={module} value={module}>
+								<SelectItem key={module} value={module ?? '未知'}>
 									{module}
 								</SelectItem>
 							))}
@@ -194,18 +104,18 @@ export default function LogsPage() {
 										</div>
 										<div>
 											<div className="flex items-center gap-2">
-												<p className="font-medium">{log.action}</p>
+												<p className="font-medium">{log.content}</p>
 												{log.target &&
 													<p className="text-sm text-muted-foreground">- {log.target}</p>}
 											</div>
 											<p className="text-sm text-muted-foreground">
-												操作人: {log.user} | 模块: {log.module}
+												操作人: {log.user.name} | 模块: {log.module}
 											</p>
 										</div>
 									</div>
 									<div className="flex items-center space-x-4">
 										<div className="text-sm text-right">
-											<p>{log.time}</p>
+											<p>{log.time.toDateString()}</p>
 											<p className="text-muted-foreground">IP: {log.ip}</p>
 										</div>
 										<Badge variant={log.status === "success" ? "outline" : "destructive"}>

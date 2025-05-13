@@ -27,311 +27,15 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/c
 
 import {Label} from "@/components/ui/label"
 import {RadioGroup, RadioGroupItem} from "@/components/ui/radio-group"
+import {MemberAPI} from "@/lib/api";
 
 // 党员身份类型
 const identityTypes = ["已毕业党员", "正式党员", "预备党员"]
-
 // 党内职务
 const partyPositions = ["党支部书记", "党支部委员", "普通党员"]
 
 // 模拟党员数据
-const members = [
-	{
-		"id": "S0000000001",
-		"name": "陆晨",
-		"gender": "男",
-		"ethnicity": "汉族",
-		"birthDate": "1993-08-09",
-		"studentId": "0000000001",
-		"className": "数据学院辅导员",
-		"joinDate": "2015-09-10",
-		"position": "党支部书记",
-		"identityType": "正式党员",
-		"contact": "13712345678",
-		"hasArchive": true
-	},
-	{
-		"id": "S3210439004",
-		"name": "徐若瑄",
-		"gender": "女",
-		"ethnicity": "汉族",
-		"birthDate": "2002-12-03",
-		"studentId": "3210439004",
-		"className": "大数据211班",
-		"joinDate": "2023-06-02",
-		"position": "党支部委员",
-		"identityType": "正式党员",
-		"contact": "13901234567",
-		"hasArchive": true
-	},
-	{
-		"id": "S3210439015",
-		"name": "黄俊杰",
-		"gender": "男",
-		"ethnicity": "汉族",
-		"birthDate": "2003-05-19",
-		"studentId": "3210439015",
-		"className": "大数据211班",
-		"joinDate": "2023-06-02",
-		"position": "党支部委员",
-		"identityType": "正式党员",
-		"contact": "13654321987",
-		"hasArchive": true
-	},
-	{
-		"id": "S3210439037",
-		"name": "林诗涵",
-		"gender": "女",
-		"ethnicity": "汉族",
-		"birthDate": "2002-10-08",
-		"studentId": "3210439037",
-		"className": "大数据211班",
-		"joinDate": "2023-12-03",
-		"position": "普通党员",
-		"identityType": "正式党员",
-		"contact": "15012345678",
-		"hasArchive": true
-	},
-	{
-		"id": "S3210439062",
-		"name": "郑浩轩",
-		"gender": "男",
-		"ethnicity": "汉族",
-		"birthDate": "2003-03-25",
-		"studentId": "3210439012",
-		"className": "大数据212班",
-		"joinDate": "2023-08-30",
-		"position": "普通党员",
-		"identityType": "正式党员",
-		"contact": "13876543210",
-		"hasArchive": true
-	},
-	{
-		"id": "S3210439013",
-		"name": "孙雨桐",
-		"gender": "女",
-		"ethnicity": "汉族",
-		"birthDate": "2003-01-14",
-		"studentId": "3210439013",
-		"className": "大数据211班",
-		"joinDate": "2024-06-12",
-		"position": "普通党员",
-		"identityType": "预备党员",
-		"contact": "15901234567",
-		"hasArchive": true
-	},
-	{
-		"id": "S3210439058",
-		"name": "马文博",
-		"gender": "男",
-		"ethnicity": "维吾尔族",
-		"birthDate": "2003-07-07",
-		"studentId": "3210439058",
-		"className": "大数据212班",
-		"joinDate": "2024-06-12",
-		"position": "普通党员",
-		"identityType": "预备党员",
-		"contact": "13567890123",
-		"hasArchive": true
-	},
-	{
-		"id": "S3220439015",
-		"name": "何心怡",
-		"gender": "女",
-		"ethnicity": "汉族",
-		"birthDate": "2004-04-18",
-		"studentId": "3220439015",
-		"className": "大数据221班",
-		"joinDate": "2024-08-25",
-		"position": "普通党员",
-		"identityType": "预备党员",
-		"contact": "13765432109",
-		"hasArchive": true
-	},
-	{
-		"id": "S3220439016",
-		"name": "罗一鸣",
-		"gender": "男",
-		"ethnicity": "藏族",
-		"birthDate": "2004-06-11",
-		"studentId": "3220439016",
-		"className": "大数据221班",
-		"joinDate": "2024-08-25",
-		"position": "普通党员",
-		"identityType": "预备党员",
-		"contact": "13609876543",
-		"hasArchive": true
-	},
-	{
-		"id": "S3220439020",
-		"name": "蔡宇航",
-		"gender": "男",
-		"ethnicity": "汉族",
-		"birthDate": "2004-02-01",
-		"studentId": "3220439020",
-		"className": "大数据221班",
-		"joinDate": "2023-08-25",
-		"position": "普通党员",
-		"identityType": "预备党员",
-		"contact": "13543210987",
-		"hasArchive": true
-	},
-	{
-		"id": "S3220439034",
-		"name": "梁思琪",
-		"gender": "女",
-		"ethnicity": "汉族",
-		"birthDate": "2004-08-23",
-		"studentId": "3220439034",
-		"className": "大数据221班",
-		"joinDate": "2024-08-25",
-		"position": "普通党员",
-		"identityType": "预备党员",
-		"contact": "15801234567",
-		"hasArchive": true
-	},
-	{
-		"id": "S3220439069",
-		"name": "郭子豪",
-		"gender": "男",
-		"ethnicity": "汉族",
-		"birthDate": "2004-11-29",
-		"studentId": "3220439069",
-		"className": "大数据222班",
-		"joinDate": "2024-12-11",
-		"position": "普通党员",
-		"identityType": "预备党员",
-		"contact": "13987654321",
-		"hasArchive": true
-	},
-	{
-		"id": "S3220439071",
-		"name": "高梦瑶",
-		"gender": "女",
-		"ethnicity": "汉族",
-		"birthDate": "2004-02-17",
-		"studentId": "3220439071",
-		"className": "大数据222班",
-		"joinDate": "2024-12-11",
-		"position": "普通党员",
-		"identityType": "预备党员",
-		"contact": "15098761234",
-		"hasArchive": true
-	},
-
-	{
-		"id": "S3190439001",
-		"name": "李明壹",
-		"gender": "男",
-		"ethnicity": "汉族",
-		"birthDate": "2001-03-14",
-		"studentId": "3190439001",
-		"className": "大数据191班",
-		"joinDate": "2021-06-10",
-		"position": "普通党员",
-		"identityType": "已毕业党员",
-		"contact": "13936008951",
-		"hasArchive": true
-	},
-	{
-		"id": "S3190439002",
-		"name": "王思远",
-		"gender": "男",
-		"ethnicity": "回族",
-		"birthDate": "2000-11-05",
-		"studentId": "3190439002",
-		"className": "大数据191班",
-		"joinDate": "2022-07-15",
-		"position": "普通党员",
-		"identityType": "已毕业党员",
-		"contact": "13845126789",
-		"hasArchive": true
-	},
-	{
-		"id": "S3190439023",
-		"name": "陈雨欣",
-		"gender": "女",
-		"ethnicity": "汉族",
-		"birthDate": "2002-02-28",
-		"studentId": "3190439023",
-		"className": "大数据191班",
-		"joinDate": "2021-06-10",
-		"position": "普通党员",
-		"identityType": "已毕业党员",
-		"contact": "15098765432",
-		"hasArchive": true
-	},
-	{
-		"id": "S3190439056",
-		"name": "张浩然",
-		"gender": "男",
-		"ethnicity": "满族",
-		"birthDate": "1999-08-17",
-		"studentId": "3190439056",
-		"className": "大数据192班",
-		"joinDate": "2021-09-01",
-		"position": "普通党员",
-		"identityType": "已毕业党员",
-		"contact": "13612349876",
-		"hasArchive": true
-	},
-	{
-		"id": "S3200439005",
-		"name": "赵雅婷",
-		"gender": "女",
-		"ethnicity": "汉族",
-		"birthDate": "2001-06-22",
-		"studentId": "3200439005",
-		"className": "大数据201班",
-		"joinDate": "2022-05-18",
-		"position": "普通党员",
-		"identityType": "已毕业党员",
-		"contact": "15987654321",
-		"hasArchive": true
-	},
-	{
-		"id": "S3200439018",
-		"name": "刘泽宇",
-		"gender": "男",
-		"ethnicity": "汉族",
-		"birthDate": "2002-04-09",
-		"studentId": "3200439006",
-		"className": "大数据201班",
-		"joinDate": "2022-11-25",
-		"position": "普通党员",
-		"identityType": "已毕业党员",
-		"contact": "13524681357",
-		"hasArchive": true
-	},
-	{
-		"id": "S3200439041",
-		"name": "周晓萌",
-		"gender": "女",
-		"ethnicity": "汉族",
-		"birthDate": "2002-07-12",
-		"studentId": "3200439041",
-		"className": "大数据202班",
-		"joinDate": "2023-01-05",
-		"position": "普通党员",
-		"identityType": "已毕业党员",
-		"contact": "13798765432",
-		"hasArchive": true
-	},
-	{
-		"id": "S3200439056",
-		"name": "吴天宇",
-		"gender": "男",
-		"ethnicity": "壮族",
-		"birthDate": "2002-09-30",
-		"studentId": "3200439056",
-		"className": "大数据202班",
-		"joinDate": "2023-06-20",
-		"position": "普通党员",
-		"identityType": "已毕业党员",
-		"contact": "15876543210",
-		"hasArchive": true
-	}
-]
+const members = MemberAPI.get().filter((member) => member.identity_type === '已毕业党员' || member.identity_type === '正式党员' || member.identity_type === '预备党员')
 
 export default function MembersList() {
 	const [searchTerm, setSearchTerm] = useState("")
@@ -344,13 +48,13 @@ export default function MembersList() {
 	// 过滤党员
 	const filterMembers = () => {
 		return members
-			.filter((member) => selectedIdentity === "all" || member.identityType === selectedIdentity)
+			.filter((member) => selectedIdentity === "all" || member.identity_type === selectedIdentity)
 			.filter(
 				(member) =>
 					member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-					member.position.toLowerCase().includes(searchTerm.toLowerCase()) ||
-					member.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-					member.studentId.toLowerCase().includes(searchTerm.toLowerCase()),
+					member.party_position?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+					member.id.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
+					member.student_number.toLowerCase().includes(searchTerm.toLowerCase()),
 			)
 	}
 
@@ -462,12 +166,12 @@ export default function MembersList() {
 										<TableCell>{member.name}</TableCell>
 										<TableCell>{member.gender}</TableCell>
 										<TableCell>{member.ethnicity}</TableCell>
-										<TableCell>{member.birthDate}</TableCell>
-										<TableCell>{member.studentId}</TableCell>
-										<TableCell>{member.className}</TableCell>
-										<TableCell>{member.joinDate}</TableCell>
-										<TableCell>{member.position}</TableCell>
-										<TableCell>{member.contact}</TableCell>
+										<TableCell>{member.birth_date.toDateString()}</TableCell>
+										<TableCell>{member.student_number}</TableCell>
+										<TableCell>{member.class_name}</TableCell>
+										<TableCell>{member.join_date.toDateString()}</TableCell>
+										<TableCell>{member.party_position}</TableCell>
+										<TableCell>{member.phone}</TableCell>
 										<TableCell>
 											<DropdownMenu>
 												<DropdownMenuTrigger asChild>

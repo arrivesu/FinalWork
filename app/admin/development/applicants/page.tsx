@@ -20,110 +20,23 @@ import {Checkbox} from "@/components/ui/checkbox"
 import {ArrowRight, Edit, Plus, Search, Trash2} from "lucide-react"
 import {useToast} from "@/hooks/use-toast"
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table"
+import {MemberAPI} from "@/lib/api";
 
-// 模拟入党申请人数据
-const applicants = [
-	{
-		id: "1",
-		name: "刘晨渡",
-		gender: "男",
-		ethnicity: "汉族",
-		avatar: "/placeholder.svg?key=dbl1t",
-		studentId: "3210439023",
-		class: "大数据211班",
-		applyDate: "2021-09-15",
-		status: "已审核",
-		contact: "13905743892",
-	},
-	{
-		"id": "2",
-		"name": "陈雨桐",
-		"gender": "女",
-		"ethnicity": "汉族",
-		"avatar": "/placeholder.svg?key=8x3k9",
-		"studentId": "3210439024",
-		"class": "大数据212班",
-		"applyDate": "2022-03-10",
-		"status": "待审核",
-		"contact": "13845216789"
-	},
-	{
-		"id": "3",
-		"name": "王泽宇",
-		"gender": "男",
-		"ethnicity": "回族",
-		"avatar": "/placeholder.svg?key=7f2m5",
-		"studentId": "3220439025",
-		"class": "大数据221班",
-		"applyDate": "2022-11-25",
-		"status": "已审核",
-		"contact": "15098765432"
-	},
-	{
-		"id": "4",
-		"name": "林心怡",
-		"gender": "女",
-		"ethnicity": "汉族",
-		"avatar": "/placeholder.svg?key=3p9n1",
-		"studentId": "3220439026",
-		"class": "大数据221班",
-		"applyDate": "2023-01-05",
-		"status": "已审核",
-		"contact": "13612349876"
-	},
-	{
-		"id": "5",
-		"name": "霍长风",
-		"gender": "男",
-		"ethnicity": "汉族",
-		"avatar": "/placeholder.svg?key=2t4v9",
-		"studentId": "3220439065",
-		"class": "大数据222班",
-		"applyDate": "2022-10-01",
-		"status": "已审核",
-		"contact": "15822334455"
-	},
-	{
-		"id": "6",
-		"name": "苏映雪",
-		"gender": "女",
-		"ethnicity": "汉族",
-		"avatar": "/placeholder.svg?key=7q8r3",
-		"studentId": "3230439003",
-		"class": "大数据231班",
-		"applyDate": "2023-09-08",
-		"status": "已审核",
-		"contact": "13733445566"
-	},
-	{
-		"id": "7",
-		"name": "傅明远",
-		"gender": "男",
-		"ethnicity": "汉族",
-		"avatar": "/placeholder.svg?key=6n1p5",
-		"studentId": "3230439035",
-		"class": "计算机223班",
-		"applyDate": "2023-09-19",
-		"status": "已存档",
-		"contact": "13566778899"
-	}
-
-
-]
+const applicant_member_list = MemberAPI.get().filter((member) => member.identity_type === '入党申请人')
 
 export default function ApplicantsPage() {
 	const [searchTerm, setSearchTerm] = useState("")
 	const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
 	const [isPromoteDialogOpen, setIsPromoteDialogOpen] = useState(false)
-	const [selectedApplicants, setSelectedApplicants] = useState<string[]>([])
+	const [selectedApplicants, setSelectedApplicants] = useState<number[]>([])
 	const {toast} = useToast()
 
 	// 过滤申请人
-	const filteredApplicants = applicants.filter(
+	const filteredApplicants = applicant_member_list.filter(
 		(applicant) =>
 			applicant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			applicant.studentId.includes(searchTerm) ||
-			applicant.class.toLowerCase().includes(searchTerm.toLowerCase()),
+			applicant.student_number.includes(searchTerm) ||
+			applicant.class_name.toLowerCase().includes(searchTerm.toLowerCase()),
 	)
 
 	const handleAddApplicant = () => {
@@ -150,7 +63,7 @@ export default function ApplicantsPage() {
 		})
 	}
 
-	const toggleSelectApplicant = (id: string) => {
+	const toggleSelectApplicant = (id: number) => {
 		setSelectedApplicants((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]))
 	}
 
@@ -180,10 +93,10 @@ export default function ApplicantsPage() {
 								<p>选中的入党申请人：</p>
 								<ul className="mt-2 space-y-1">
 									{selectedApplicants.map((id) => {
-										const applicant = applicants.find((a) => a.id === id)
+										const applicant = applicant_member_list.find((a) => a.id === id)
 										return (
 											<li key={id} className="text-sm">
-												{applicant?.name} - {applicant?.studentId}
+												{applicant?.name} - {applicant?.student_number}
 											</li>
 										)
 									})}
@@ -339,10 +252,10 @@ export default function ApplicantsPage() {
 											<TableCell className="text-center">{applicant.name}</TableCell>
 											<TableCell className="text-center">{applicant.gender}</TableCell>
 											<TableCell className="text-center">{applicant.ethnicity}</TableCell>
-											<TableCell className="text-center">{applicant.studentId}</TableCell>
-											<TableCell className="text-center">{applicant.class}</TableCell>
-											<TableCell className="text-center">{applicant.applyDate}</TableCell>
-											<TableCell className="text-center">{applicant.contact}</TableCell>
+											<TableCell className="text-center">{applicant.student_number}</TableCell>
+											<TableCell className="text-center">{applicant.class_name}</TableCell>
+											<TableCell className="text-center">{applicant.join_date.toDateString()}</TableCell>
+											<TableCell className="text-center">{applicant.phone}</TableCell>
 											<TableCell className="text-right">
 												<div className="flex justify-end gap-2">
 													<Button variant="ghost" size="icon">

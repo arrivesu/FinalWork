@@ -17,115 +17,23 @@ import {Checkbox} from "@/components/ui/checkbox"
 import {ArrowRight, Edit, Search, Trash2} from "lucide-react"
 import {useToast} from "@/hooks/use-toast"
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table"
+import {MemberAPI} from "@/lib/api";
 
 // 模拟入党积极分子数据
-const activists = [
-
-	{
-		"id": "1",
-		"name": "陆清妍",
-		"gender": "女",
-		"ethnicity": "汉族",
-		"avatar": "/placeholder.svg?key=3j9m4",
-		"studentId": "3210439034",
-		"class": "大数据211班",
-		"applyDate": "2022-10-14",
-		activistDate: "2022-12-15",
-		"status": "需补材料",
-		"contact": "15900112231"
-	},
-	{
-		id: "2",
-		name: "唐骁",
-		gender: "男",
-		ethnicity: "汉族",
-		avatar: "/placeholder.svg?key=wbexc",
-		studentId: "3210439049",
-		class: "大数据212班",
-		applyDate: "2022-09-20",
-		activistDate: "2022-12-15",
-		status: "培养中",
-		contact: "13811223348",
-	},
-	{
-		id: "3",
-		name: "郑云帆",
-		gender: "男",
-		ethnicity: "汉族",
-		avatar: "/placeholder.svg?key=d4zqg",
-		studentId: "3210439061",
-		class: "大数据212班",
-		applyDate: "2022-10-05",
-		activistDate: "2023-01-10",
-		status: "培养中",
-		contact: "15045278894",
-	},
-	{
-		id: "4",
-		name: "徐晚晴",
-		gender: "女",
-		ethnicity: "汉族",
-		avatar: "/placeholder.svg?key=xxanz",
-		studentId: "3220439031",
-		class: "大数据221班",
-		applyDate: "2022-10-10",
-		activistDate: "2023-01-10",
-		status: "培养结束",
-		contact: "13625780431",
-	},
-	{
-		id: "5",
-		name: "陈青",
-		gender: "女",
-		ethnicity: "汉族",
-		avatar: "/placeholder.svg?key=xxanz",
-		studentId: "3230439009",
-		class: "大数据231班",
-		applyDate: "2022-10-10",
-		activistDate: "2024-06-08",
-		status: "培养结束",
-		contact: "13646805768",
-	},
-	{
-		id: "6",
-		name: "徐立伟",
-		gender: "男",
-		ethnicity: "汉族",
-		avatar: "/placeholder.svg?key=xxanz",
-		studentId: "3230439033",
-		class: "大数据231班",
-		applyDate: "2022-10-10",
-		activistDate: "2024-06-08",
-		status: "培养结束",
-		contact: "13671231642",
-	},
-	{
-		id: "6",
-		name: "徐立伟",
-		gender: "男",
-		ethnicity: "汉族",
-		avatar: "/placeholder.svg?key=xxanz",
-		studentId: "3230439033",
-		class: "大数据231班",
-		applyDate: "2022-10-10",
-		activistDate: "2024-06-08",
-		status: "培养结束",
-		contact: "13677886589",
-	}
-]
+const activist_member_list = MemberAPI.get().filter((member) => member.identity_type === '入党积极分子')
 
 export default function ActivistsPage() {
 	const [searchTerm, setSearchTerm] = useState("")
 	const [isPromoteDialogOpen, setIsPromoteDialogOpen] = useState(false)
-	const [selectedActivists, setSelectedActivists] = useState<string[]>([])
+	const [selectedActivists, setSelectedActivists] = useState<number[]>([])
 	const {toast} = useToast()
 
 	// 过滤积极分子
-	const filteredActivists = activists.filter(
+	const filteredActivists = activist_member_list.filter(
 		(activist) =>
 			activist.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			activist.studentId.includes(searchTerm) ||
-			activist.class.toLowerCase().includes(searchTerm.toLowerCase()),
+			activist.student_number.includes(searchTerm) ||
+			activist.class_name.toLowerCase().includes(searchTerm.toLowerCase()),
 	)
 
 	const handlePromote = () => {
@@ -144,7 +52,7 @@ export default function ActivistsPage() {
 		})
 	}
 
-	const toggleSelectActivist = (id: string) => {
+	const toggleSelectActivist = (id: number) => {
 		setSelectedActivists((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]))
 	}
 
@@ -174,10 +82,10 @@ export default function ActivistsPage() {
 								<p>选中的入党积极分子：</p>
 								<ul className="mt-2 space-y-1">
 									{selectedActivists.map((id) => {
-										const activist = activists.find((a) => a.id === id)
+										const activist = activist_member_list.find((a) => a.id === id)
 										return (
 											<li key={id} className="text-sm">
-												{activist?.name} - {activist?.studentId}
+												{activist?.name} - {activist?.student_number}
 											</li>
 										)
 									})}
@@ -252,10 +160,10 @@ export default function ActivistsPage() {
 											<TableCell className="text-center">{activist.name}</TableCell>
 											<TableCell className="text-center">{activist.gender}</TableCell>
 											<TableCell className="text-center">{activist.ethnicity}</TableCell>
-											<TableCell className="text-center">{activist.studentId}</TableCell>
-											<TableCell className="text-center">{activist.class}</TableCell>
-											<TableCell className="text-center">{activist.activistDate}</TableCell>
-											<TableCell className="text-center">{activist.contact}</TableCell>
+											<TableCell className="text-center">{activist.student_number}</TableCell>
+											<TableCell className="text-center">{activist.class_name}</TableCell>
+											<TableCell className="text-center">{activist.join_date.toDateString()}</TableCell>
+											<TableCell className="text-center">{activist.phone}</TableCell>
 											<TableCell className="text-right">
 												<div className="flex justify-end gap-2">
 													<Button variant="ghost" size="icon">

@@ -17,114 +17,22 @@ import {Checkbox} from "@/components/ui/checkbox"
 import {ArrowRight, Edit, Search, Trash2} from "lucide-react"
 import {useToast} from "@/hooks/use-toast"
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table"
+import {MemberAPI} from "@/lib/api";
 
-// 模拟发展对象数据
-const candidates = [
-	{
-		id: "1",
-		name: "王俊吉",
-		gender: "男",
-		ethnicity: "汉族",
-		avatar: "/placeholder.svg?key=d4zqg",
-		studentId: "3210439053",
-		class: "大数据212班",
-		activistDate: "2021-09-15",
-		candidateDate: "2023-06-15",
-		status: "培养中",
-		contact: "13803138255",
-	},
-	{
-		id: "2",
-		name: "赵晨迪",
-		gender: "女",
-		ethnicity: "汉族",
-		avatar: "/placeholder.svg?key=xxanz",
-		studentId: "3210439066",
-		class: "大数据212班",
-		activistDate: "2021-09-20",
-		candidateDate: "2023-06-15",
-		status: "培养中",
-		contact: "13637838006",
-	},
-	{
-		id: "3",
-		name: "苏青荣",
-		gender: "女",
-		ethnicity: "汉族",
-		avatar: "/placeholder.svg?key=9o9wr",
-		studentId: "3220439011",
-		class: "大数据221班",
-		activistDate: "2021-10-05",
-		candidateDate: "2023-09-18",
-		status: "培养结束",
-		contact: "13500138041",
-	},
-	{
-		id: "4",
-		name: "赵斌",
-		gender: "男",
-		ethnicity: "汉族",
-		avatar: "/placeholder.svg?key=pqxtu",
-		studentId: "3220439021",
-		class: "大数据221班",
-		activistDate: "2021-10-10",
-		candidateDate: "2023-09-18",
-		status: "培养结束",
-		contact: "13636248008",
-	},
-	{
-		id: "5",
-		name: "申兰路",
-		gender: "男",
-		ethnicity: "汉族",
-		avatar: "/placeholder.svg?key=pqxtu",
-		studentId: "3220439040",
-		class: "大数据221班",
-		activistDate: "2021-10-10",
-		candidateDate: "2024-04-06",
-		status: "培养结束",
-		contact: "13889145990",
-	},
-	{
-		id: "6",
-		name: "陈东琪",
-		gender: "女",
-		ethnicity: "汉族",
-		avatar: "/placeholder.svg?key=pqxtu",
-		studentId: "3220439067",
-		class: "大数据222班",
-		activistDate: "2021-10-10",
-		candidateDate: "2024-04-06",
-		status: "培养结束",
-		contact: "1346721834",
-	},
-	{
-		id: "7",
-		name: "陈东琪",
-		gender: "女",
-		ethnicity: "汉族",
-		avatar: "/placeholder.svg?key=pqxtu",
-		studentId: "3220439067",
-		class: "大数据222班",
-		activistDate: "2021-10-10",
-		candidateDate: "2024-04-06",
-		status: "培养结束",
-		contact: "1346721834",
-	}
-]
+const candidate_member_list = MemberAPI.get().filter((member) => member.identity_type === '发展对象')
 
 export default function CandidatesPage() {
 	const [searchTerm, setSearchTerm] = useState("")
 	const [isPromoteDialogOpen, setIsPromoteDialogOpen] = useState(false)
-	const [selectedCandidates, setSelectedCandidates] = useState<string[]>([])
+	const [selectedCandidates, setSelectedCandidates] = useState<number[]>([])
 	const {toast} = useToast()
 
 	// 过滤发展对象
-	const filteredCandidates = candidates.filter(
+	const filteredCandidates = candidate_member_list.filter(
 		(candidate) =>
 			candidate.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			candidate.studentId.includes(searchTerm) ||
-			candidate.class.toLowerCase().includes(searchTerm.toLowerCase()),
+			candidate.student_number.includes(searchTerm) ||
+			candidate.class_name.toLowerCase().includes(searchTerm.toLowerCase()),
 	)
 
 	const handlePromote = () => {
@@ -143,7 +51,7 @@ export default function CandidatesPage() {
 		})
 	}
 
-	const toggleSelectCandidate = (id: string) => {
+	const toggleSelectCandidate = (id: number) => {
 		setSelectedCandidates((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]))
 	}
 
@@ -171,10 +79,10 @@ export default function CandidatesPage() {
 								<p>选中的发展对象：</p>
 								<ul className="mt-2 space-y-1">
 									{selectedCandidates.map((id) => {
-										const candidate = candidates.find((a) => a.id === id)
+										const candidate = candidate_member_list.find((a) => a.id === id)
 										return (
 											<li key={id} className="text-sm">
-												{candidate?.name} - {candidate?.studentId}
+												{candidate?.name} - {candidate?.student_number}
 											</li>
 										)
 									})}
@@ -249,10 +157,10 @@ export default function CandidatesPage() {
 											<TableCell className="text-center">{candidate.name}</TableCell>
 											<TableCell className="text-center">{candidate.gender}</TableCell>
 											<TableCell className="text-center">{candidate.ethnicity}</TableCell>
-											<TableCell className="text-center">{candidate.studentId}</TableCell>
-											<TableCell className="text-center">{candidate.class}</TableCell>
-											<TableCell className="text-center">{candidate.candidateDate}</TableCell>
-											<TableCell className="text-center">{candidate.contact}</TableCell>
+											<TableCell className="text-center">{candidate.student_number}</TableCell>
+											<TableCell className="text-center">{candidate.class_name}</TableCell>
+											<TableCell className="text-center">{candidate.join_date.toDateString()}</TableCell>
+											<TableCell className="text-center">{candidate.phone}</TableCell>
 											<TableCell className="text-right">
 												<div className="flex justify-end gap-2">
 													<Button variant="ghost" size="icon">

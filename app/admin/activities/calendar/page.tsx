@@ -22,82 +22,10 @@ import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
 import {CalendarIcon, CalendarPlus2Icon as CalendarIcon2, Clock, Edit, MapPin, Plus, Trash2} from "lucide-react"
 import {useToast} from "@/hooks/use-toast"
 import {Badge} from "@/components/ui/badge"
+import {ActivitiesAPI} from "@/lib/api";
 
 // 模拟活动数据 - 添加了更多事件
-const initialActivities = [
-	{
-		id: "1",
-		title: "支部党员大会",
-		date: "2025-08-15",
-		time: "14:00-16:00",
-		location: "第一会议室",
-		type: "meeting",
-		content: "1. 学习贯彻党的二十大精神\n2. 总结2024年工作\n3. 讨论2025年工作计划",
-	},
-	{
-		id: "2",
-		title: "党课学习",
-		date: "2025-03-15",
-		time: "19:00-20:30",
-		location: "线上会议",
-		type: "lecture",
-		content: "学习《习近平新时代中国特色社会主义思想》",
-	},
-	{
-		id: "3",
-		title: "志愿服务活动",
-		date: "2025-03-20",
-		time: "09:00-12:00",
-		location: "社区服务中心",
-		type: "activity",
-		content: "开展社区环境清洁志愿服务活动",
-	},
-	{
-		id: "4",
-		title: "党史学习小组",
-		date: "2025-05-10",
-		time: "15:00-17:00",
-		location: "党员活动室",
-		type: "lecture",
-		content: "学习中国共产党百年奋斗历程",
-	},
-	{
-		id: "5",
-		title: "社区慰问活动",
-		date: "2025-05-15",
-		time: "10:00-12:00",
-		location: "敬老院",
-		type: "activity",
-		content: "慰问社区孤寡老人，开展文艺演出",
-	},
-	{
-		id: "6",
-		title: "党建工作研讨会",
-		date: "2025-05-25",
-		time: "14:00-17:00",
-		location: "第二会议室",
-		type: "meeting",
-		content: "研讨基层党建工作创新方法",
-	},
-	{
-		id: "7",
-		title: "主题党日活动",
-		date: "2025-06-05",
-		time: "09:30-11:30",
-		location: "革命纪念馆",
-		type: "activity",
-		content: "参观革命纪念馆，缅怀革命先烈",
-	},
-	{
-		id: "8",
-		title: "党员发展大会",
-		date: "2025-06-15",
-		time: "14:30-16:30",
-		location: "大会议室",
-		type: "meeting",
-		content: "讨论发展新党员事宜",
-	},
-]
+const initialActivities = ActivitiesAPI.get();
 
 // 活动类型对应的颜色
 const typeColors = {
@@ -120,7 +48,8 @@ export default function WorkCalendarPage() {
 	const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
 	const [activities, setActivities] = useState(initialActivities)
 	const [activeTab, setActiveTab] = useState("today")
-	const [newActivity, setNewActivity] = useState({
+	// TODO 修改Activity type
+	const [newActivity, setNewActivity] = useState<ActivityType>({
 		title: "",
 		date: "",
 		time: "",
@@ -134,8 +63,7 @@ export default function WorkCalendarPage() {
 	const getActivitiesByDate = (selectedDate: Date | undefined) => {
 		if (!selectedDate) return []
 
-		const dateString = selectedDate.toISOString().split("T")[0]
-		return activities.filter((activity) => activity.date === dateString)
+		return activities.filter((activity) => activity.date === selectedDate)
 	}
 
 	// 获取未来的活动
@@ -153,7 +81,7 @@ export default function WorkCalendarPage() {
 
 	// 获取有活动的日期
 	const eventDates = useMemo(() => {
-		const dates = new Set<string>()
+		const dates = new Set<Date>()
 		activities.forEach((activity) => {
 			dates.add(activity.date)
 		})
@@ -217,7 +145,7 @@ export default function WorkCalendarPage() {
 		})
 	}
 
-	const handleDeleteActivity = (activityId: string) => {
+	const handleDeleteActivity = (activityId: number) => {
 		setActivities((prev) => prev.filter((activity) => activity.id !== activityId))
 
 		toast({
@@ -228,8 +156,7 @@ export default function WorkCalendarPage() {
 
 	// 自定义日历渲染，标记有事件的日期
 	const renderCalendarDay = ({displayMonth, date}: { displayMonth: Date; date: Date; }) => {
-		const dateString = date.toISOString().split("T")[0]
-		const hasEvent = eventDates.includes(dateString)
+		const hasEvent = eventDates.includes(date)
 
 		return (
 			<div className="relative">
@@ -403,7 +330,7 @@ export default function WorkCalendarPage() {
 													<div
 														className={`h-3 w-3 rounded-full ${typeColors[activity.type as keyof typeof typeColors]}`}
 													></div>
-													<h3 className="font-medium">{activity.title}</h3>
+													<h3 className="font-medium">{activity.name}</h3>
 													<Badge
 														variant="outline">{typeNames[activity.type as keyof typeof typeNames]}</Badge>
 												</div>
@@ -421,7 +348,7 @@ export default function WorkCalendarPage() {
 											<div className="flex flex-wrap gap-4 mt-2 text-sm text-muted-foreground">
 												<div className="flex items-center gap-1">
 													<Clock className="h-4 w-4"/>
-													<span>{activity.time}</span>
+													<span>{activity.date.toDateString()}</span>
 												</div>
 												<div className="flex items-center gap-1">
 													<MapPin className="h-4 w-4"/>
@@ -452,7 +379,7 @@ export default function WorkCalendarPage() {
 													<div
 														className={`h-3 w-3 rounded-full ${typeColors[activity.type as keyof typeof typeColors]}`}
 													></div>
-													<h3 className="font-medium">{activity.title}</h3>
+													<h3 className="font-medium">{activity.name}</h3>
 													<Badge
 														variant="outline">{typeNames[activity.type as keyof typeof typeNames]}</Badge>
 												</div>
@@ -480,7 +407,7 @@ export default function WorkCalendarPage() {
 												</div>
 												<div className="flex items-center gap-1">
 													<Clock className="h-4 w-4"/>
-													<span>{activity.time}</span>
+													<span>{activity.date.toDateString()}</span>
 												</div>
 												<div className="flex items-center gap-1">
 													<MapPin className="h-4 w-4"/>

@@ -20,64 +20,10 @@ import {Textarea} from "@/components/ui/textarea"
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
 import {Download, Edit, FileText, Plus, Search, Trash2, Upload, Video} from "lucide-react"
 import {useToast} from "@/hooks/use-toast"
+import {MaterialAPI} from "@/lib/api";
 
 // 模拟学习资料数据
-const resources = [
-	{
-		id: "1",
-		title: "习近平新时代中国特色社会主义思想学习纲要",
-		type: "document",
-		category: "理论学习",
-		date: "2025-2-18",
-		size: "2.5MB",
-		downloads: 96,
-	},
-	{
-		id: "2",
-		title: "党的二十大报告学习材料",
-		type: "document",
-		category: "理论学习",
-		date: "2025-02-18",
-		size: "3.8MB",
-		downloads: 85,
-	},
-	{
-		id: "3",
-		title: "中国共产党简史",
-		type: "document",
-		category: "党史学习",
-		date: "2025-02-15",
-		size: "5.2MB",
-		downloads: 89,
-	},
-	{
-		id: "4",
-		title: "中国共产党党章",
-		type: "document",
-		category: "党章学习",
-		date: "2025-02-15",
-		size: "1.8MB",
-		downloads: 110,
-	},
-	{
-		id: "5",
-		title: "党的二十大精神解读视频",
-		type: "video",
-		category: "理论学习",
-		date: "2025-01-05",
-		size: "120MB",
-		downloads: 98,
-	},
-	{
-		id: "6",
-		title: "党史学习教育专题片",
-		type: "video",
-		category: "党史学习",
-		date: "2023-06-20",
-		size: "150MB",
-		downloads: 76,
-	},
-]
+const resources = MaterialAPI.get();
 
 export default function AdminResourcesPage() {
 	const [searchTerm, setSearchTerm] = useState("")
@@ -253,8 +199,7 @@ export default function AdminResourcesPage() {
 													<div className="flex items-center gap-2 mt-1">
 														<Badge variant="outline">{resource.category}</Badge>
 														<p className="text-xs text-muted-foreground">
-															上传时间: {resource.date} | 大小: {resource.size} |
-															下载次数: {resource.downloads}
+															上传时间: {resource.upload_date.toDateString()}
 														</p>
 													</div>
 												</div>
@@ -377,8 +322,7 @@ export default function AdminResourcesPage() {
 													<div className="flex items-center gap-2 mt-1">
 														<Badge variant="outline">{resource.category}</Badge>
 														<p className="text-xs text-muted-foreground">
-															上传时间: {resource.date} | 大小: {resource.size} |
-															下载次数: {resource.downloads}
+															上传时间: {resource.upload_date.toDateString()}
 														</p>
 													</div>
 												</div>
@@ -433,8 +377,7 @@ export default function AdminResourcesPage() {
 													<div className="flex items-center gap-2 mt-1">
 														<Badge variant="outline">{resource.category}</Badge>
 														<p className="text-xs text-muted-foreground">
-															上传时间: {resource.date} | 大小: {resource.size} |
-															下载次数: {resource.downloads}
+															上传时间: {resource.upload_date.toDateString()}
 														</p>
 													</div>
 												</div>
@@ -489,8 +432,7 @@ export default function AdminResourcesPage() {
 													<div className="flex items-center gap-2 mt-1">
 														<Badge variant="outline">{resource.category}</Badge>
 														<p className="text-xs text-muted-foreground">
-															上传时间: {resource.date} | 大小: {resource.size} |
-															下载次数: {resource.downloads}
+															上传时间: {resource.upload_date.toDateString()}
 														</p>
 													</div>
 												</div>

@@ -19,56 +19,107 @@ import {
 	Tooltip,
 } from "chart.js"
 import {Bar, Doughnut, Line, Pie} from "react-chartjs-2"
+import {ActivitiesAPI, MemberAPI} from "@/lib/api";
 
 // Register ChartJS components
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Title, Tooltip, Legend)
 
-// Mock data for statistics
-const membershipData = {
-	total: 34,
-	active: 28,
-	inactive: 14,
-	byGender: {male: 15, female: 19},
-	byAge: {"18-30": 33, "31-40": 1, "41-50": 0, "51+": 0},
-	byEducation: {高中: 0, 大专: 0, 本科: 33, 硕士: 1, 博士: 0},
-	byClass: {大数据211班: 13, 大数据212班: 12, 大数据221班: 4, 大数据222班: 5},
-}
+function getStatisticsData() {
+	const member_list = MemberAPI.get();
 
-const activityData = {
-	meetingsCount: 24,
-	meetingsAttendance: 87,
-	educationCount: 36,
-	educationAttendance: 92,
-
-	byMonth: {
-		"1月": {meetings: 2, education: 3},
-		"2月": {meetings: 1, education: 2},
-		"3月": {meetings: 3, education: 4},
-		"4月": {meetings: 2, education: 3},
-		"5月": {meetings: 2, education: 3},
-		"6月": {meetings: 3, education: 4},
-		"7月": {meetings: 1, education: 2},
-		"8月": {meetings: 2, education: 3},
-		"9月": {meetings: 2, education: 4},
-		"10月": {meetings: 3, education: 3},
-		"11月": {meetings: 2, education: 3},
-		"12月": {meetings: 1, education: 2},
-	},
-}
-
-const developmentData = {
-	applicants: 32,
-	activists: 21,
-	candidates: 11,
-	newMembers: 6,
-	byStage: {
-		入党申请人: 40,
-		入党积极分子: 25,
-		发展对象: 15,
-		预备党员: 10,
-		正式党员: 24,
+	function getAge(birthday: Date): number {
+		const today = new Date();
+		let age = today.getFullYear() - birthday.getFullYear();
+		const hasHadBirthdayThisYear =
+			today.getMonth() > birthday.getMonth() ||
+			(today.getMonth() === birthday.getMonth() &&
+				today.getDate() >= birthday.getDate());
+		if (!hasHadBirthdayThisYear) {
+			age--;
+		}
+		return age;
 	}
+
+	const membershipData = {
+		total: member_list.length,
+		active: member_list.filter((member) => member.identity_type === '正式党员').length,
+		inactive: member_list.filter((member) => member.identity_type === '预备党员').length,
+		byGender: {
+			male: member_list.filter((member) => member.gender === '男').length,
+			female: member_list.filter((member) => member.gender === '女').length,
+		},
+		byAge: member_list.reduce(
+			(acc: Record<string, number>, member, idx, arr) => {
+				const age = getAge(member.birth_date);
+				const groupStart = Math.floor(age / 10) * 10;
+				const groupLabel = `${groupStart}-${groupStart + 9}岁`;
+				acc[groupLabel] = (acc[groupLabel] || 0) + 1;
+				return acc;
+			}, {}),
+		byClass: member_list.reduce(
+			(acc: Record<string, number>, member, idx, arr) => {
+				acc[member.class_name] = (acc[member.class_name] || 0) + 1;
+				return acc;
+			}, {})
+	}
+
+	return membershipData;
 }
+
+function getDevelopmentData() {
+	const userData = MemberAPI.get();
+
+	const developmentData = {
+		applicants: userData.filter((member) => member.identity_type === '入党申请人').length,
+		activists: userData.filter((member) => member.identity_type === '入党积极分子').length,
+		candidates: userData.filter((member) => member.identity_type === '发展对象').length,
+
+		byStage: {
+			'入党申请人': userData.filter((member) => member.identity_type === '入党申请人').length,
+			'入党积极分子': userData.filter((member) => member.identity_type === '入党积极分子').length,
+			'发展对象': userData.filter((member) => member.identity_type === '发展对象').length,
+			'预备党员': userData.filter((member) => member.identity_type === '预备党员').length,
+			'正式党员': userData.filter((member) => member.identity_type === '正式党员').length,
+		}
+	}
+
+	return developmentData;
+}
+
+function getActivitiesData() {
+	const activities_data = ActivitiesAPI.get();
+
+	const activityData = {
+		meetingsCount: activities_data.filter((activity) => activity.type === '会议').length,
+		meetingsAttendance: 87,
+		educationCount: activities_data.filter((activity) => activity.type === '学习教育活动').length,
+		educationAttendance: 92,
+
+		byMonth: activities_data.reduce(
+			(acc: Record<string, { meetings: number; education: number }>, activity, idx, arr) => {
+				const month = activity.date.getMonth() + 1; // 1 - 12
+				const key = `${month}月`;
+
+				if (!acc[key]) {
+					acc[key] = { meetings: 0, education: 0 };
+				}
+
+				if (activity.type === '会议') {
+					acc[key].meetings += 1;
+				} else if (activity.type === '学习教育活动') {
+					acc[key].education += 1;
+				}
+
+				return acc;
+			}, {}),
+	}
+
+	return activityData;
+}
+
+const membershipData = getStatisticsData();
+const activityData = getActivitiesData();
+const developmentData = getDevelopmentData();
 
 // Chart color palette
 const chartColors = {
@@ -138,19 +189,6 @@ export default function StatisticsPage() {
 		],
 	}
 
-	// Education distribution chart data
-	const educationChartData = {
-		labels: Object.keys(membershipData.byEducation),
-		datasets: [
-			{
-				data: Object.values(membershipData.byEducation),
-				backgroundColor: chartColors.background.slice(0, Object.keys(membershipData.byEducation).length),
-				borderColor: ["#fff", "#fff", "#fff", "#fff", "#fff"],
-				borderWidth: 2,
-			},
-		],
-	}
-
 	// Class distribution chart data
 	const departmentChartData = {
 		labels: Object.keys(membershipData.byClass),
@@ -186,26 +224,6 @@ export default function StatisticsPage() {
 				borderWidth: 2,
 				tension: 0.3,
 			},
-		],
-	}
-
-	// Monthly activity distribution chart data
-	const monthlyActivityChartData = {
-		labels: Object.keys(activityData.byMonth),
-		datasets: [
-			{
-				label: "会议",
-				data: Object.values(activityData.byMonth).map((item) => item.meetings),
-				backgroundColor: chartColors.primary,
-				stack: "Stack 0",
-			},
-			{
-				label: "学习教育活动",
-				data: Object.values(activityData.byMonth).map((item) => item.education),
-				backgroundColor: chartColors.secondary,
-				stack: "Stack 0",
-			},
-
 		],
 	}
 
@@ -393,30 +411,6 @@ export default function StatisticsPage() {
 								</div>
 							</div>
 						</Card>
-						<Card>
-							<CardHeader>
-								<CardTitle>党员学历分布</CardTitle>
-								<CardDescription>按学历统计党员分布</CardDescription>
-							</CardHeader>
-							<CardContent className="flex justify-center">
-								<div className="w-full h-[250px]">
-									<Pie data={educationChartData} options={pieChartOptions}/>
-								</div>
-							</CardContent>
-							<div className="px-6 pb-6">
-								<div className="grid grid-cols-5 gap-2">
-									{Object.entries(membershipData.byEducation).map(([edu, count]) => (
-										<div key={edu} className="flex flex-col items-center">
-											<span className="text-xs font-medium">{edu}</span>
-											<span className="text-lg font-bold">{count}</span>
-											<span className="text-xs text-muted-foreground">
-                        {Math.round((count / membershipData.total) * 100)}%
-                      </span>
-										</div>
-									))}
-								</div>
-							</div>
-						</Card>
 						<Card className="lg:col-span-3">
 							<CardHeader>
 								<CardTitle>党员班级分布</CardTitle>
@@ -528,10 +522,6 @@ export default function StatisticsPage() {
 											<h4 className="text-sm font-medium">发展对象</h4>
 											<p className="text-2xl font-bold">{developmentData.candidates}</p>
 										</div>
-										<div className="space-y-2">
-											<h4 className="text-sm font-medium">新发展党员</h4>
-											<p className="text-2xl font-bold">{developmentData.newMembers}</p>
-										</div>
 									</div>
 									<div className="pt-4 border-t">
 										<h4 className="text-sm font-medium mb-2">转化率分析</h4>
@@ -564,22 +554,6 @@ export default function StatisticsPage() {
 														className="bg-red-500 h-1.5 rounded-full"
 														style={{
 															width: `${Math.round((developmentData.candidates / developmentData.activists) * 100)}%`,
-														}}
-													></div>
-												</div>
-											</div>
-											<div>
-												<div className="flex justify-between mb-1">
-													<span className="text-xs">发展对象 → 新党员</span>
-													<span className="text-xs font-medium">
-                            {Math.round((developmentData.newMembers / developmentData.candidates) * 100)}%
-                          </span>
-												</div>
-												<div className="w-full bg-muted rounded-full h-1.5">
-													<div
-														className="bg-red-500 h-1.5 rounded-full"
-														style={{
-															width: `${Math.round((developmentData.newMembers / developmentData.candidates) * 100)}%`,
 														}}
 													></div>
 												</div>
