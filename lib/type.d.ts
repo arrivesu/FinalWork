@@ -27,7 +27,7 @@ interface MemberType {
 	identity_type: '正式党员' | '预备党员',		// 党员类别
 	phone: string,								// 电话号码
 	profile_file: string,						// 电子档案地址
-	branch_id: number,							// 党支部编号
+	branch: BranchType,							// 所属党支部
 	role: RoleType[]
 }
 
@@ -43,8 +43,8 @@ interface ActivityType {
 }
 
 interface ActivityJoinType {
-	id: number,									// 活动参加id
-	members: MemberType,						// 参加的成员
+	activity: ActivityType,						// 参加的活动
+	member: MemberType,						// 参加的成员
 	status: string,								// 参加状态
 }
 
