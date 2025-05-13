@@ -14,7 +14,7 @@ interface BranchType {
 }
 
 interface MemberType {
-	userId: number,								// 用户id
+	id: number,								// 用户id
 	username: string,							// 用户名
 	avatar: string,								// 用户头像
 	name: string,								// 名字
