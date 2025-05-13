@@ -14,17 +14,19 @@ interface BranchType {
 }
 
 interface MemberType {
-	id: number,								// 用户id
+	id: number,									// 用户id
+	is_deleted: boolean,						// 是否被逻辑删除(如转出)
 	username: string,							// 用户名
 	avatar: string,								// 用户头像
 	name: string,								// 名字
 	gender: '男' | '女',							// 性别
+	ethnicity: string,							// 民族
 	birth_date: Date,							// 生日
 	student_number: string,						// 学号
 	class_name: string,							// 班级
 	join_date: Date,							// 入党时间
 	party_position: string| null,				// 党内职位(如支部书记等)
-	identity_type: '正式党员' | '预备党员',		// 党员类别
+	identity_type: '已毕业党员' | '正式党员' | '预备党员' | '入党申请人' | '入党积极分子' | '发展对象',		// 党员类别
 	phone: string,								// 电话号码
 	profile_file: string,						// 电子档案地址
 	branch: BranchType,							// 所属党支部
@@ -34,7 +36,7 @@ interface MemberType {
 interface ActivityType {
 	id: number,									// 活动id
 	name: string,								// 活动名
-	type: string,								// 活动类型
+	type: '会议' | '学习教育活动',					// 活动类型
 	date: Date,									// 活动时间
 	location: string,							// 活动地点
 	content: string,							// 活动内容
@@ -52,12 +54,20 @@ interface EventType {
 	id: number									// 事件id
 	user: MemberType							// 事件所属用户
 	time: Date									// 事件时间
+	module: string | null						// 触发事件的模块
+	status: 'success' | 'reject'				// 事件的状态
+	ip: string									// 触发事件的设备ip
+	target: string | null						// 事件作用对象,可能为空
 	content: string								// 事件内容
 }
 
 interface MaterialType {
 	id: number,									// 学习资料id
+	title: string								// 资料名
+	type: 'document' | 'video'					// 资料形式
+	category: '理论学习' | '党史学习' | '党章学习'	// 资料分类
 	content: string,							// 资料内容
+	upload_date: Date,							// 上传时间
 	branch: BranchType,							// 资料所属支部
 }
 
@@ -79,4 +89,13 @@ interface UserDataType {
 	dorm_score: number,							// 寝室卫生得分
 	behavior_score: number,						// 行为纪实得分
 	public_opinion_score: number,				// 群众调研得分
+}
+
+interface TransferDataType {
+	id: number,									// 转接id
+	user: MemberType,							// 转接的用户
+	targetOrganization: BranchType,
+	reason: string,
+	applyDate: Date,
+	status: 'pending' | 'approved' | 'rejected',
 }
