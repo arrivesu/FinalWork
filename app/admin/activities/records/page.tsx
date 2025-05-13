@@ -21,90 +21,69 @@ import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
 import {Calendar, Clock, Edit, MapPin, Plus, Search, Trash2, UserCheck, Users} from "lucide-react"
 import {useToast} from "@/hooks/use-toast"
 import {MemberAttendanceDialog} from "./member-attendance-dialog"
+import {ActivitiesAPI, ActivityJoinAPI, MemberAPI} from "@/lib/api";
 
 // 模拟活动数据
-const activities: {
-	id: string
-	title: string
-	date: string
-	time: string
-	location: string
-	type: string
-	status: string
-	participants: number
-	totalMembers: number
-	content: string
-	memberStatuses: any[]
-}[] = [
+const activities = ActivitiesAPI.get();
 
+enum TimeFilterType {
+	BEFORE = "before",
+	AFTER = "after",
+	ALL = "all",
+}
 
-	{
-		id: "1",
-		title: "中央八项规定精神学习教育",
-		date: "2025-04-05",
-		time: "09:00-11:00",
-		location: "石麟大楼412会议室",
-		type: "党课",
-		status: "已完成",
-		participants: 34,
-		totalMembers: 34,
-		content: "组织党员学习中央八项规定精神。",
-		memberStatuses: [],
-	},
-	{
-		id: "2",
-		title: "初心之旅党日活动",
-		date: "2025-03-16",
-		time: "14:00-17:00",
-		location: "宁波大学校区",
-		type: "党日活动",
-		status: "已完成",
-		participants: 32,
-		totalMembers: 34,
-		content: "组织党员赴宁波大学开展“初心之旅”主题党日活动。",
-		memberStatuses: [],
-	},
-	{
-		id: "3",
-		title: "2025年第一次支部党员大会",
-		date: "2025-01-15",
-		time: "14:00-16:00",
-		location: "第一会议室",
-		type: "支部党员大会",
-		status: "已完成",
-		participants: 34,
-		totalMembers: 34,
-		content: "开展支部党员大会，进行批评与自我批评，激励党员发挥先锋模范作用。",
-		memberStatuses: [],
-	},
+const isComplte = (activity: ActivityType) => {
+	return new Date() > activity.date;
+}
 
-	{
-		id: "4",
-		title: "学习贯彻党的二十大精神",
-		date: "2023-10-25",
-		time: "19:00-21:00",
-		location: "线上会议",
-		type: "学习活动",
-		status: "已完成",
-		participants: 31,
-		totalMembers: 34,
-		content: "组织党员学习贯彻党的二十大精神，深入理解党的二十大报告内容。",
-		memberStatuses: [],
-	},
-	{
-		id: "5",
-		title: "重温入党誓词活动",
-		date: "2024-01-15",
-		time: "10:00-11:30",
-		location: "党员活动室",
-		type: "组织活动",
-		status: "未开始",
-		participants: 0,
-		totalMembers: 34,
-		content: "组织党员重温入党誓词，牢记入党初心，坚定理想信念。",
-		memberStatuses: [],
-	},
-]
+const timefilter = (time: Date, filter: TimeFilterType) => {
+	switch (filter) {
+		case TimeFilterType.BEFORE:
+			return new Date() > time;
+		case TimeFilterType.AFTER:
+			return new Date() <= time;
+		case TimeFilterType.ALL:
+			return true;
+	}
+}
+
+const getActivityMember = (activity: ActivityType): MemberType[] => {
+	const join_list = ActivityJoinAPI.get();
+	return join_list
+		.filter((join_item) => join_item.activity.id === activity.id)
+		.map((join_item) => join_item.member);
+}
+
+const getBranchMember = (branch: BranchType) => {
+	const member_list = MemberAPI.get();
+	return member_list.filter((member) => member.branch.id === branch.id)
+}
+
+function formatDateFlexible(date: Date, template = 'YYYY-MM-DD HH:mm:ss'): string {
+	const padZero = (n: number): string => n.toString().padStart(2, '0');
+
+	const replacements: { [key: string]: string } = {
+		YYYY: date.getFullYear().toString(),
+		MM: padZero(date.getMonth() + 1),
+		DD: padZero(date.getDate()),
+		HH: padZero(date.getHours()),
+		mm: padZero(date.getMinutes()),
+		ss: padZero(date.getSeconds()),
+	};
+
+	return Object.entries(replacements).reduce(
+		(acc, [key, value]) => acc.replace(key, value),
+		template
+	);
+}
+
+const getDateTimeParts = (date: Date) => {
+	return formatDateFlexible(date, "YYYY-MM-DD");
+}
+
+const getDayTimeParts = (date: Date) => {
+	return formatDateFlexible(date, "HH:mm:ss");
+}
 
 export default function ActivityRecordsPage() {
 	const [searchTerm, setSearchTerm] = useState("")
@@ -116,21 +95,21 @@ export default function ActivityRecordsPage() {
 	const {toast} = useToast()
 
 	// 过滤活动
-	const filterActivities = (status: string) => {
+	const filterActivities = (filter: TimeFilterType) => {
 		return activitiesList
-			.filter((activity) => status === "all" || activity.status === status)
+			.filter((activity) => timefilter(activity.date, filter))
 			.filter(
 				(activity) =>
-					activity.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+					activity.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
 					activity.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
 					activity.location.toLowerCase().includes(searchTerm.toLowerCase()),
 			)
 			.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()) // 按日期降序排序
 	}
 
-	const allActivities = filterActivities("all")
-	const completedActivities = filterActivities("已完成")
-	const upcomingActivities = filterActivities("未开始")
+	const allActivities = filterActivities(TimeFilterType.ALL)
+	const completedActivities = filterActivities(TimeFilterType.BEFORE)
+	const upcomingActivities = filterActivities(TimeFilterType.AFTER)
 
 	const handleAddActivity = () => {
 		setIsAddDialogOpen(false)
@@ -280,19 +259,19 @@ export default function ActivityRecordsPage() {
 								<Card key={activity.id}>
 									<CardHeader className="pb-2">
 										<div className="flex items-center justify-between">
-											<CardTitle>{activity.title}</CardTitle>
+											<CardTitle>{activity.name}</CardTitle>
 											<Badge
-												variant={activity.status === "已完成" ? "outline" : "secondary"}>{activity.status}</Badge>
+												variant={isComplte(activity) ? "outline" : "secondary"}>{isComplte(activity) ? '已完成': '进行中'}</Badge>
 										</div>
 										<CardDescription>
 											<div className="flex flex-wrap gap-4 mt-2">
 												<div className="flex items-center gap-1">
 													<Calendar className="h-4 w-4 text-muted-foreground"/>
-													<span>{activity.date}</span>
+													<span>{activity.date.toDateString()}</span>
 												</div>
 												<div className="flex items-center gap-1">
 													<Clock className="h-4 w-4 text-muted-foreground"/>
-													<span>{activity.time}</span>
+													<span>{activity.remark}</span>
 												</div>
 												<div className="flex items-center gap-1">
 													<MapPin className="h-4 w-4 text-muted-foreground"/>
@@ -301,9 +280,9 @@ export default function ActivityRecordsPage() {
 												<div className="flex items-center gap-1">
 													<Users className="h-4 w-4 text-muted-foreground"/>
 													<span>
-                            {activity.status === "已完成"
-								? `${activity.participants}/${activity.totalMembers}人参加`
-								: `预计${activity.totalMembers}人参加`}
+                            {isComplte(activity)
+								? `${getActivityMember(activity).length}/${getBranchMember(activity.branch).length}人参加`
+								: `预计${getBranchMember(activity.branch).length}人参加`}
                           </span>
 												</div>
 											</div>
@@ -341,18 +320,18 @@ export default function ActivityRecordsPage() {
 																<div className="space-y-2">
 																	<Label htmlFor="edit-title">活动标题</Label>
 																	<Input id="edit-title"
-																		   defaultValue={activity.title}/>
+																		   defaultValue={activity.name}/>
 																</div>
 																<div className="grid grid-cols-2 gap-4">
 																	<div className="space-y-2">
 																		<Label htmlFor="edit-date">活动日期</Label>
 																		<Input id="edit-date" type="date"
-																			   defaultValue={activity.date}/>
+																			   defaultValue={getDateTimeParts(activity.date)}/>
 																	</div>
 																	<div className="space-y-2">
 																		<Label htmlFor="edit-time">活动时间</Label>
 																		<Input id="edit-time"
-																			   defaultValue={activity.time}/>
+																			   defaultValue={getDayTimeParts(activity.date)}/>
 																	</div>
 																</div>
 																<div className="grid grid-cols-2 gap-4">
@@ -386,7 +365,7 @@ export default function ActivityRecordsPage() {
 																<div className="grid grid-cols-2 gap-4">
 																	<div className="space-y-2">
 																		<Label htmlFor="edit-status">活动状态</Label>
-																		<Select defaultValue={activity.status}>
+																		<Select defaultValue={isComplte(activity) ? '已完成': '未开始'}>
 																			<SelectTrigger>
 																				<SelectValue
 																					placeholder="选择活动状态"/>
@@ -403,7 +382,7 @@ export default function ActivityRecordsPage() {
 																		<Label
 																			htmlFor="edit-participants">参与人数</Label>
 																		<Input id="edit-participants" type="number"
-																			   defaultValue={activity.participants}/>
+																			   defaultValue={getBranchMember(activity.branch).length}/>
 																	</div>
 																</div>
 																<div className="space-y-2">
@@ -448,18 +427,18 @@ export default function ActivityRecordsPage() {
 								<Card key={activity.id}>
 									<CardHeader className="pb-2">
 										<div className="flex items-center justify-between">
-											<CardTitle>{activity.title}</CardTitle>
-											<Badge variant="secondary">{activity.status}</Badge>
+											<CardTitle>{activity.name}</CardTitle>
+											<Badge variant="secondary">{isComplte(activity) ? '已完成': '未开始'}</Badge>
 										</div>
 										<CardDescription>
 											<div className="flex flex-wrap gap-4 mt-2">
 												<div className="flex items-center gap-1">
 													<Calendar className="h-4 w-4 text-muted-foreground"/>
-													<span>{activity.date}</span>
+													<span>{getDateTimeParts(activity.date)}</span>
 												</div>
 												<div className="flex items-center gap-1">
 													<Clock className="h-4 w-4 text-muted-foreground"/>
-													<span>{activity.time}</span>
+													<span>{getDayTimeParts(activity.date)}</span>
 												</div>
 												<div className="flex items-center gap-1">
 													<MapPin className="h-4 w-4 text-muted-foreground"/>
@@ -467,7 +446,7 @@ export default function ActivityRecordsPage() {
 												</div>
 												<div className="flex items-center gap-1">
 													<Users className="h-4 w-4 text-muted-foreground"/>
-													<span>预计{activity.totalMembers}人参加</span>
+													<span>预计{getBranchMember(activity.branch).length}人参加</span>
 												</div>
 											</div>
 										</CardDescription>
@@ -510,18 +489,18 @@ export default function ActivityRecordsPage() {
 								<Card key={activity.id}>
 									<CardHeader className="pb-2">
 										<div className="flex items-center justify-between">
-											<CardTitle>{activity.title}</CardTitle>
-											<Badge variant="outline">{activity.status}</Badge>
+											<CardTitle>{activity.name}</CardTitle>
+											<Badge variant="outline">{isComplte(activity) ? '已完成': '未开始'}</Badge>
 										</div>
 										<CardDescription>
 											<div className="flex flex-wrap gap-4 mt-2">
 												<div className="flex items-center gap-1">
 													<Calendar className="h-4 w-4 text-muted-foreground"/>
-													<span>{activity.date}</span>
+													<span>{getDateTimeParts(activity.date)}</span>
 												</div>
 												<div className="flex items-center gap-1">
 													<Clock className="h-4 w-4 text-muted-foreground"/>
-													<span>{activity.time}</span>
+													<span>{getDayTimeParts(activity.date)}</span>
 												</div>
 												<div className="flex items-center gap-1">
 													<MapPin className="h-4 w-4 text-muted-foreground"/>
@@ -530,8 +509,8 @@ export default function ActivityRecordsPage() {
 												<div className="flex items-center gap-1">
 													<Users className="h-4 w-4 text-muted-foreground"/>
 													<span>
-                            {activity.participants}/{activity.totalMembers}人参加
-                          </span>
+														{getActivityMember(activity).length}/{getBranchMember(activity.branch).length}人参加
+													</span>
 												</div>
 											</div>
 										</CardDescription>
