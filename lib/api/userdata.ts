@@ -4,10 +4,10 @@
  * @author rainbowx
  * @date 2025/5/12
  */
-import {noticeData} from "@/lib/mock/notice";
+import {userData} from "@/lib/mock/userdata";
 
 export const UserDataAPI = {
-	get(): NoticeType[] {
-		return noticeData;
+	get(): UserDataType[] {
+		return userData;
 	}
 }
