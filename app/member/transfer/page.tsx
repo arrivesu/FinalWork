@@ -11,24 +11,10 @@ import {Textarea} from "@/components/ui/textarea"
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
 import {Badge} from "@/components/ui/badge"
 import {useToast} from "@/hooks/use-toast"
+import {TransferAPI} from "@/lib/api";
 
 // 模拟转接申请数据
-const transferApplications = [
-	{
-		id: "1",
-		targetOrganization: "宁波大学计算机学院党支部",
-		reason: "考研升学",
-		applyDate: "2024-06-15",
-		status: "审核中",
-	},
-	{
-		id: "2",
-		targetOrganization: "华为技术有限公司党支部",
-		reason: "工作就业",
-		applyDate: "2024-08-20",
-		status: "已通过",
-	},
-]
+const transferApplications = TransferAPI.get()
 
 export default function TransferPage() {
 	const [targetOrganization, setTargetOrganization] = useState("")
@@ -141,12 +127,12 @@ export default function TransferPage() {
 										<div key={application.id} className="border rounded-lg p-4">
 											<div className="flex justify-between items-start">
 												<div>
-													<h3 className="font-medium">{application.targetOrganization}</h3>
-													<p className="text-sm text-muted-foreground mt-1">申请时间：{application.applyDate}</p>
+													<h3 className="font-medium">{application.targetOrganization.name}</h3>
+													<p className="text-sm text-muted-foreground mt-1">申请时间：{application.applyDate.toDateString()}</p>
 													<p className="text-sm mt-2">转接原因：{application.reason}</p>
 												</div>
 												<Badge
-													variant={application.status === "已通过" ? "outline" : "secondary"}>
+													variant={application.status === 'approved' ? "outline" : "secondary"}>
 													{application.status}
 												</Badge>
 											</div>

@@ -21,69 +21,11 @@ import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
 import {Calendar, Clock, Edit, MapPin, Plus, Search, Trash2, UserCheck, Users} from "lucide-react"
 import {useToast} from "@/hooks/use-toast"
 import {MemberAttendanceDialog} from "./member-attendance-dialog"
-import {ActivitiesAPI, ActivityJoinAPI, MemberAPI} from "@/lib/api";
+import {ActivitiesAPI} from "@/lib/api";
+import {TimeFilterType, timeFilter, isComplete, getDateTimeParts, getDayTimeParts, getActivityMember, getBranchMember} from "@/lib/utils";
 
 // 模拟活动数据
 const activities = ActivitiesAPI.get();
-
-enum TimeFilterType {
-	BEFORE = "before",
-	AFTER = "after",
-	ALL = "all",
-}
-
-const isComplte = (activity: ActivityType) => {
-	return new Date() > activity.date;
-}
-
-const timefilter = (time: Date, filter: TimeFilterType) => {
-	switch (filter) {
-		case TimeFilterType.BEFORE:
-			return new Date() > time;
-		case TimeFilterType.AFTER:
-			return new Date() <= time;
-		case TimeFilterType.ALL:
-			return true;
-	}
-}
-
-const getActivityMember = (activity: ActivityType): MemberType[] => {
-	const join_list = ActivityJoinAPI.get();
-	return join_list
-		.filter((join_item) => join_item.activity.id === activity.id)
-		.map((join_item) => join_item.member);
-}
-
-const getBranchMember = (branch: BranchType) => {
-	const member_list = MemberAPI.get();
-	return member_list.filter((member) => member.branch.id === branch.id)
-}
-
-function formatDateFlexible(date: Date, template = 'YYYY-MM-DD HH:mm:ss'): string {
-	const padZero = (n: number): string => n.toString().padStart(2, '0');
-
-	const replacements: { [key: string]: string } = {
-		YYYY: date.getFullYear().toString(),
-		MM: padZero(date.getMonth() + 1),
-		DD: padZero(date.getDate()),
-		HH: padZero(date.getHours()),
-		mm: padZero(date.getMinutes()),
-		ss: padZero(date.getSeconds()),
-	};
-
-	return Object.entries(replacements).reduce(
-		(acc, [key, value]) => acc.replace(key, value),
-		template
-	);
-}
-
-const getDateTimeParts = (date: Date) => {
-	return formatDateFlexible(date, "YYYY-MM-DD");
-}
-
-const getDayTimeParts = (date: Date) => {
-	return formatDateFlexible(date, "HH:mm:ss");
-}
 
 export default function ActivityRecordsPage() {
 	const [searchTerm, setSearchTerm] = useState("")
@@ -97,19 +39,19 @@ export default function ActivityRecordsPage() {
 	// 过滤活动
 	const filterActivities = (filter: TimeFilterType) => {
 		return activitiesList
-			.filter((activity) => timefilter(activity.date, filter))
+			.filter((activity) => timeFilter(activity.date, filter))
 			.filter(
 				(activity) =>
 					activity.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
 					activity.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
 					activity.location.toLowerCase().includes(searchTerm.toLowerCase()),
 			)
-			.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()) // 按日期降序排序
+			.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()); // 按日期降序排序
 	}
 
 	const allActivities = filterActivities(TimeFilterType.ALL)
 	const completedActivities = filterActivities(TimeFilterType.BEFORE)
-	const upcomingActivities = filterActivities(TimeFilterType.AFTER)
+	const upcomingActivities = filterActivities(TimeFilterType.COMPLETE)
 
 	const handleAddActivity = () => {
 		setIsAddDialogOpen(false)
@@ -261,7 +203,7 @@ export default function ActivityRecordsPage() {
 										<div className="flex items-center justify-between">
 											<CardTitle>{activity.name}</CardTitle>
 											<Badge
-												variant={isComplte(activity) ? "outline" : "secondary"}>{isComplte(activity) ? '已完成': '进行中'}</Badge>
+												variant={isComplete(activity) ? "outline" : "secondary"}>{isComplete(activity) ? '已完成': '进行中'}</Badge>
 										</div>
 										<CardDescription>
 											<div className="flex flex-wrap gap-4 mt-2">
@@ -280,10 +222,10 @@ export default function ActivityRecordsPage() {
 												<div className="flex items-center gap-1">
 													<Users className="h-4 w-4 text-muted-foreground"/>
 													<span>
-                            {isComplte(activity)
-								? `${getActivityMember(activity).length}/${getBranchMember(activity.branch).length}人参加`
-								: `预计${getBranchMember(activity.branch).length}人参加`}
-                          </span>
+														{isComplete(activity)
+															? `${getActivityMember(activity).length}/${getBranchMember(activity.branch).length}人参加`
+															: `预计${getBranchMember(activity.branch).length}人参加`}
+													</span>
 												</div>
 											</div>
 										</CardDescription>
@@ -365,7 +307,7 @@ export default function ActivityRecordsPage() {
 																<div className="grid grid-cols-2 gap-4">
 																	<div className="space-y-2">
 																		<Label htmlFor="edit-status">活动状态</Label>
-																		<Select defaultValue={isComplte(activity) ? '已完成': '未开始'}>
+																		<Select defaultValue={isComplete(activity) ? '已完成': '未开始'}>
 																			<SelectTrigger>
 																				<SelectValue
 																					placeholder="选择活动状态"/>
@@ -428,7 +370,7 @@ export default function ActivityRecordsPage() {
 									<CardHeader className="pb-2">
 										<div className="flex items-center justify-between">
 											<CardTitle>{activity.name}</CardTitle>
-											<Badge variant="secondary">{isComplte(activity) ? '已完成': '未开始'}</Badge>
+											<Badge variant="secondary">{isComplete(activity) ? '已完成': '未开始'}</Badge>
 										</div>
 										<CardDescription>
 											<div className="flex flex-wrap gap-4 mt-2">
@@ -490,7 +432,7 @@ export default function ActivityRecordsPage() {
 									<CardHeader className="pb-2">
 										<div className="flex items-center justify-between">
 											<CardTitle>{activity.name}</CardTitle>
-											<Badge variant="outline">{isComplte(activity) ? '已完成': '未开始'}</Badge>
+											<Badge variant="outline">{isComplete(activity) ? '已完成': '未开始'}</Badge>
 										</div>
 										<CardDescription>
 											<div className="flex flex-wrap gap-4 mt-2">

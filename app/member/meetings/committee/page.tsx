@@ -5,70 +5,24 @@ import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
 import {Badge} from "@/components/ui/badge"
 import {Button} from "@/components/ui/button"
 import {Calendar, Clock, MapPin, Users} from "lucide-react"
+import {MeetingAPI} from "@/lib/api";
+import {
+	getActivityMember, getBranchMember,
+	getDateTimeParts,
+	getDayTimeParts,
+	getStatus,
+	isComplete,
+	timeFilter,
+	TimeFilterType
+} from "@/lib/utils";
 
 // 模拟支部委员会会议数据
-const meetings = [
-	{
-		id: "1",
-		title: "2025年1月支部委员会",
-		date: "2025-01-15",
-		time: "14:00-16:00",
-		location: "党员活动室",
-		status: "已完成",
-		attendees: 5,
-		totalMembers: 5,
-		content: "1. 讨论2025年第一季度工作计划\n2. 讨论预备党员转正工作\n3. 讨论党员教育培训工作",
-	},
-	{
-		id: "2",
-		title: "2024年12月支部委员会",
-		date: "2024-12-10",
-		time: "14:00-16:00",
-		location: "党员活动室",
-		status: "已完成",
-		attendees: 5,
-		totalMembers: 5,
-		content: "1. 讨论2024年工作总结\n2. 讨论2025年工作计划\n3. 讨论发展党员工作\n4. 讨论党员教育培训工作",
-	},
-	{
-		id: "3",
-		title: "2023年11月支部委员会",
-		date: "2023-11-12",
-		time: "14:00-16:00",
-		location: "党员活动室",
-		status: "已完成",
-		attendees: 5,
-		totalMembers: 5,
-		content: "1. 讨论党员发展工作\n2. 讨论党员教育培训工作\n3. 讨论党员管理工作\n4. 讨论党员服务工作",
-	},
-	{
-		id: "4",
-		title: "2023年10月支部委员会",
-		date: "2023-10-15",
-		time: "14:00-16:00",
-		location: "党员活动室",
-		status: "已完成",
-		attendees: 4,
-		totalMembers: 5,
-		content: "1. 讨论党员发展工作\n2. 讨论党员教育培训工作\n3. 讨论党员管理工作\n4. 讨论党员服务工作",
-	},
-	{
-		id: "5",
-		title: "2024年1月支部委员会",
-		date: "2024-01-14",
-		time: "14:00-16:00",
-		location: "党员活动室",
-		status: "未开始",
-		attendees: 0,
-		totalMembers: 5,
-		content: "1. 讨论2024年1月工作计划\n2. 讨论党员发展工作\n3. 讨论党员教育培训工作\n4. 讨论党员管理工作",
-	},
-]
+const meetings = MeetingAPI.get().filter((meeting) => meeting.type === '支部委员会')
 
 export default function CommitteeMeetings() {
 	// 过滤会议
-	const completedMeetings = meetings.filter((meeting) => meeting.status === "已完成")
-	const upcomingMeetings = meetings.filter((meeting) => meeting.status === "未开始")
+	const completedMeetings = meetings.filter((meeting) => timeFilter(meeting.date, TimeFilterType.COMPLETE))
+	const upcomingMeetings = meetings.filter((meeting) => timeFilter(meeting.date, TimeFilterType.BEFORE))
 
 	return (
 		<div className="space-y-6">
@@ -90,21 +44,20 @@ export default function CommitteeMeetings() {
 								<CardHeader className="pb-2">
 									<div className="flex items-center justify-between">
 										<CardTitle>{meeting.title}</CardTitle>
-										<Badge
-											variant={meeting.status === "已完成" ? "outline" : "secondary"}>{meeting.status}</Badge>
+										<Badge variant={isComplete(meeting) ? "outline" : "secondary"}>{getStatus(meeting)}</Badge>
 									</div>
 									<CardDescription>
 										<div className="flex flex-wrap gap-4 mt-2">
 											<div className="flex items-center gap-1">
 												<Calendar className="h-4 w-4 text-muted-foreground"/>
-												<span>{meeting.date}</span>
+												<span>{meeting.date.toDateString()}</span>
 											</div>
 											<div className="flex items-center gap-1">
-												<span>{meeting.date}</span>
+												<span>{getDateTimeParts(meeting.date)}</span>
 											</div>
 											<div className="flex items-center gap-1">
 												<Clock className="h-4 w-4 text-muted-foreground"/>
-												<span>{meeting.time}</span>
+												<span>{getDayTimeParts(meeting.date)}</span>
 											</div>
 											<div className="flex items-center gap-1">
 												<MapPin className="h-4 w-4 text-muted-foreground"/>
@@ -113,10 +66,10 @@ export default function CommitteeMeetings() {
 											<div className="flex items-center gap-1">
 												<Users className="h-4 w-4 text-muted-foreground"/>
 												<span>
-                          {meeting.status === "已完成"
-							  ? `${meeting.attendees}/${meeting.totalMembers}人参加`
-							  : `预计${meeting.totalMembers}人参加`}
-                        </span>
+													{isComplete(meeting)
+														? `${getBranchMember(meeting.branch).length}/${getBranchMember(meeting.branch).length}人参加`
+														: `预计${getBranchMember(meeting.branch).length}人参加`}
+												</span>
 											</div>
 										</div>
 									</CardDescription>
@@ -141,17 +94,17 @@ export default function CommitteeMeetings() {
 								<CardHeader className="pb-2">
 									<div className="flex items-center justify-between">
 										<CardTitle>{meeting.title}</CardTitle>
-										<Badge variant="outline">{meeting.status}</Badge>
+										<Badge variant="outline">{getStatus(meeting)}</Badge>
 									</div>
 									<CardDescription>
 										<div className="flex flex-wrap gap-4 mt-2">
 											<div className="flex items-center gap-1">
 												<Calendar className="h-4 w-4 text-muted-foreground"/>
-												<span>{meeting.date}</span>
+												<span>{getDateTimeParts(meeting.date)}</span>
 											</div>
 											<div className="flex items-center gap-1">
 												<Clock className="h-4 w-4 text-muted-foreground"/>
-												<span>{meeting.time}</span>
+												<span>{getDayTimeParts(meeting.date)}</span>
 											</div>
 											<div className="flex items-center gap-1">
 												<MapPin className="h-4 w-4 text-muted-foreground"/>
@@ -160,8 +113,8 @@ export default function CommitteeMeetings() {
 											<div className="flex items-center gap-1">
 												<Users className="h-4 w-4 text-muted-foreground"/>
 												<span>
-                          {meeting.attendees}/{meeting.totalMembers}人参加
-                        </span>
+												  	`${getBranchMember(meeting.branch).length}/${getBranchMember(meeting.branch).length}人参加`
+												</span>
 											</div>
 										</div>
 									</CardDescription>
@@ -186,17 +139,17 @@ export default function CommitteeMeetings() {
 								<CardHeader className="pb-2">
 									<div className="flex items-center justify-between">
 										<CardTitle>{meeting.title}</CardTitle>
-										<Badge variant="secondary">{meeting.status}</Badge>
+										<Badge variant="secondary">{getStatus(meeting)}</Badge>
 									</div>
 									<CardDescription>
 										<div className="flex flex-wrap gap-4 mt-2">
 											<div className="flex items-center gap-1">
 												<Calendar className="h-4 w-4 text-muted-foreground"/>
-												<span>{meeting.date}</span>
+												<span>{getDateTimeParts(meeting.date)}</span>
 											</div>
 											<div className="flex items-center gap-1">
 												<Clock className="h-4 w-4 text-muted-foreground"/>
-												<span>{meeting.time}</span>
+												<span>{getDayTimeParts(meeting.date)}</span>
 											</div>
 											<div className="flex items-center gap-1">
 												<MapPin className="h-4 w-4 text-muted-foreground"/>
@@ -204,7 +157,7 @@ export default function CommitteeMeetings() {
 											</div>
 											<div className="flex items-center gap-1">
 												<Users className="h-4 w-4 text-muted-foreground"/>
-												<span>预计{meeting.totalMembers}人参加</span>
+												<span>预计{getBranchMember(meeting.branch).length}人参加</span>
 											</div>
 										</div>
 									</CardDescription>

@@ -7,102 +7,39 @@ import {Button} from "@/components/ui/button"
 import {Badge} from "@/components/ui/badge"
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
 import {Calendar, Clock, MapPin, Search, Users} from "lucide-react"
+import {ActivitiesAPI} from "@/lib/api";
+import {
+	getActivityMember, getStatus,
+	getBranchMember,
+	getDateTimeParts,
+	getDayTimeParts,
+	isComplete,
+	timeFilter,
+	TimeFilterType
+} from "@/lib/utils";
 
 // 模拟党日活动数据
-const activities = [
-	{
-		id: "1",
-		title: "初心之旅党日活动",
-		date: "2025-03-16",
-		time: "14:00-17:00",
-		location: "宁波大学校区",
-		type: "党日活动",
-		status: "已完成",
-		participants: 32,
-		totalMembers: 34,
-		content: "组织党员赴宁波大学开展“初心之旅”主题党日活动。",
-	},
-	{
-		id: "2",
-		title: "参观革命历史纪念馆",
-		date: "2024-12-20",
-		time: "09:00-12:00",
-		location: "市革命历史纪念馆",
-		type: "实践活动",
-		status: "已完成",
-		participants: 33,
-		totalMembers: 34,
-		content: "组织党员参观革命历史纪念馆，学习革命历史，传承红色基因。",
-	},
-	{
-		id: "3",
-		title: "社区志愿服务活动",
-		date: "2024-11-15",
-		time: "14:00-17:00",
-		location: "和平社区",
-		type: "志愿服务",
-		status: "已完成",
-		participants: 30,
-		totalMembers: 34,
-		content: "组织党员到社区开展志愿服务，包括环境清洁、为老人提供帮助等。",
-	},
-	{
-		id: "4",
-		title: "学习贯彻党的二十大精神",
-		date: "2023-10-25",
-		time: "19:00-21:00",
-		location: "线上会议",
-		type: "学习活动",
-		status: "已完成",
-		participants: 40,
-		totalMembers: 42,
-		content: "组织党员学习贯彻党的二十大精神，深入理解党的二十大报告内容。",
-	},
-	{
-		id: "5",
-		title: "党员先锋岗评选活动",
-		date: "2023-09-18",
-		time: "14:00-16:00",
-		location: "第一会议室",
-		type: "组织活动",
-		status: "已完成",
-		participants: 38,
-		totalMembers: 41,
-		content: "开展党员先锋岗评选活动，表彰先进党员，激励党员发挥先锋模范作用。",
-	},
-	{
-		id: "6",
-		title: "重温入党誓词活动",
-		date: "2024-01-15",
-		time: "10:00-11:30",
-		location: "党员活动室",
-		type: "组织活动",
-		status: "未开始",
-		participants: 0,
-		totalMembers: 42,
-		content: "组织党员重温入党誓词，牢记入党初心，坚定理想信念。",
-	},
-]
+const activities = ActivitiesAPI.get();
 
 export default function ActivitiesPage() {
 	const [searchTerm, setSearchTerm] = useState("")
 
 	// 过滤活动
-	const filterActivities = (status: string) => {
+	const filterActivities = (status: TimeFilterType) => {
 		return activities
-			.filter((activity) => status === "all" || activity.status === status)
+			.filter((activity) => status === "all" || timeFilter(activity.date, status))
 			.filter(
 				(activity) =>
-					activity.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+					activity.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
 					activity.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
 					activity.location.toLowerCase().includes(searchTerm.toLowerCase()),
 			)
 			.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()) // 按日期降序排序
 	}
 
-	const allActivities = filterActivities("all")
-	const completedActivities = filterActivities("已完成")
-	const upcomingActivities = filterActivities("未开始")
+	const allActivities = filterActivities(TimeFilterType.ALL)
+	const completedActivities = filterActivities(TimeFilterType.COMPLETE)
+	const upcomingActivities = filterActivities(TimeFilterType.BEFORE)
 
 	return (
 		<div className="space-y-6">
@@ -135,19 +72,19 @@ export default function ActivitiesPage() {
 								<Card key={activity.id}>
 									<CardHeader className="pb-2">
 										<div className="flex items-center justify-between">
-											<CardTitle>{activity.title}</CardTitle>
+											<CardTitle>{activity.name}</CardTitle>
 											<Badge
-												variant={activity.status === "已完成" ? "outline" : "secondary"}>{activity.status}</Badge>
+												variant={isComplete(activity) ? "outline" : "secondary"}>{isComplete(activity)? '已完成': '未完成'}</Badge>
 										</div>
 										<CardDescription>
 											<div className="flex flex-wrap gap-4 mt-2">
 												<div className="flex items-center gap-1">
 													<Calendar className="h-4 w-4 text-muted-foreground"/>
-													<span>{activity.date}</span>
+													<span>{getDateTimeParts(activity.date)}</span>
 												</div>
 												<div className="flex items-center gap-1">
 													<Clock className="h-4 w-4 text-muted-foreground"/>
-													<span>{activity.time}</span>
+													<span>{getDayTimeParts(activity.date)}</span>
 												</div>
 												<div className="flex items-center gap-1">
 													<MapPin className="h-4 w-4 text-muted-foreground"/>
@@ -156,10 +93,10 @@ export default function ActivitiesPage() {
 												<div className="flex items-center gap-1">
 													<Users className="h-4 w-4 text-muted-foreground"/>
 													<span>
-                            {activity.status === "已完成"
-								? `${activity.participants}/${activity.totalMembers}人参加`
-								: `预计${activity.totalMembers}人参加`}
-                          </span>
+														{isComplete(activity)
+															? `${getActivityMember(activity).length}/${getBranchMember(activity.branch).length}人参加`
+															: `预计${getBranchMember(activity.branch).length}人参加`}
+													</span>
 												</div>
 											</div>
 										</CardDescription>
@@ -189,18 +126,18 @@ export default function ActivitiesPage() {
 								<Card key={activity.id}>
 									<CardHeader className="pb-2">
 										<div className="flex items-center justify-between">
-											<CardTitle>{activity.title}</CardTitle>
-											<Badge variant="secondary">{activity.status}</Badge>
+											<CardTitle>{activity.name}</CardTitle>
+											<Badge variant="secondary">{getStatus(activity)}</Badge>
 										</div>
 										<CardDescription>
 											<div className="flex flex-wrap gap-4 mt-2">
 												<div className="flex items-center gap-1">
 													<Calendar className="h-4 w-4 text-muted-foreground"/>
-													<span>{activity.date}</span>
+													<span>{getDateTimeParts(activity.date)}</span>
 												</div>
 												<div className="flex items-center gap-1">
 													<Clock className="h-4 w-4 text-muted-foreground"/>
-													<span>{activity.time}</span>
+													<span>{getDayTimeParts(activity.date)}</span>
 												</div>
 												<div className="flex items-center gap-1">
 													<MapPin className="h-4 w-4 text-muted-foreground"/>
@@ -208,7 +145,7 @@ export default function ActivitiesPage() {
 												</div>
 												<div className="flex items-center gap-1">
 													<Users className="h-4 w-4 text-muted-foreground"/>
-													<span>预计{activity.totalMembers}人参加</span>
+													<span>预计{getBranchMember(activity.branch).length}人参加</span>
 												</div>
 											</div>
 										</CardDescription>
@@ -238,18 +175,18 @@ export default function ActivitiesPage() {
 								<Card key={activity.id}>
 									<CardHeader className="pb-2">
 										<div className="flex items-center justify-between">
-											<CardTitle>{activity.title}</CardTitle>
-											<Badge variant="outline">{activity.status}</Badge>
+											<CardTitle>{activity.name}</CardTitle>
+											<Badge variant="outline">{getStatus(activity)}</Badge>
 										</div>
 										<CardDescription>
 											<div className="flex flex-wrap gap-4 mt-2">
 												<div className="flex items-center gap-1">
 													<Calendar className="h-4 w-4 text-muted-foreground"/>
-													<span>{activity.date}</span>
+													<span>{getDateTimeParts(activity.date)}</span>
 												</div>
 												<div className="flex items-center gap-1">
 													<Clock className="h-4 w-4 text-muted-foreground"/>
-													<span>{activity.time}</span>
+													<span>{getDayTimeParts(activity.date)}</span>
 												</div>
 												<div className="flex items-center gap-1">
 													<MapPin className="h-4 w-4 text-muted-foreground"/>
@@ -258,8 +195,8 @@ export default function ActivitiesPage() {
 												<div className="flex items-center gap-1">
 													<Users className="h-4 w-4 text-muted-foreground"/>
 													<span>
-                            {activity.participants}/{activity.totalMembers}人参加
-                          </span>
+														{getActivityMember(activity).length}/{getBranchMember(activity.branch).length}人参加
+													</span>
 												</div>
 											</div>
 										</CardDescription>

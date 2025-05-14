@@ -99,3 +99,13 @@ interface TransferDataType {
 	applyDate: Date,
 	status: 'pending' | 'approved' | 'rejected',
 }
+
+interface MeetingDataType 	{
+	id: number,												// 会议编号
+	title: string,											// 会议标题
+	type: '支部党员大会' | '支部委员会' | '党小组会' | '党课',	// 会议类型
+	date: Date,												// 会议日期
+	location: string,										// 会议地点
+	branch: BranchType,										// 会议所属党支部
+	content: string,										// 会议内容
+}

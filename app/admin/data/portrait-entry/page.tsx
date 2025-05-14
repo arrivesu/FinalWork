@@ -26,6 +26,7 @@ const initialPartyMembers = MemberAPI.get();
 
 const emptyMemberTemplate: MemberType = {
 	id: 0,
+	is_deleted: false,
 	username: '',
 	avatar: '',
 	name: '',
@@ -36,6 +37,7 @@ const emptyMemberTemplate: MemberType = {
 	join_date: new Date(),
 	party_position: null,
 	identity_type: "正式党员",
+	ethnicity: '汉族',
 	phone: '',
 	profile_file: '',
 	branch: {
