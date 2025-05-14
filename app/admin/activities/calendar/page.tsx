@@ -23,6 +23,7 @@ import {CalendarIcon, CalendarPlus2Icon as CalendarIcon2, Clock, Edit, MapPin, P
 import {useToast} from "@/hooks/use-toast"
 import {Badge} from "@/components/ui/badge"
 import {ActivitiesAPI} from "@/lib/api";
+import dynamic from "next/dynamic";
 
 // 模拟活动数据 - 添加了更多事件
 const initialActivities = ActivitiesAPI.get();
@@ -43,19 +44,30 @@ const typeNames = {
 	other: "其他",
 }
 
+// 显式声明组件类型
+const DatePicker = dynamic(() =>
+		import("react-datepicker"),
+	{ ssr: false }
+);
+
 export default function WorkCalendarPage() {
 	const [date, setDate] = useState<Date | undefined>(new Date())
 	const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
 	const [activities, setActivities] = useState(initialActivities)
 	const [activeTab, setActiveTab] = useState("today")
-	// TODO 修改Activity type
 	const [newActivity, setNewActivity] = useState<ActivityType>({
-		title: "",
-		date: "",
-		time: "",
-		location: "",
-		type: "",
+		id: 0,
+		branch: {
+			id: 0,
+			name: "",
+			superior_org: ""
+		},
 		content: "",
+		date: new Date(),
+		location: "",
+		remark: "",
+		type: '会议',
+		name: ""
 	})
 	const {toast} = useToast()
 
@@ -98,7 +110,7 @@ export default function WorkCalendarPage() {
 		}))
 	}
 
-	const handleSelectChange = (value: string) => {
+	const handleSelectChange = (value: "会议" | "学习教育活动") => {
 		setNewActivity((prev) => ({
 			...prev,
 			type: value,
@@ -106,7 +118,7 @@ export default function WorkCalendarPage() {
 	}
 
 	const handleAddActivity = () => {
-		if (!newActivity.title || !newActivity.date || !newActivity.time || !newActivity.location || !newActivity.type) {
+		if (!newActivity.name || !newActivity.date || !newActivity.date || !newActivity.location || !newActivity.type) {
 			toast({
 				title: "添加失败",
 				description: "请填写所有必填字段",
@@ -116,20 +128,23 @@ export default function WorkCalendarPage() {
 		}
 
 		const newId = (activities.length + 1).toString()
-		const activityToAdd = {
-			id: newId,
-			...newActivity,
-		}
+		const activityToAdd = ActivitiesAPI.add(newActivity)
 
 		setActivities((prev) => [...prev, activityToAdd])
 		setIsAddDialogOpen(false)
 		setNewActivity({
-			title: "",
-			date: "",
-			time: "",
-			location: "",
-			type: "",
+			id: 0,
+			branch: {
+				id: 0,
+				name: "",
+				superior_org: ""
+			},
 			content: "",
+			date: new Date(),
+			location: "",
+			remark: "",
+			type: '会议',
+			name: ""
 		})
 
 		toast({
@@ -192,23 +207,21 @@ export default function WorkCalendarPage() {
 						<div className="grid gap-4 py-4">
 							<div className="space-y-2">
 								<Label htmlFor="title">活动标题</Label>
-								<Input id="title" placeholder="请输入活动标题" value={newActivity.title}
+								<Input id="title" placeholder="请输入活动标题" value={newActivity.name}
 									   onChange={handleInputChange}/>
 							</div>
 							<div className="grid grid-cols-2 gap-4">
-								<div className="space-y-2">
-									<Label htmlFor="date">活动日期</Label>
-									<Input id="date" type="date" value={newActivity.date} onChange={handleInputChange}/>
-								</div>
-								<div className="space-y-2">
-									<Label htmlFor="time">活动时间</Label>
-									<Input
-										id="time"
-										placeholder="例如：14:00-16:00"
-										value={newActivity.time}
-										onChange={handleInputChange}
-									/>
-								</div>
+								<DatePicker
+									selected={newActivity.date}
+									onChange={(d) => {
+										setNewActivity((prev) => ({
+											...prev,
+											date: d ?? new Date()
+										}))
+									}}
+									showTimeSelect
+									dateFormat="yyyy-MM-dd HH:mm"
+								/>
 							</div>
 							<div className="grid grid-cols-2 gap-4">
 								<div className="space-y-2">

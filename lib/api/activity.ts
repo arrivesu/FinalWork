@@ -9,5 +9,12 @@ import {activitiesData} from "@/lib/mock/activity";
 export const ActivitiesAPI = {
 	get(): ActivityType[] {
 		return activitiesData;
+	},
+	add(activity: ActivityType) {
+		return {
+			...activity,
+			// TODO 修改id
+			id: 0,
+		}
 	}
 }
