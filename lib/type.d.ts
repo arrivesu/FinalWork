@@ -47,8 +47,9 @@ interface ActivityType {
 }
 
 interface ActivityJoinType {
+	id: number									// 参加的id
 	activity: ActivityType,						// 参加的活动
-	member: MemberType,						// 参加的成员
+	member: MemberType,							// 参加的成员
 	status: '正常参会' | '请假' | '迟到' | '旷会'	// 参加状态
 }
 
