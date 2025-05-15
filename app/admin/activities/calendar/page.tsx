@@ -23,6 +23,7 @@ import {CalendarIcon, CalendarPlus2Icon as CalendarIcon2, Clock, Edit, MapPin, P
 import {useToast} from "@/hooks/use-toast"
 import {Badge} from "@/components/ui/badge"
 import {ActivitiesAPI} from "@/lib/api";
+import {undefined} from "zod";
 
 // 模拟活动数据 - 添加了更多事件
 const initialActivities = ActivitiesAPI.get();
@@ -49,6 +50,8 @@ export default function WorkCalendarPage() {
 	const [activities, setActivities] = useState(initialActivities)
 	const [activeTab, setActiveTab] = useState("today")
 	const [newActivity, setNewActivity] = useState<ActivityType>({
+		endTime: new Date(),
+		title: "",
 		id: 0,
 		branch: {
 			id: 0,
@@ -60,7 +63,6 @@ export default function WorkCalendarPage() {
 		location: "",
 		remark: "",
 		type: '会议',
-		name: ""
 	})
 	const {toast} = useToast()
 
@@ -136,7 +138,8 @@ export default function WorkCalendarPage() {
 			location: "",
 			remark: "",
 			type: '会议',
-			name: ""
+			endTime: new Date(),
+			title: ""
 		})
 
 		toast({

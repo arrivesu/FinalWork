@@ -16,21 +16,46 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog"
 import {Label} from "@/components/ui/label"
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
 import {Edit, Key, Search, Trash2} from "lucide-react"
 import {useToast} from "@/hooks/use-toast"
 import {MemberAPI} from "@/lib/api";
+import {MultiSelect} from "@/components/multi-select";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useAuth } from "@/hooks/use-auth"
 
 // 模拟用户数据
 const users = MemberAPI.get()
 
 export default function UsersPage() {
 	const [searchTerm, setSearchTerm] = useState("")
-	const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
 	const [isResetPasswordDialogOpen, setIsResetPasswordDialogOpen] = useState(false)
 	const [selectedUser, setSelectedUser] = useState<any>(null)
 	const {toast} = useToast()
+
+	const { user } = useAuth();
+
+	if(user === null) return null;
+
+	const FormSchema = z.object({
+		roles: z
+			.array(z.string().min(1))
+			.min(1)
+			.nonempty("Please select at least one framework."),
+	});
+
+	const {
+		setValue,
+		getValues,
+		formState: { errors },
+	} = useForm({
+		resolver: zodResolver(FormSchema),
+		defaultValues: {
+			roles: user.role as string[],
+		},
+	});
 
 	// 过滤用户
 	const filteredUsers = users.filter(
@@ -40,13 +65,16 @@ export default function UsersPage() {
 			user.class_name.toLowerCase().includes(searchTerm.toLowerCase()),
 	)
 
-	const handleAddUser = () => {
-		setIsAddDialogOpen(false)
-		toast({
-			title: "添加成功",
-			description: "用户已成功添加",
-		})
-	}
+	const rolesList = [
+		{
+			value: "admin",
+			label: "admin",
+		},
+		{
+			value: "member",
+			label: "member",
+		},
+	];
 
 	const handleEditUser = () => {
 		setIsEditDialogOpen(false)
@@ -185,16 +213,18 @@ export default function UsersPage() {
 														<div className="grid grid-cols-2 gap-4">
 															<div className="space-y-2">
 																<Label htmlFor="edit-role">角色</Label>
-																{/*TODO 将这里改为多选*/}
-																<Select defaultValue={user.role}>
-																	<SelectTrigger>
-																		<SelectValue placeholder="选择角色"/>
-																	</SelectTrigger>
-																	<SelectContent>
-																		<SelectItem value="admin">管理员</SelectItem>
-																		<SelectItem value="member">党员</SelectItem>
-																	</SelectContent>
-																</Select>
+																<MultiSelect
+																	options={rolesList}
+																	onValueChange={(value) => setValue("roles", [value[0], ...value.slice(1)] )}
+																	defaultValue={getValues("roles")}
+																	placeholder="Select options"
+																	variant="inverted"
+																	animation={2}
+																	maxCount={3}
+																/>
+																{errors.roles && (
+																	<p className="text-red-500 text-sm">{errors.roles.message}</p>
+																)}
 															</div>
 															<div className="space-y-2">
 																<Label htmlFor="edit-department">所属部门</Label>

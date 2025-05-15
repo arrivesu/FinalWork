@@ -27,6 +27,7 @@ const initialPartyMembers = MemberAPI.get();
 const emptyMemberTemplate: MemberType = {
 	id: 0,
 	is_deleted: false,
+	is_init_password: true,
 	username: '',
 	avatar: '',
 	name: '',

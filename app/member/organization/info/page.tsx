@@ -39,7 +39,8 @@ export default function OrganizationInfo() {
 			profile_file: "",
 			role: ['member', 'admin'],
 			student_number: "1234567891",
-			username: "luchen"
+			username: "luchen",
+			is_init_password: false,
 		}
 	}
 	else user1 = user_power_list[0];
