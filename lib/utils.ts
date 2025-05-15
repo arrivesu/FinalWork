@@ -58,6 +58,20 @@ export const getBranchMember = (branch: BranchType) => {
   return member_list.filter((member) => member.branch.id === branch.id)
 }
 
+export function isEventOnDate(start: Date, end: Date, targetDate: Date): boolean {
+  const dayStart = new Date(targetDate);
+  dayStart.setHours(0, 0, 0, 0); // 该天的开始时间
+
+  const dayEnd = new Date(targetDate);
+  dayEnd.setHours(23, 59, 59, 999); // 该天的结束时间
+
+  return end >= dayStart && start <= dayEnd;
+}
+
+export function isBetween(target: Date, start: Date, end: Date): boolean {
+  return target >= start && target <= end;
+}
+
 export function formatDateFlexible(date: Date, template = 'YYYY-MM-DD HH:mm:ss'): string {
   const padZero = (n: number): string => n.toString().padStart(2, '0');
 

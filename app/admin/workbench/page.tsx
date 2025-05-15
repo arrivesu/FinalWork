@@ -19,22 +19,46 @@ import {Input} from "@/components/ui/input"
 import {Label} from "@/components/ui/label"
 import {Textarea} from "@/components/ui/textarea"
 import {Activity, Bell, BookOpen, CalendarIcon, Clock, MapPin, Plus, Users} from "lucide-react"
-import {ActivitiesAPI, MaterialAPI, NoticeAPI} from "@/lib/api";
+import {ActivitiesAPI, MaterialAPI, MemberAPI, NoticeAPI} from "@/lib/api";
 import {useAuth} from "@/hooks/use-auth";
-import {getBranchMember, getCurrentSemesterActivityCount, isComplete} from "@/lib/utils";
+import {getBranchMember, getCurrentSemesterActivityCount, isBetween, isComplete, isEventOnDate} from "@/lib/utils";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 
 // 模拟数据
-const notices = NoticeAPI.data
+const all_notices = NoticeAPI.data
+const all_member = MemberAPI.data
 const all_material = MaterialAPI.data
 const all_activities = ActivitiesAPI.data
 const all_meeting = ActivitiesAPI.data
 
+function countActivitiesThisYear(activities: ActivityType[], type: ActivityType['type']): number {
+	const currentYear = new Date().getFullYear();
+
+	return activities.filter(activity => {
+		if(activity.type !== type) return false;
+		const activityYear = new Date(activity.startTime).getFullYear();
+		return activityYear === currentYear;
+	}).length;
+}
+
+
 export default function AdminWorkbench() {
-	const [date, setDate] = useState<Date | undefined>(new Date())
-	const [isDialogOpen, setIsDialogOpen] = useState(false)
+	const [notifyTitle, setNotifyTitle] = useState('')
+	const [notifyContent, setNotifyContent] = useState('')
+	const [notifyDate, setNotifyDate] = useState<Date | undefined>(new Date())
+	const [isNotifyDialogOpen, setIsNotifyDialogOpen] = useState(false)
+	const [selectNotify, setSelectNotify] = useState<NoticeType['id'] | null>(null)
+
+	const [activityTitle, setActivityTitle] = useState('')
+	const [activityContent, setActivityContent] = useState('')
+	const [activityLocation, setActivityLocation] = useState('')
+	const [activityDate, setActivityDate] = useState<string | undefined>('')
+	const [activityTime, setActivityTime] = useState<string | undefined>('')
+	const [isActivityDialogOpen, setIsActivityDialogOpen] = useState(false)
+	const [activityType, setActivityType] = useState<string | undefined>(undefined)
+	const [selectActivity, setSelectActivity] = useState<ActivityType['id'] | null>(null)
 
 	const {user} = useAuth();
-
 	if (!user) return null
 
 	const branch = user.branch;
@@ -44,6 +68,106 @@ export default function AdminWorkbench() {
 	const cur_year_activity_cnt = getCurrentSemesterActivityCount(all_activities);
 	const meeting_cnt = all_meeting.filter((meeting) => !isComplete(meeting)).length;
 	const branch_member_cnt = branch_user_list.filter((user) => user.identity_type === '正式党员' || user.identity_type === '预备党员').length
+
+	const member_cnt_info = [
+		['正式党员',    `${all_member.filter((({branch, identity_type}) => branch.id === user.branch.id && identity_type === '正式党员')).length}人`, 'bg-blue-100'],
+		['预备党员',    `${all_member.filter((({branch, identity_type}) => branch.id === user.branch.id && identity_type === '预备党员')).length}人`, 'bg-green-100'],
+		['发展对象',    `${all_member.filter((({branch, identity_type}) => branch.id === user.branch.id && identity_type === '发展对象')).length}人`, 'bg-amber-100'],
+		['入党积极分子', `${all_member.filter((({branch, identity_type}) => branch.id === user.branch.id && identity_type === '入党积极分子')).length}人`, 'bg-purple-100'],
+		['入党申请人',   `${all_member.filter((({branch, identity_type}) => branch.id === user.branch.id && identity_type === '入党申请人')).length}人`, 'bg-pink-100']
+	]
+
+	const activity_cnt_info = [
+		['支部党员大会', 	`${countActivitiesThisYear(all_activities, '支部党员大会')}次/年`, 'bg-red-100'],
+		['支部委员会', 	`${countActivitiesThisYear(all_activities, '支部委员会')}次/年`, 'bg-orange-100'],
+		['党小组会', 	`${countActivitiesThisYear(all_activities, '党小组会')}次/年`, 'bg-yellow-100'],
+		['党课', 		`${countActivitiesThisYear(all_activities, '党课')}次/年`, 'bg-green-100'],
+		['党日活动', 	`${countActivitiesThisYear(all_activities, '党日活动')}次/年`, 'bg-blue-100']
+	]
+
+	const getActivitiesByDate = (date: Date) => {
+		return all_activities.filter(({startTime, endTime}) => isEventOnDate(startTime, endTime, date));
+	}
+
+	const handlePublishNotify = async () => {
+		if(selectNotify !== null) {
+			await NoticeAPI.save(selectNotify, {
+				id: selectNotify,
+				title: notifyTitle,
+				content: notifyContent,
+				publish_date: new Date(),
+				publisher: user
+			})
+		}
+		else {
+			await NoticeAPI.add({
+				id: 0,
+				title: notifyTitle,
+				content: notifyContent,
+				publish_date: new Date(),
+				publisher: user
+			})
+		}
+		setIsNotifyDialogOpen(false)
+		setSelectNotify(null)
+	}
+
+	const handleChangeNotify = async (id: number) => {
+		const {title, content} = all_notices[id];
+		setSelectNotify(id);
+		setNotifyTitle(title)
+		setNotifyContent(content)
+		setIsNotifyDialogOpen(true);
+	}
+
+	const handleAddActivity = async () => {
+		if(activityTime === undefined) return;
+		const [startTime, endTime] = activityTime.split('-');
+
+		const startDateTimeStr = `${activityDate}T${startTime}:00`; // 添加秒
+		const endDateTimeStr = `${activityDate}T${endTime}:00`;
+
+		if(selectActivity !== null) {
+			await ActivitiesAPI.save(selectActivity, {
+				id: selectActivity,
+				title: activityTitle,
+				type: activityType as ActivityType['type'],
+				startTime: new Date(startDateTimeStr),
+				endTime: new Date(endDateTimeStr),
+				location: activityLocation,
+				content: activityContent,
+				remark: "",
+				branch: user.branch
+			})
+		}
+		else {
+			await ActivitiesAPI.add({
+				id: 0,
+				title: activityTitle,
+				type: activityType as ActivityType['type'],
+				startTime: new Date(startDateTimeStr),
+				endTime: new Date(endDateTimeStr),
+				location: activityLocation,
+				content: activityContent,
+				remark: "",
+				branch: user.branch
+			})
+		}
+		setIsActivityDialogOpen(false)
+		setSelectActivity(null)
+	}
+
+	const handleChangeActivity = async (id: number) => {
+		const {title, content, location, startTime, endTime, type} = all_activities[id];
+		setSelectActivity(id);
+		setActivityTitle(title)
+		setActivityContent(content)
+		setActivityLocation(location)
+		setActivityDate(startTime.toDateString)
+		setActivityTime(`${startTime.getHours()}:${startTime.getMinutes()}-${endTime.getHours()}:${endTime.getMinutes()}`)
+		setActivityType(type)
+		setIsActivityDialogOpen(true);
+	}
 
 	return (
 		<div className="space-y-6">
@@ -72,7 +196,7 @@ export default function AdminWorkbench() {
 								<CardTitle>通知管理</CardTitle>
 								<CardDescription>发布和管理通知公告</CardDescription>
 							</div>
-							<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+							<Dialog open={isNotifyDialogOpen} onOpenChange={setIsNotifyDialogOpen}>
 								<DialogTrigger asChild>
 									<Button size="sm">
 										<Plus className="mr-2 h-4 w-4"/>
@@ -87,26 +211,34 @@ export default function AdminWorkbench() {
 									<div className="grid gap-4 py-4">
 										<div className="grid gap-2">
 											<Label htmlFor="title">通知标题</Label>
-											<Input id="title" placeholder="请输入通知标题"/>
+											<Input id="title"
+												value={notifyTitle}
+												onChange={ (e) => setNotifyTitle(e.target.value) }
+												placeholder="请输入通知标题"
+											/>
 										</div>
 										<div className="grid gap-2">
 											<Label htmlFor="content">通知内容</Label>
-											<Textarea id="content" placeholder="请输入通知内容"
-													  className="min-h-[100px]"/>
+											<Textarea id="content"
+													  value={notifyContent}
+													  onChange={ (e) => setNotifyContent(e.target.value) }
+													  placeholder="请输入通知内容"
+													  className="min-h-[100px]"
+											/>
 										</div>
 									</div>
 									<DialogFooter>
-										<Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+										<Button variant="outline" onClick={() => setIsNotifyDialogOpen(false)}>
 											取消
 										</Button>
-										<Button onClick={() => setIsDialogOpen(false)}>发布</Button>
+										<Button onClick={handlePublishNotify}>{selectNotify === null ? '发布' : '更改'}</Button>
 									</DialogFooter>
 								</DialogContent>
 							</Dialog>
 						</CardHeader>
 
 						<CardContent className="space-y-4">
-							{notices.map((notice, index) => (
+							{all_notices.map((notice, index) => (
 								<div
 									key={index}
 									className="rounded-xl border p-4 shadow-sm hover:shadow transition duration-200 bg-white"
@@ -132,10 +264,97 @@ export default function AdminWorkbench() {
 								<CardTitle className="text-2xl">工作日历</CardTitle>
 								<CardDescription>管理党组织活动安排</CardDescription>
 							</div>
-							<Button size="sm">
-								<Plus className="mr-2 h-4 w-4"/>
-								添加活动
-							</Button>
+							<Dialog open={isActivityDialogOpen} onOpenChange={setIsActivityDialogOpen}>
+								<DialogTrigger asChild>
+									<Button size="sm">
+										<Plus className="mr-2 h-4 w-4"/>
+										添加活动
+									</Button>
+								</DialogTrigger>
+								<DialogContent>
+									<DialogHeader>
+										<DialogTitle>添加活动</DialogTitle>
+										<DialogDescription>添加新的党组织活动</DialogDescription>
+									</DialogHeader>
+									<div className="grid gap-4 py-4">
+										<div className="space-y-2">
+											<Label htmlFor="title">活动标题</Label>
+											<Input
+												id="title"
+												placeholder="请输入活动标题"
+												value={activityTitle}
+												onChange={(e) => setActivityTitle(e.target.value)}
+											/>
+										</div>
+										<div className="grid grid-cols-2 gap-4">
+											<div className="space-y-2">
+												<Label htmlFor="date">活动日期</Label>
+												<Input
+													id="date"
+													type="date"
+													value={activityDate}
+													onChange={(e) => setActivityDate(e.target.value)}
+												/>
+											</div>
+											<div className="space-y-2">
+												<Label htmlFor="time">活动时间</Label>
+												<Input
+													id="time"
+													placeholder="例如：14:00-16:00"
+													value={activityTime}
+													onChange={(e) => setActivityTime(e.target.value)}
+												/>
+											</div>
+										</div>
+										<div className="grid grid-cols-2 gap-4">
+											<div className="space-y-2">
+												<Label htmlFor="location">活动地点</Label>
+												<Input
+													id="location"
+													placeholder="请输入活动地点"
+													value={activityLocation}
+													onChange={(e) => setActivityLocation(e.target.value)}
+												/>
+											</div>
+											<div className="space-y-2">
+												<Label htmlFor="type">活动类型</Label>
+												<Select
+													value={activityType}
+													onValueChange={(val) => setActivityType(val)}
+												>
+													<SelectTrigger>
+														<SelectValue placeholder="选择活动类型"/>
+													</SelectTrigger>
+													<SelectContent>
+														<SelectItem value="支部党员大会">支部党员大会</SelectItem>
+														<SelectItem value="支部委员会">支部委员会</SelectItem>
+														<SelectItem value="党小组会">党小组会</SelectItem>
+														<SelectItem value="党课">党课</SelectItem>
+														<SelectItem value="党日活动">党日活动</SelectItem>
+														<SelectItem value="其他">其他</SelectItem>
+													</SelectContent>
+												</Select>
+											</div>
+										</div>
+										<div className="space-y-2">
+											<Label htmlFor="content">活动内容</Label>
+											<Textarea
+												id="content"
+												placeholder="请输入活动内容"
+												className="min-h-[100px]"
+												value={activityContent}
+												onChange={(e) => setActivityContent(e.target.value)}
+											/>
+										</div>
+									</div>
+									<DialogFooter>
+										<Button variant="outline" onClick={() => setIsActivityDialogOpen(false)}>
+											取消
+										</Button>
+										<Button onClick={handleAddActivity}>{selectActivity === null ? '添加': '更改'}</Button>
+									</DialogFooter>
+								</DialogContent>
+							</Dialog>
 						</CardHeader>
 
 						<CardContent className="flex flex-col md:flex-row gap-6">
@@ -143,8 +362,8 @@ export default function AdminWorkbench() {
 								<div className="md:w-2/2">
 									<Calendar
 										mode="single"
-										selected={date}
-										onSelect={setDate}
+										selected={notifyDate}
+										onSelect={setNotifyDate}
 										className="rounded-md border shadow-sm"
 									/>
 								</div>
@@ -153,25 +372,14 @@ export default function AdminWorkbench() {
 							<div className="md:w-1/2 space-y-4">
 								<h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2 border-b pb-2">
 									<CalendarIcon className="h-5 w-5 text-primary"/>
-									{date?.toLocaleDateString("zh-CN", {
+									{notifyDate?.toLocaleDateString("zh-CN", {
 										year: "numeric",
 										month: "long",
 										day: "numeric",
 									})} 活动
 								</h3>
 
-								{[
-									{
-										title: "支部党员大会",
-										time: "14:00-16:00",
-										place: "第一会议室",
-									},
-									{
-										title: "党课学习",
-										time: "19:00-20:30",
-										place: "线上会议",
-									},
-								].map((item, index) => (
+								{notifyDate && getActivitiesByDate(notifyDate).map((item, index) => (
 									<div
 										key={index}
 										className="bg-primary/5 rounded-lg p-4 shadow-sm border border-primary/10"
@@ -184,16 +392,16 @@ export default function AdminWorkbench() {
 												<div
 													className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
 													<Clock className="w-4 h-4"/>
-													{item.time}
+													{`${item.startTime.toDateString()}-${item.endTime.toDateString()}`}
 												</div>
 												<div
 													className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
 													<MapPin className="w-4 h-4"/>
-													{item.place}
+													{item.location}
 												</div>
 											</div>
 											<div className="flex gap-2">
-												<Button size="sm" variant="outline">
+												<Button size="sm" variant="outline" onClick={() => handleChangeActivity(index)}>
 													编辑
 												</Button>
 												<Button size="sm" variant="destructive">
@@ -221,13 +429,7 @@ export default function AdminWorkbench() {
 										党员构成
 									</h3>
 									<div className="space-y-4">
-										{[
-											['正式党员', '24人', 'bg-blue-100'],
-											['预备党员', '10人', 'bg-green-100'],
-											['发展对象', '15人', 'bg-amber-100'],
-											['入党积极分子', '25人', 'bg-purple-100'],
-											['入党申请人', '40人', 'bg-pink-100']
-										].map(([label, value, color]) => (
+										{member_cnt_info.map(([label, value, color]) => (
 											<div key={label} className="flex items-center justify-between group">
 												<div className="flex items-center">
 													<span className={`w-2 h-6 ${color} rounded-sm mr-3`}></span>
@@ -244,13 +446,7 @@ export default function AdminWorkbench() {
 										活动统计
 									</h3>
 									<div className="space-y-4">
-										{[
-											['支部党员大会', '4次/年', 'bg-red-100'],
-											['支部委员会', '12次/年', 'bg-orange-100'],
-											['党小组会', '12次/年', 'bg-yellow-100'],
-											['党课', '8次/年', 'bg-green-100'],
-											['党日活动', '12次/年', 'bg-blue-100']
-										].map(([event, frequency, color]) => (
+										{activity_cnt_info.map(([event, frequency, color]) => (
 											<div key={event} className="flex items-center justify-between group">
 												<div className="flex items-center">
 													<span className={`w-2 h-6 ${color} rounded-sm mr-3`}></span>

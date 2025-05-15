@@ -1,10 +1,10 @@
 "use client"
 
-import React, {useEffect} from "react"
-import {useMemo, useState} from "react"
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
-import {Button} from "@/components/ui/button"
-import {Calendar} from "@/components/ui/calendar"
+import type React from "react"
+import { useMemo, useState } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
 import {
 	Dialog,
 	DialogContent,
@@ -14,18 +14,18 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog"
-import {Input} from "@/components/ui/input"
-import {Label} from "@/components/ui/label"
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
-import {Textarea} from "@/components/ui/textarea"
-import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
-import {CalendarIcon, CalendarPlus2Icon as CalendarIcon2, Clock, Edit, MapPin, Plus, Trash2} from "lucide-react"
-import {useToast} from "@/hooks/use-toast"
-import {Badge} from "@/components/ui/badge"
-import {ActivitiesAPI} from "@/lib/api";
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { CalendarIcon, CalendarPlus2Icon as CalendarIcon2, Clock, Edit, MapPin, Plus, Trash2 } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
+import { Badge } from "@/components/ui/badge"
+import { ActivitiesAPI } from "@/lib/api"
 
 // 模拟活动数据 - 添加了更多事件
-const initialActivities = ActivitiesAPI.data;
+const initialActivities = ActivitiesAPI.data
 
 // 活动类型对应的颜色
 const typeColors = {
@@ -49,7 +49,7 @@ export default function WorkCalendarPage() {
 	const [activities, setActivities] = useState(initialActivities)
 	const [activeTab, setActiveTab] = useState("today")
 	const [newActivity, setNewActivity] = useState<ActivityType>(ActivitiesAPI.createEmpty())
-	const {toast} = useToast()
+	const { toast } = useToast()
 
 	// 获取选定日期的活动
 	const getActivitiesByDate = (selectedDate: Date | undefined) => {
@@ -83,22 +83,23 @@ export default function WorkCalendarPage() {
 	const selectedDateActivities = getActivitiesByDate(date)
 
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-		const {id, value} = e.target
+		const { id, value } = e.target
 		setNewActivity((prev) => ({
 			...prev,
 			[id]: value,
 		}))
 	}
 
-	const handleSelectChange = (value: ActivityType['type']) => {
+	const handleSelectChange = (value: ActivityType["type"]) => {
 		setNewActivity((prev) => ({
 			...prev,
 			type: value,
 		}))
 	}
 
+	// Update the handleAddActivity function to use the ActivitiesAPI
 	const handleAddActivity = async () => {
-		if (!newActivity.title || !newActivity.startTime || !newActivity.startTime || !newActivity.location || !newActivity.type) {
+		if (!newActivity.title || !newActivity.startTime || !newActivity.location || !newActivity.type) {
 			toast({
 				title: "添加失败",
 				description: "请填写所有必填字段",
@@ -107,32 +108,68 @@ export default function WorkCalendarPage() {
 			return
 		}
 
-		const activityToAdd = await ActivitiesAPI.add(newActivity)
+		try {
+			const activityToAdd = await ActivitiesAPI.add(newActivity)
 
-		setActivities((prev) => [...prev, activityToAdd])
-		setIsAddDialogOpen(false)
-		setNewActivity(ActivitiesAPI.createEmpty())
+			setActivities((prev) => [...prev, activityToAdd])
+			setIsAddDialogOpen(false)
+			setNewActivity(ActivitiesAPI.createEmpty())
 
-		toast({
-			title: "添加成功",
-			description: "活动已成功添加到日历",
-		})
+			toast({
+				title: "添加成功",
+				description: "活动已成功添加到日历",
+			})
+		} catch (error) {
+			toast({
+				title: "添加失败",
+				description: "添加活动时发生错误，请重试",
+				variant: "destructive",
+			})
+		}
 	}
 
-	const handleEditActivity = (activity: any) => {
-		toast({
-			title: "编辑成功",
-			description: `活动 "${activity.title}" 已成功更新`,
-		})
+	// Update the handleEditActivity function to use the ActivitiesAPI
+	const handleEditActivity = async (activity: ActivityType) => {
+		try {
+			// In a real implementation, you would get the updated values from a form
+			// For this example, we'll just update the existing activity
+			await ActivitiesAPI.save(activity.id, activity)
+
+			// Update the local state
+			setActivities(activities.map((a) => (a.id === activity.id ? activity : a)))
+
+			toast({
+				title: "编辑成功",
+				description: `活动 "${activity.title}" 已成功更新`,
+			})
+		} catch (error) {
+			toast({
+				title: "编辑失败",
+				description: "编辑活动时发生错误，请重试",
+				variant: "destructive",
+			})
+		}
 	}
 
-	const handleDeleteActivity = (activityId: number) => {
-		setActivities((prev) => prev.filter((activity) => activity.id !== activityId))
+	// Update the handleDeleteActivity function to use the ActivitiesAPI
+	const handleDeleteActivity = async (activityId: number) => {
+		try {
+			await ActivitiesAPI.del(activityId)
 
-		toast({
-			title: "删除成功",
-			description: "活动已成功删除",
-		})
+			// Update the local state
+			setActivities((prev) => prev.filter((activity) => activity.id !== activityId))
+
+			toast({
+				title: "删除成功",
+				description: "活动已成功删除",
+			})
+		} catch (error) {
+			toast({
+				title: "删除失败",
+				description: "删除活动时发生错误，请重试",
+				variant: "destructive",
+			})
+		}
 	}
 
 	return (
@@ -145,7 +182,7 @@ export default function WorkCalendarPage() {
 				<Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
 					<DialogTrigger asChild>
 						<Button>
-							<Plus className="mr-2 h-4 w-4"/>
+							<Plus className="mr-2 h-4 w-4" />
 							添加活动
 						</Button>
 					</DialogTrigger>
@@ -157,28 +194,28 @@ export default function WorkCalendarPage() {
 						<div className="grid gap-4 py-4">
 							<div className="space-y-2">
 								<Label htmlFor="title">活动标题</Label>
-								<Input id="title" placeholder="请输入活动标题"/>
+								<Input id="title" placeholder="请输入活动标题" />
 							</div>
 							<div className="grid grid-cols-2 gap-4">
 								<div className="space-y-2">
 									<Label htmlFor="date">活动日期</Label>
-									<Input id="date" type="date"/>
+									<Input id="date" type="date" />
 								</div>
 								<div className="space-y-2">
 									<Label htmlFor="time">活动时间</Label>
-									<Input id="time" placeholder="例如：14:00-16:00"/>
+									<Input id="time" placeholder="例如：14:00-16:00" />
 								</div>
 							</div>
 							<div className="grid grid-cols-2 gap-4">
 								<div className="space-y-2">
 									<Label htmlFor="location">活动地点</Label>
-									<Input id="location" placeholder="请输入活动地点"/>
+									<Input id="location" placeholder="请输入活动地点" />
 								</div>
 								<div className="space-y-2">
 									<Label htmlFor="type">活动类型</Label>
 									<Select>
 										<SelectTrigger>
-											<SelectValue placeholder="选择活动类型"/>
+											<SelectValue placeholder="选择活动类型" />
 										</SelectTrigger>
 										<SelectContent>
 											<SelectItem value="支部党员大会">支部党员大会</SelectItem>
@@ -193,7 +230,7 @@ export default function WorkCalendarPage() {
 							</div>
 							<div className="space-y-2">
 								<Label htmlFor="content">活动内容</Label>
-								<Textarea id="content" placeholder="请输入活动内容" className="min-h-[100px]"/>
+								<Textarea id="content" placeholder="请输入活动内容" className="min-h-[100px]" />
 							</div>
 						</div>
 						<DialogFooter>
@@ -213,12 +250,7 @@ export default function WorkCalendarPage() {
 						<CardDescription>选择日期查看活动安排</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<Calendar
-							mode="single"
-							selected={date}
-							onSelect={setDate}
-							className="rounded-md border"
-						/>
+						<Calendar mode="single" selected={date} onSelect={setDate} className="rounded-md border" />
 						<div className="mt-4 flex flex-wrap gap-2">
 							<div className="flex items-center gap-2">
 								<div className="h-3 w-3 rounded-full bg-blue-500"></div>
@@ -248,7 +280,7 @@ export default function WorkCalendarPage() {
 								<CardDescription>查看和管理活动安排</CardDescription>
 							</div>
 							<Button size="sm" variant="outline" onClick={() => setIsAddDialogOpen(true)}>
-								<Plus className="mr-2 h-4 w-4"/>
+								<Plus className="mr-2 h-4 w-4" />
 								添加
 							</Button>
 						</div>
@@ -265,7 +297,7 @@ export default function WorkCalendarPage() {
 									{date?.toLocaleDateString("zh-CN", {
 										year: "numeric",
 										month: "long",
-										day: "numeric"
+										day: "numeric",
 									})}
 								</div>
 
@@ -278,27 +310,24 @@ export default function WorkCalendarPage() {
 														className={`h-3 w-3 rounded-full ${typeColors[activity.type as keyof typeof typeColors]}`}
 													></div>
 													<h3 className="font-medium">{activity.title}</h3>
-													<Badge
-														variant="outline">{typeNames[activity.type as keyof typeof typeNames]}</Badge>
+													<Badge variant="outline">{typeNames[activity.type as keyof typeof typeNames]}</Badge>
 												</div>
 												<div className="flex space-x-2">
-													<Button variant="ghost" size="icon"
-															onClick={() => handleEditActivity(activity)}>
-														<Edit className="h-4 w-4"/>
+													<Button variant="ghost" size="icon" onClick={() => handleEditActivity(activity)}>
+														<Edit className="h-4 w-4" />
 													</Button>
-													<Button variant="ghost" size="icon"
-															onClick={() => handleDeleteActivity(activity.id)}>
-														<Trash2 className="h-4 w-4"/>
+													<Button variant="ghost" size="icon" onClick={() => handleDeleteActivity(activity.id)}>
+														<Trash2 className="h-4 w-4" />
 													</Button>
 												</div>
 											</div>
 											<div className="flex flex-wrap gap-4 mt-2 text-sm text-muted-foreground">
 												<div className="flex items-center gap-1">
-													<Clock className="h-4 w-4"/>
+													<Clock className="h-4 w-4" />
 													<span>{activity.startTime.toDateString()}</span>
 												</div>
 												<div className="flex items-center gap-1">
-													<MapPin className="h-4 w-4"/>
+													<MapPin className="h-4 w-4" />
 													<span>{activity.location}</span>
 												</div>
 											</div>
@@ -307,10 +336,9 @@ export default function WorkCalendarPage() {
 									))
 								) : (
 									<div className="text-center py-8 text-muted-foreground">
-										<CalendarIcon className="mx-auto h-12 w-12 opacity-30"/>
+										<CalendarIcon className="mx-auto h-12 w-12 opacity-30" />
 										<p className="mt-2">当天暂无活动安排</p>
-										<Button variant="outline" className="mt-4"
-												onClick={() => setIsAddDialogOpen(true)}>
+										<Button variant="outline" className="mt-4" onClick={() => setIsAddDialogOpen(true)}>
 											添加活动
 										</Button>
 									</div>
@@ -327,37 +355,34 @@ export default function WorkCalendarPage() {
 														className={`h-3 w-3 rounded-full ${typeColors[activity.type as keyof typeof typeColors]}`}
 													></div>
 													<h3 className="font-medium">{activity.title}</h3>
-													<Badge
-														variant="outline">{typeNames[activity.type as keyof typeof typeNames]}</Badge>
+													<Badge variant="outline">{typeNames[activity.type as keyof typeof typeNames]}</Badge>
 												</div>
 												<div className="flex space-x-2">
-													<Button variant="ghost" size="icon"
-															onClick={() => handleEditActivity(activity)}>
-														<Edit className="h-4 w-4"/>
+													<Button variant="ghost" size="icon" onClick={() => handleEditActivity(activity)}>
+														<Edit className="h-4 w-4" />
 													</Button>
-													<Button variant="ghost" size="icon"
-															onClick={() => handleDeleteActivity(activity.id)}>
-														<Trash2 className="h-4 w-4"/>
+													<Button variant="ghost" size="icon" onClick={() => handleDeleteActivity(activity.id)}>
+														<Trash2 className="h-4 w-4" />
 													</Button>
 												</div>
 											</div>
 											<div className="flex flex-wrap gap-4 mt-2 text-sm text-muted-foreground">
 												<div className="flex items-center gap-1">
-													<CalendarIcon2 className="h-4 w-4"/>
+													<CalendarIcon2 className="h-4 w-4" />
 													<span>
-														{new Date(activity.startTime).toLocaleDateString("zh-CN", {
-															year: "numeric",
-															month: "long",
-															day: "numeric",
-														})}
-													</span>
+                            {new Date(activity.startTime).toLocaleDateString("zh-CN", {
+								year: "numeric",
+								month: "long",
+								day: "numeric",
+							})}
+                          </span>
 												</div>
 												<div className="flex items-center gap-1">
-													<Clock className="h-4 w-4"/>
+													<Clock className="h-4 w-4" />
 													<span>{activity.startTime.toDateString()}</span>
 												</div>
 												<div className="flex items-center gap-1">
-													<MapPin className="h-4 w-4"/>
+													<MapPin className="h-4 w-4" />
 													<span>{activity.location}</span>
 												</div>
 											</div>
@@ -366,10 +391,9 @@ export default function WorkCalendarPage() {
 									))
 								) : (
 									<div className="text-center py-8 text-muted-foreground">
-										<CalendarIcon className="mx-auto h-12 w-12 opacity-30"/>
+										<CalendarIcon className="mx-auto h-12 w-12 opacity-30" />
 										<p className="mt-2">暂无未来活动安排</p>
-										<Button variant="outline" className="mt-4"
-												onClick={() => setIsAddDialogOpen(true)}>
+										<Button variant="outline" className="mt-4" onClick={() => setIsAddDialogOpen(true)}>
 											添加活动
 										</Button>
 									</div>
