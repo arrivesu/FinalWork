@@ -29,11 +29,11 @@ export enum TimeFilterType {
   ALL = "all",
 }
 
-export const isComplete = <T extends { date: Date }>(event: T) => {
-  return new Date() > event.date;
+export const isComplete = <T extends { endTime: Date }>(event: T) => {
+  return new Date() > event.endTime;
 }
 
-export const getStatus = <T extends { date: Date }>(event: T) => isComplete(event)? '已完成': '未完成';
+export const getStatus = <T extends { startTime: Date, endTime: Date }>(event: T) => isComplete(event)? '已完成': ((new Date() > event.startTime) ? '进行中': '未开始');
 
 export const timeFilter = (time: Date, filter: TimeFilterType) => {
   switch (filter) {

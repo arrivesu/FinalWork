@@ -19,7 +19,7 @@ import {Input} from "@/components/ui/input"
 import {Label} from "@/components/ui/label"
 import {Textarea} from "@/components/ui/textarea"
 import {Activity, Bell, BookOpen, CalendarIcon, Clock, MapPin, Plus, Users} from "lucide-react"
-import {ActivitiesAPI, MaterialAPI, ActivitiesAPI, NoticeAPI} from "@/lib/api";
+import {ActivitiesAPI, MaterialAPI, NoticeAPI} from "@/lib/api";
 import {useAuth} from "@/hooks/use-auth";
 import {getBranchMember, getCurrentSemesterActivityCount, isComplete} from "@/lib/utils";
 
