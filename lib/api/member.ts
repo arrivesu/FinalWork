@@ -5,6 +5,7 @@
  * @date 2025/5/12
  */
 import {memberData} from "@/lib/mock/member";
+import {BranchAPI} from "@/lib/api/branch";
 
 let data = memberData;
 
@@ -12,6 +13,29 @@ type DataType = typeof data[number];
 type IdType = DataType['id'];
 
 export const MemberAPI = {
+	data: data,
+	createEmpty(): DataType {
+		return {
+			id: 0,
+			is_deleted: false,
+			is_init_password: false,
+			username: "",
+			avatar: "",
+			name: "",
+			gender: "女",
+			ethnicity: "",
+			birth_date: new Date(),
+			student_number: "",
+			class_name: "",
+			join_date: new Date(),
+			party_position: null,
+			identity_type: "正式党员",
+			phone: "",
+			profile_file: "",
+			branch: BranchAPI.createEmpty(),
+			role: ['member']
+		}
+	},
 	async add(new_data: DataType) {
 		data.push(new_data)
 	},

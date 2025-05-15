@@ -223,7 +223,7 @@ export const memberData: MemberType[] = [
         role: ['member']
     },
     {
-        id: 9,
+        id: 10,
         is_deleted: false,
         is_init_password: true,
         username: "wangjunji",

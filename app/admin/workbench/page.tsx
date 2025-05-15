@@ -23,23 +23,15 @@ import {ActivitiesAPI, MaterialAPI, NoticeAPI} from "@/lib/api";
 import {useAuth} from "@/hooks/use-auth";
 import {getBranchMember, getCurrentSemesterActivityCount, isComplete} from "@/lib/utils";
 
-interface User {
-	id: string
-	name: string
-	role: string
-	avatar: string
-}
-
 // 模拟数据
-const notices = NoticeAPI.get()
+const notices = NoticeAPI.data
+const all_material = MaterialAPI.data
+const all_activities = ActivitiesAPI.data
+const all_meeting = ActivitiesAPI.data
 
 export default function AdminWorkbench() {
 	const [date, setDate] = useState<Date | undefined>(new Date())
 	const [isDialogOpen, setIsDialogOpen] = useState(false)
-
-	const all_material = MaterialAPI.get();
-	const all_activities = ActivitiesAPI.get();
-	const all_meeting = ActivitiesAPI.get();
 
 	const {user} = useAuth();
 

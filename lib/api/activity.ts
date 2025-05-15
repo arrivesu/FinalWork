@@ -12,6 +12,24 @@ type DataType = typeof data[number];
 type IdType = DataType['id'];
 
 export const ActivitiesAPI = {
+	data: data,
+	createEmpty(): DataType {
+		return {
+			id: 0,
+			title: "",
+			type: "支部党员大会",
+			startTime: new Date(),
+			endTime: new Date(),
+			location: "",
+			content: "",
+			remark: "",
+			branch: {
+				id: 0,
+				name: "",
+				superior_org: ""
+			}
+		}
+	},
 	async add(activity: DataType) {
 		return {
 			...activity,

@@ -12,6 +12,14 @@ type DataType = typeof data[number];
 type IdType = DataType['id'];
 
 export const BranchAPI = {
+	data: data,
+	createEmpty(): DataType {
+		return {
+			id: 0,
+			name: "",
+			superior_org: ""
+		}
+	},
 	async add(new_data: DataType) {
 		data.push(new_data)
 	},

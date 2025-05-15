@@ -22,9 +22,6 @@ export default function SettingsConfigPage() {
 	const [location, setLocation] = useState("计算机科学与技术学院石鳞大楼")
 	const [phone, setPhone] = useState("010-12345678")
 	const [email, setEmail] = useState("cs-party@university.edu.cn")
-	const [description, setDescription] = useState(
-		"计算机科学与技术学院党支部成立于2010年，现有党员45人，下设3个党小组。",
-	)
 
 	// 书记信息
 	const [secretaryName, setSecretaryName] = useState("张三")

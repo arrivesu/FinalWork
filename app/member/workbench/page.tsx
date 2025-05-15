@@ -11,10 +11,10 @@ import {useAuth} from "@/hooks/use-auth";
 import {diffInYMD, isComplete} from "@/lib/utils";
 
 // 模拟数据
-const notices = NoticeAPI.get();
-const material = MaterialAPI.get();
-const meetings = ActivitiesAPI.get();
-const join_data = ActivityJoinAPI.get();
+const notices = NoticeAPI.data;
+const material = MaterialAPI.data;
+const meetings = ActivitiesAPI.data;
+const join_data = ActivityJoinAPI.data;
 
 export default function MemberWorkbench() {
 	const [date, setDate] = useState<Date | undefined>(new Date())
@@ -113,7 +113,7 @@ export default function MemberWorkbench() {
 									})} 活动
 								</h3>
 
-								{ActivitiesAPI.get().map((item, index) => (
+								{ActivitiesAPI.data.map((item, index) => (
 									<div
 										key={index}
 										className="bg-primary/5 rounded-lg p-4 shadow-sm border border-primary/10"

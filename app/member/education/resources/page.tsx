@@ -10,7 +10,7 @@ import {Download, ExternalLink, FileText, Search, Video} from "lucide-react"
 import {MaterialAPI} from "@/lib/api";
 
 // 模拟学习资料数据
-const resources = MaterialAPI.get();
+const resources = MaterialAPI.data;
 
 export default function ResourcesPage() {
 	const [searchTerm, setSearchTerm] = useState("")

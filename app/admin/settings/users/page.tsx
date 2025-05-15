@@ -26,7 +26,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "@/hooks/use-auth"
 
 // 模拟用户数据
-const users = MemberAPI.get()
+const users = MemberAPI.data
 
 export default function UsersPage() {
 	const [searchTerm, setSearchTerm] = useState("")

@@ -31,7 +31,7 @@ interface MemberType {
 	phone: string,								// 电话号码
 	profile_file: string,						// 电子档案地址
 	branch: BranchType,							// 所属党支部
-	role: RoleType[]
+	role: [RoleType, ...RoleType[]]
 }
 
 interface ActivityType {

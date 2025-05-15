@@ -17,7 +17,7 @@ import {
 } from "@/lib/utils";
 
 // 模拟会议数据
-const meetings = ActivitiesAPI.get().filter((meeting) => meeting.type === '支部党员大会')
+const meetings = ActivitiesAPI.data.filter((meeting) => meeting.type === '支部党员大会')
 
 export default function GeneralMeetings() {
 	// 过滤会议

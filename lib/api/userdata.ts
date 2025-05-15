@@ -5,6 +5,7 @@
  * @date 2025/5/12
  */
 import {userData} from "@/lib/mock/userdata";
+import {MemberAPI} from "@/lib/api/member";
 
 let data = userData;
 
@@ -12,6 +13,21 @@ type DataType = typeof data[number];
 type IdType = DataType['id'];
 
 export const UserDataAPI = {
+	data: data,
+	createEmpty(): DataType {
+		return {
+			id: 0,
+			user: MemberAPI.createEmpty(),
+			record_time: "",
+			moral_rank: 0,
+			academic_rank: 0,
+			assessment_score: 0,
+			dorm_score: 0,
+			behavior_score: 0,
+			volunteering_time: 0,
+			public_opinion_score: 0
+		}
+	},
 	async add(new_data: DataType) {
 		data.push(new_data)
 	},

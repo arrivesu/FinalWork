@@ -35,7 +35,7 @@ const identityTypes = ["已毕业党员", "正式党员", "预备党员"]
 const partyPositions = ["党支部书记", "党支部委员", "普通党员"]
 
 // 模拟党员数据
-const members = MemberAPI.get().filter((member) => member.identity_type === '已毕业党员' || member.identity_type === '正式党员' || member.identity_type === '预备党员')
+const members = MemberAPI.data.filter((member) => member.identity_type === '已毕业党员' || member.identity_type === '正式党员' || member.identity_type === '预备党员')
 
 export default function MembersList() {
 	const [searchTerm, setSearchTerm] = useState("")

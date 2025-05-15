@@ -5,6 +5,7 @@
  * @date 2025/5/12
  */
 import {eventData} from "@/lib/mock/event";
+import {MemberAPI} from "@/lib/api/member";
 
 let data = eventData;
 
@@ -12,6 +13,19 @@ type DataType = typeof data[number];
 type IdType = DataType['id'];
 
 export const EventAPI = {
+	data: data,
+	createEmpty(): DataType {
+		return {
+			id: 0,
+			user: MemberAPI.createEmpty(),
+			time: new Date(),
+			module: null,
+			status: "success",
+			ip: "",
+			target: null,
+			content: ""
+		}
+	},
 	async add(new_data: DataType) {
 		data.push(new_data)
 	},

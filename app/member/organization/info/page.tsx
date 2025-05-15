@@ -13,35 +13,12 @@ export default function OrganizationInfo() {
 
 	const branch = user.branch;
 
-	const branch_member_list = MemberAPI.get().filter((member) => member.branch.id === branch.id);
+	const branch_member_list = MemberAPI.data.filter((member) => member.branch.id === branch.id);
 
 	let user1: MemberType;
 	const user_power_list = branch_member_list.filter((user) => user.party_position === '党支部书记')
 	if(user_power_list.length != 1) {
-		user1 = {
-			avatar: "",
-			birth_date: new Date(),
-			branch: {
-				id: 0,
-				name: "数据学院学工办",
-				superior_org: "浙大宁波理工学院党支部"
-			},
-			class_name: '大数据211',
-			ethnicity: "汉族",
-			gender: '男',
-			id: 0,
-			identity_type: '正式党员',
-			is_deleted: false,
-			join_date: new Date(),
-			name: "陆晨",
-			party_position: '党支部书记',
-			phone: "012345678910",
-			profile_file: "",
-			role: ['member', 'admin'],
-			student_number: "1234567891",
-			username: "luchen",
-			is_init_password: false,
-		}
+		user1 = MemberAPI.createEmpty()
 	}
 	else user1 = user_power_list[0];
 

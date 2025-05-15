@@ -23,7 +23,7 @@ import {useToast} from "@/hooks/use-toast"
 import {TransferAPI} from "@/lib/api/transfer";
 
 // 模拟转接申请数据
-const transferApplications = TransferAPI.get()
+const transferApplications = TransferAPI.data
 
 export default function TransferManagementPage() {
 	const [searchTerm, setSearchTerm] = useState("")

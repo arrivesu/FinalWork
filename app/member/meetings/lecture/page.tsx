@@ -16,7 +16,7 @@ import {
 import {Badge} from "@/components/ui/badge";
 
 // 模拟党小组会数据
-const meetings = ActivitiesAPI.get().filter((meeting) => meeting.type === '党课')
+const meetings = ActivitiesAPI.data.filter((meeting) => meeting.type === '党课')
 
 export default function PartyLecturePage() {
 	// 过滤会议

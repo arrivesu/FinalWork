@@ -23,7 +23,7 @@ import {useToast} from "@/hooks/use-toast"
 import {MaterialAPI} from "@/lib/api";
 
 // 模拟学习资料数据
-const resources = MaterialAPI.get();
+const resources = MaterialAPI.data;
 
 export default function AdminResourcesPage() {
 	const [searchTerm, setSearchTerm] = useState("")

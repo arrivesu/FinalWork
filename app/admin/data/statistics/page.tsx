@@ -24,8 +24,13 @@ import {ActivitiesAPI, MemberAPI} from "@/lib/api";
 // Register ChartJS components
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Title, Tooltip, Legend)
 
+const member_list = MemberAPI.data;
+const activities_list = ActivitiesAPI.data;
+
+const isEducation = (activity: ActivityType) => activity.type === '党课' || activity.type === '党日活动';
+const isMeeting = (activity: ActivityType) => activity.type === '党小组会' || activity.type === '支部委员会' || activity.type === '支部党员大会';
+
 function getStatisticsData() {
-	const member_list = MemberAPI.get();
 
 	function getAge(birthday: Date): number {
 		const today = new Date();
@@ -67,7 +72,7 @@ function getStatisticsData() {
 }
 
 function getDevelopmentData() {
-	const userData = MemberAPI.get();
+	const userData = member_list;
 
 	const developmentData = {
 		applicants: userData.filter((member) => member.identity_type === '入党申请人').length,
@@ -87,12 +92,12 @@ function getDevelopmentData() {
 }
 
 function getActivitiesData() {
-	const activities_data = ActivitiesAPI.get();
+	const activities_data = activities_list;
 
 	const activityData = {
-		meetingsCount: activities_data.filter((activity) => activity.type === '会议').length,
+		meetingsCount: activities_data.filter(isMeeting).length,
 		meetingsAttendance: 87,
-		educationCount: activities_data.filter((activity) => activity.type === '学习教育活动').length,
+		educationCount: activities_data.filter(isEducation).length,
 		educationAttendance: 92,
 
 		byMonth: activities_data.reduce(
@@ -104,9 +109,9 @@ function getActivitiesData() {
 					acc[key] = { meetings: 0, education: 0 };
 				}
 
-				if (activity.type === '会议') {
+				if (isMeeting(activity)) {
 					acc[key].meetings += 1;
-				} else if (activity.type === '学习教育活动') {
+				} else if (isEducation(activity)) {
 					acc[key].education += 1;
 				}
 

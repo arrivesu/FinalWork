@@ -20,7 +20,7 @@ import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/c
 import {MemberAPI} from "@/lib/api";
 
 // 模拟入党积极分子数据
-const activist_member_list = MemberAPI.get().filter((member) => member.identity_type === '入党积极分子')
+const activist_member_list = MemberAPI.data.filter((member) => member.identity_type === '入党积极分子')
 
 export default function ActivistsPage() {
 	const [searchTerm, setSearchTerm] = useState("")

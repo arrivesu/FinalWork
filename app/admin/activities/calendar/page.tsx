@@ -23,10 +23,9 @@ import {CalendarIcon, CalendarPlus2Icon as CalendarIcon2, Clock, Edit, MapPin, P
 import {useToast} from "@/hooks/use-toast"
 import {Badge} from "@/components/ui/badge"
 import {ActivitiesAPI} from "@/lib/api";
-import {undefined} from "zod";
 
 // 模拟活动数据 - 添加了更多事件
-const initialActivities = ActivitiesAPI.get();
+const initialActivities = ActivitiesAPI.data;
 
 // 活动类型对应的颜色
 const typeColors = {
@@ -49,21 +48,7 @@ export default function WorkCalendarPage() {
 	const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
 	const [activities, setActivities] = useState(initialActivities)
 	const [activeTab, setActiveTab] = useState("today")
-	const [newActivity, setNewActivity] = useState<ActivityType>({
-		endTime: new Date(),
-		title: "",
-		id: 0,
-		branch: {
-			id: 0,
-			name: "",
-			superior_org: ""
-		},
-		content: "",
-		startTime: new Date(),
-		location: "",
-		remark: "",
-		type: '会议',
-	})
+	const [newActivity, setNewActivity] = useState<ActivityType>(ActivitiesAPI.createEmpty())
 	const {toast} = useToast()
 
 	// 获取选定日期的活动
@@ -105,14 +90,14 @@ export default function WorkCalendarPage() {
 		}))
 	}
 
-	const handleSelectChange = (value: "会议" | "学习教育活动") => {
+	const handleSelectChange = (value: ActivityType['type']) => {
 		setNewActivity((prev) => ({
 			...prev,
 			type: value,
 		}))
 	}
 
-	const handleAddActivity = () => {
+	const handleAddActivity = async () => {
 		if (!newActivity.title || !newActivity.startTime || !newActivity.startTime || !newActivity.location || !newActivity.type) {
 			toast({
 				title: "添加失败",
@@ -122,25 +107,11 @@ export default function WorkCalendarPage() {
 			return
 		}
 
-		const activityToAdd = ActivitiesAPI.add(newActivity)
+		const activityToAdd = await ActivitiesAPI.add(newActivity)
 
 		setActivities((prev) => [...prev, activityToAdd])
 		setIsAddDialogOpen(false)
-		setNewActivity({
-			id: 0,
-			branch: {
-				id: 0,
-				name: "",
-				superior_org: ""
-			},
-			content: "",
-			startTime: new Date(),
-			location: "",
-			remark: "",
-			type: '会议',
-			endTime: new Date(),
-			title: ""
-		})
+		setNewActivity(ActivitiesAPI.createEmpty())
 
 		toast({
 			title: "添加成功",

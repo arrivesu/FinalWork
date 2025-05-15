@@ -19,7 +19,7 @@ import {
 } from "@/lib/utils";
 
 // 模拟党日活动数据
-const activities = ActivitiesAPI.get();
+const activities = ActivitiesAPI.data;
 
 export default function ActivitiesPage() {
 	const [searchTerm, setSearchTerm] = useState("")

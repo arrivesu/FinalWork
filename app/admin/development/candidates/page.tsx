@@ -19,7 +19,7 @@ import {useToast} from "@/hooks/use-toast"
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table"
 import {MemberAPI} from "@/lib/api";
 
-const candidate_member_list = MemberAPI.get().filter((member) => member.identity_type === '发展对象')
+const candidate_member_list = MemberAPI.data.filter((member) => member.identity_type === '发展对象')
 
 export default function CandidatesPage() {
 	const [searchTerm, setSearchTerm] = useState("")

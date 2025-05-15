@@ -5,6 +5,8 @@
  * @date 2025/5/13
  */
 import {transferData} from "@/lib/mock/transfer";
+import {MemberAPI} from "@/lib/api/member";
+import {BranchAPI} from "@/lib/api/branch";
 
 let data = transferData;
 
@@ -12,6 +14,17 @@ type DataType = typeof data[number];
 type IdType = DataType['id'];
 
 export const TransferAPI = {
+	data: data,
+	createEmpty(): DataType {
+		return {
+			id: 0,
+			user: MemberAPI.createEmpty(),
+			targetOrganization: BranchAPI.createEmpty(),
+			reason: "",
+			applyDate: new Date(),
+			status: "pending"
+		}
+	},
 	async add(new_data: DataType) {
 		data.push(new_data)
 	},

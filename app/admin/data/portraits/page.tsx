@@ -12,8 +12,8 @@ import {Download, Filter, Search, UserPlus} from "lucide-react"
 import {MemberAPI, UserDataAPI} from "@/lib/api";
 
 // Mock data for party members
-const partyMembers = MemberAPI.get();
-const record_time = '2023年第2学期'
+const party_member_list = MemberAPI.data;
+const user_data_list = UserDataAPI.data;
 
 type MemberData = {
 	ideologicalAwareness: number
@@ -23,10 +23,8 @@ type MemberData = {
 	socialContribution: number
 }
 
-const getMemberData = (member: MemberType): MemberData| null => {
-	const data = UserDataAPI.get();
-
-	const userdata = data.filter((data) => (data.record_time === record_time) && (data.user.id === member.id));
+const getMemberData = (member: MemberType, record_time: string): MemberData| null => {
+	const userdata = user_data_list.filter((data) => (data.record_time === record_time) && (data.user.id === member.id));
 
 	if(userdata.length !== 1) {
 		return null;
@@ -43,8 +41,8 @@ const getMemberData = (member: MemberType): MemberData| null => {
 	return calcData;
 }
 
-const getMemberAvgData = (member: MemberType): number => {
-	const data = getMemberData(member);
+const getMemberAvgData = (member: MemberType, record_time: string): number => {
+	const data = getMemberData(member, record_time);
 	if(data === null) return 0;
 
 	return Math.round(
@@ -59,8 +57,8 @@ const getMemberAvgData = (member: MemberType): number => {
 }
 
 // Function to convert member scores to radar chart data
-const getMemberRadarData = (member: MemberType): RadarChartData => {
-	const calcData = getMemberData(member);
+const getMemberRadarData = (member: MemberType, record_time: string): RadarChartData => {
+	const calcData = getMemberData(member, record_time);
 
 	if(calcData === null) {
 		return {
@@ -102,7 +100,7 @@ const getMemberRadarData = (member: MemberType): RadarChartData => {
 }
 
 // Function to get average scores for all members
-const getAverageScores = () => {
+const getAverageScores = (record_time: string) => {
 	const avgScores = {
 		ideologicalAwareness: 0,
 		partyDiscipline: 0,
@@ -111,8 +109,8 @@ const getAverageScores = () => {
 		socialContribution: 0
 	}
 
-	partyMembers.forEach((member) => {
-		const scores = getMemberData(member);
+	party_member_list.forEach((member) => {
+		const scores = getMemberData(member, record_time);
 		if(scores === null) return;
 
 		avgScores.ideologicalAwareness += scores.ideologicalAwareness
@@ -122,7 +120,7 @@ const getAverageScores = () => {
 		avgScores.socialContribution += scores.socialContribution
 	})
 
-	const count = partyMembers.length
+	const count = party_member_list.length
 	return {
 		ideologicalAwareness: avgScores.ideologicalAwareness / count,
 		partyDiscipline: avgScores.partyDiscipline / count,
@@ -133,8 +131,8 @@ const getAverageScores = () => {
 }
 
 // Get average radar data
-const getAverageRadarData = (): RadarChartData => {
-	const avgScores = getAverageScores()
+const getAverageRadarData = (record_time: string): RadarChartData => {
+	const avgScores = getAverageScores(record_time)
 
 	return {
 		labels: [
@@ -163,9 +161,9 @@ const getAverageRadarData = (): RadarChartData => {
 }
 
 // Get comparison radar data for a member and the average
-const getComparisonRadarData = (member: MemberType): RadarChartData => {
-	const memberData = getMemberData(member);
-	const avgScores = getAverageScores()
+const getComparisonRadarData = (member: MemberType, record_time: string): RadarChartData => {
+	const memberData = getMemberData(member, record_time);
+	const avgScores = getAverageScores(record_time)
 
 	if(memberData === null) {
 		return {
@@ -236,11 +234,14 @@ const getComparisonRadarData = (member: MemberType): RadarChartData => {
 export default function PartyMemberPortraits() {
 	const [searchTerm, setSearchTerm] = useState("")
 	const [identityType, setIdentityType] = useState("all")
-	const [selectedMember, setSelectedMember] = useState<(typeof partyMembers)[0] | null>(null)
+	const [selectedMember, setSelectedMember] = useState<(typeof party_member_list)[0] | null>(null)
 	const [activeTab, setActiveTab] = useState("individual")
 
+	// 添加筛选
+	const [term, setTerm] = useState('1921-1922-1')
+
 	// Filter members based on search term and department
-	const filteredMembers = partyMembers.filter((member) => {
+	const filteredMembers = party_member_list.filter((member) => {
 		const matchesSearch = member.name.includes(searchTerm) || (member.party_position?.includes(searchTerm) ?? false)
 		const matchesIdentityType = identityType === "all" || (member.identity_type === identityType)
 		return matchesSearch && matchesIdentityType
@@ -345,20 +346,10 @@ export default function PartyMemberPortraits() {
 								</CardHeader>
 								<CardContent>
 									<div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-4">
-										{/* <div>
-											<p className="text-sm text-muted-foreground">入党日期</p>
-											<p className="font-medium">{selectedMember.joinDate}</p>
-										</div> */}
-										{/* <div>
-											<p className="text-sm text-muted-foreground">党龄</p>
-											<p className="font-medium">
-												{new Date().getFullYear() - new Date(selectedMember.joinDate).getFullYear()}年
-											</p>
-										</div> */}
 										<div>
 											<p className="text-sm text-muted-foreground">综合评分</p>
 											<p className="font-medium">
-												{ getMemberAvgData(selectedMember) }
+												{ getMemberAvgData(selectedMember, term) }
 												分
 											</p>
 										</div>
@@ -375,12 +366,12 @@ export default function PartyMemberPortraits() {
 								<TabsContent value="individual" className="mt-4">
 									<RadarChart
 										title={`${selectedMember.name}的党员画像`}
-										data={getMemberRadarData(selectedMember)}
+										data={getMemberRadarData(selectedMember, term)}
 										height={400}
 									/>
 								</TabsContent>
 								<TabsContent value="comparison" className="mt-4">
-									<RadarChart title="与组织平均水平对比" data={getComparisonRadarData(selectedMember)}
+									<RadarChart title="与组织平均水平对比" data={getComparisonRadarData(selectedMember, term)}
 												height={400}/>
 								</TabsContent>
 								<TabsContent value="history" className="mt-4">
@@ -414,7 +405,7 @@ export default function PartyMemberPortraits() {
 				</CardHeader>
 				<CardContent>
 					<div className="grid grid-cols-1 gap-6">
-						<RadarChart title="" data={getAverageRadarData()} height={350}/>
+						<RadarChart title="" data={getAverageRadarData(term)} height={350}/>
 					</div>
 				</CardContent>
 			</Card>

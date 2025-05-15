@@ -9,7 +9,7 @@ import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/c
 import {MemberAPI} from "@/lib/api";
 
 // 模拟党员数据
-const members = MemberAPI.get();
+const members = MemberAPI.data;
 
 export default function OrganizationMembers() {
 	const [searchTerm, setSearchTerm] = useState("")

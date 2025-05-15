@@ -46,15 +46,15 @@ export const timeFilter = (time: Date, filter: TimeFilterType) => {
   }
 }
 
-export const getActivityMember = async (activity: ActivityType) => {
-  const join_list = await ActivityJoinAPI.get();
+export const getActivityMember = (activity: ActivityType) => {
+  const join_list = ActivityJoinAPI.data;
   return join_list
       .filter((join_item) => join_item.activity.id === activity.id)
       .map((join_item) => join_item.member);
 }
 
-export const getBranchMember = async (branch: BranchType) => {
-  const member_list = await MemberAPI.get();
+export const getBranchMember = (branch: BranchType) => {
+  const member_list = MemberAPI.data;
   return member_list.filter((member) => member.branch.id === branch.id)
 }
 

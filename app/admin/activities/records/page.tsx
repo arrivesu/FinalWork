@@ -25,7 +25,7 @@ import {ActivitiesAPI} from "@/lib/api";
 import {TimeFilterType, timeFilter, isComplete, getDateTimeParts, getDayTimeParts, getActivityMember, getBranchMember} from "@/lib/utils";
 
 // 模拟活动数据
-const activities = ActivitiesAPI.get();
+const activities = ActivitiesAPI.data;
 
 export default function ActivityRecordsPage() {
 	const [searchTerm, setSearchTerm] = useState("")

@@ -9,7 +9,7 @@ import {Calendar, Search, Settings, User} from "lucide-react"
 import {EventAPI} from "@/lib/api";
 
 // 模拟操作日志数据
-const logs = EventAPI.get();
+const logs = EventAPI.data;
 
 export default function LogsPage() {
 	const [searchTerm, setSearchTerm] = useState("")

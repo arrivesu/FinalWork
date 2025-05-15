@@ -224,9 +224,9 @@ export default function MemberProfile() {
 
 	if (!user) return null
 
-	const user_data = UserDataAPI.get().filter((data) => data.user.id === user.id);
+	const user_data = UserDataAPI.data.filter((data) => data.user.id === user.id);
 	const cur_user_data_list = user_data.filter((data) => data.record_time === selectedTerm);
-	const user_document_list = UserDocumentAPI.get().filter((doc) => doc.user.id === user.id);
+	const user_document_list = UserDocumentAPI.data.filter((doc) => doc.user.id === user.id);
 
 	let cur_data;
 	if(cur_user_data_list.length === 1) {

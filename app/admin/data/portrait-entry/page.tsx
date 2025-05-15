@@ -22,32 +22,7 @@ const memberTypes = [
 ]
 
 // 模拟党员数据
-const initialPartyMembers = MemberAPI.get();
-
-const emptyMemberTemplate: MemberType = {
-	id: 0,
-	is_deleted: false,
-	is_init_password: true,
-	username: '',
-	avatar: '',
-	name: '',
-	gender: "男",
-	birth_date: new Date(),
-	student_number: "",
-	class_name: "",
-	join_date: new Date(),
-	party_position: null,
-	identity_type: "正式党员",
-	ethnicity: '汉族',
-	phone: '',
-	profile_file: '',
-	branch: {
-		id: 0,
-		name: '',
-		superior_org: '',
-	},
-	role: [],
-}
+const initialPartyMembers = MemberAPI.data;
 
 // 生成学年选项
 const generateAcademicYears = () => {
@@ -198,7 +173,7 @@ const PortraitEntryPageContent: React.FC = () => {
 	// 添加新行
 	const addNewRow = () => {
 		const newId = Math.max(...partyMembers.map((m) => m.id)) + 1
-		setPartyMembers([...partyMembers, {...emptyMemberTemplate, id: newId}])
+		setPartyMembers([...partyMembers, {...MemberAPI.createEmpty(), id: newId}])
 
 		// 聚焦到新行的姓名字段
 		setTimeout(() => {
