@@ -111,7 +111,7 @@ export default function WorkCalendarPage() {
 	}
 
 	const handleAddActivity = () => {
-		if (!newActivity.name || !newActivity.startTime || !newActivity.startTime || !newActivity.location || !newActivity.type) {
+		if (!newActivity.title || !newActivity.startTime || !newActivity.startTime || !newActivity.location || !newActivity.type) {
 			toast({
 				title: "添加失败",
 				description: "请填写所有必填字段",
@@ -303,7 +303,7 @@ export default function WorkCalendarPage() {
 													<div
 														className={`h-3 w-3 rounded-full ${typeColors[activity.type as keyof typeof typeColors]}`}
 													></div>
-													<h3 className="font-medium">{activity.name}</h3>
+													<h3 className="font-medium">{activity.title}</h3>
 													<Badge
 														variant="outline">{typeNames[activity.type as keyof typeof typeNames]}</Badge>
 												</div>
@@ -352,7 +352,7 @@ export default function WorkCalendarPage() {
 													<div
 														className={`h-3 w-3 rounded-full ${typeColors[activity.type as keyof typeof typeColors]}`}
 													></div>
-													<h3 className="font-medium">{activity.name}</h3>
+													<h3 className="font-medium">{activity.title}</h3>
 													<Badge
 														variant="outline">{typeNames[activity.type as keyof typeof typeNames]}</Badge>
 												</div>

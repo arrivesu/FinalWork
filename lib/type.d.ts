@@ -36,8 +36,8 @@ interface MemberType {
 
 interface ActivityType {
 	id: number,									// 活动id
-	name: string,								// 活动名
-	type: '会议' | '学习教育活动',					// 活动类型
+	title: string,								// 活动名
+	type: '会议' | '学习教育活动' | '支部党员大会' | '支部委员会' | '党小组会' | '党课',					// 活动类型
 	startTime: Date,							// 活动开始时间
 	endTime: Date,								// 活动结束时间
 	location: string,							// 活动地点
@@ -109,15 +109,4 @@ interface UserDocumentType {
 	type: string,								// 文档类型
 	submit_time: Date,							// 文档上传时间
 	content: string								// 文档内容
-}
-
-interface MeetingDataType 	{
-	id: number,												// 会议编号
-	title: string,											// 会议标题
-	type: '支部党员大会' | '支部委员会' | '党小组会' | '党课',	// 会议类型
-	startTime: Date,										// 会议开始时间
-	endTime: Date,											// 会议结束时间
-	location: string,										// 会议地点
-	branch: BranchType,										// 会议所属党支部
-	content: string,										// 会议内容
 }

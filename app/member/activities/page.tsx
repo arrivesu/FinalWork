@@ -30,7 +30,7 @@ export default function ActivitiesPage() {
 			.filter((activity) => status === "all" || timeFilter(activity.startTime, status))
 			.filter(
 				(activity) =>
-					activity.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+					activity.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
 					activity.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
 					activity.location.toLowerCase().includes(searchTerm.toLowerCase()),
 			)
@@ -72,7 +72,7 @@ export default function ActivitiesPage() {
 								<Card key={activity.id}>
 									<CardHeader className="pb-2">
 										<div className="flex items-center justify-between">
-											<CardTitle>{activity.name}</CardTitle>
+											<CardTitle>{activity.title}</CardTitle>
 											<Badge
 												variant={isComplete(activity) ? "outline" : "secondary"}>{isComplete(activity)? '已完成': '未完成'}</Badge>
 										</div>
@@ -126,7 +126,7 @@ export default function ActivitiesPage() {
 								<Card key={activity.id}>
 									<CardHeader className="pb-2">
 										<div className="flex items-center justify-between">
-											<CardTitle>{activity.name}</CardTitle>
+											<CardTitle>{activity.title}</CardTitle>
 											<Badge variant="secondary">{getStatus(activity)}</Badge>
 										</div>
 										<CardDescription>
@@ -175,7 +175,7 @@ export default function ActivitiesPage() {
 								<Card key={activity.id}>
 									<CardHeader className="pb-2">
 										<div className="flex items-center justify-between">
-											<CardTitle>{activity.name}</CardTitle>
+											<CardTitle>{activity.title}</CardTitle>
 											<Badge variant="outline">{getStatus(activity)}</Badge>
 										</div>
 										<CardDescription>

@@ -3,7 +3,7 @@ import {Calendar, CalendarIcon, Clock, FileTextIcon, MapPin, Users, UsersIcon} f
 import {Button} from "@/components/ui/button"
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card"
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
-import {MeetingAPI} from "@/lib/api";
+import {ActivitiesAPI} from "@/lib/api";
 import {
 	getBranchMember,
 	getDateTimeParts,
@@ -16,7 +16,7 @@ import {
 import {Badge} from "@/components/ui/badge";
 
 // 模拟党小组会数据
-const meetings = MeetingAPI.get().filter((meeting) => meeting.type === '党课')
+const meetings = ActivitiesAPI.get().filter((meeting) => meeting.type === '党课')
 
 export default function PartyLecturePage() {
 	// 过滤会议

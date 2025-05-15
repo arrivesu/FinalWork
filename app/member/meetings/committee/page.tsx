@@ -5,7 +5,7 @@ import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
 import {Badge} from "@/components/ui/badge"
 import {Button} from "@/components/ui/button"
 import {Calendar, Clock, MapPin, Users} from "lucide-react"
-import {MeetingAPI} from "@/lib/api";
+import {ActivitiesAPI} from "@/lib/api";
 import {
 	getActivityMember, getBranchMember,
 	getDateTimeParts,
@@ -17,7 +17,7 @@ import {
 } from "@/lib/utils";
 
 // 模拟支部委员会会议数据
-const meetings = MeetingAPI.get().filter((meeting) => meeting.type === '支部委员会')
+const meetings = ActivitiesAPI.get().filter((meeting) => meeting.type === '支部委员会')
 
 export default function CommitteeMeetings() {
 	// 过滤会议

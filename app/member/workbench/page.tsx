@@ -6,14 +6,14 @@ import {CardStat} from "@/components/ui/card-stat"
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
 import {Calendar} from "@/components/ui/calendar"
 import {Activity, Bell, BookOpen, CalendarIcon, Clock, MapPin, Users} from "lucide-react"
-import {ActivityJoinAPI, MaterialAPI, MeetingAPI, NoticeAPI} from "@/lib/api";
+import {ActivityJoinAPI, MaterialAPI, ActivitiesAPI, NoticeAPI} from "@/lib/api";
 import {useAuth} from "@/hooks/use-auth";
 import {diffInYMD, isComplete} from "@/lib/utils";
 
 // 模拟数据
 const notices = NoticeAPI.get();
 const material = MaterialAPI.get();
-const meetings = MeetingAPI.get();
+const meetings = ActivitiesAPI.get();
 const join_data = ActivityJoinAPI.get();
 
 export default function MemberWorkbench() {
@@ -113,7 +113,7 @@ export default function MemberWorkbench() {
 									})} 活动
 								</h3>
 
-								{MeetingAPI.get().map((item, index) => (
+								{ActivitiesAPI.get().map((item, index) => (
 									<div
 										key={index}
 										className="bg-primary/5 rounded-lg p-4 shadow-sm border border-primary/10"

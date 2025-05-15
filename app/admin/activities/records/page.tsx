@@ -42,7 +42,7 @@ export default function ActivityRecordsPage() {
 			.filter((activity) => timeFilter(activity.startTime, filter))
 			.filter(
 				(activity) =>
-					activity.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+					activity.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
 					activity.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
 					activity.location.toLowerCase().includes(searchTerm.toLowerCase()),
 			)
@@ -201,7 +201,7 @@ export default function ActivityRecordsPage() {
 								<Card key={activity.id}>
 									<CardHeader className="pb-2">
 										<div className="flex items-center justify-between">
-											<CardTitle>{activity.name}</CardTitle>
+											<CardTitle>{activity.title}</CardTitle>
 											<Badge
 												variant={isComplete(activity) ? "outline" : "secondary"}>{isComplete(activity) ? '已完成': '进行中'}</Badge>
 										</div>
@@ -262,7 +262,7 @@ export default function ActivityRecordsPage() {
 																<div className="space-y-2">
 																	<Label htmlFor="edit-title">活动标题</Label>
 																	<Input id="edit-title"
-																		   defaultValue={activity.name}/>
+																		   defaultValue={activity.title}/>
 																</div>
 																<div className="grid grid-cols-2 gap-4">
 																	<div className="space-y-2">
@@ -369,7 +369,7 @@ export default function ActivityRecordsPage() {
 								<Card key={activity.id}>
 									<CardHeader className="pb-2">
 										<div className="flex items-center justify-between">
-											<CardTitle>{activity.name}</CardTitle>
+											<CardTitle>{activity.title}</CardTitle>
 											<Badge variant="secondary">{isComplete(activity) ? '已完成': '未开始'}</Badge>
 										</div>
 										<CardDescription>
@@ -431,7 +431,7 @@ export default function ActivityRecordsPage() {
 								<Card key={activity.id}>
 									<CardHeader className="pb-2">
 										<div className="flex items-center justify-between">
-											<CardTitle>{activity.name}</CardTitle>
+											<CardTitle>{activity.title}</CardTitle>
 											<Badge variant="outline">{isComplete(activity) ? '已完成': '未开始'}</Badge>
 										</div>
 										<CardDescription>
