@@ -6,30 +6,29 @@ import {CardStat} from "@/components/ui/card-stat"
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
 import {Calendar} from "@/components/ui/calendar"
 import {Activity, Bell, BookOpen, CalendarIcon, Clock, MapPin, Users} from "lucide-react"
-import {NoticeAPI} from "@/lib/api";
-
-interface User {
-	id: string
-	name: string
-	role: string
-	avatar: string
-}
+import {ActivityJoinAPI, MaterialAPI, MeetingAPI, NoticeAPI} from "@/lib/api";
+import {useAuth} from "@/hooks/use-auth";
+import {diffInYMD, isComplete} from "@/lib/utils";
 
 // 模拟数据
-const notices = NoticeAPI.get()
+const notices = NoticeAPI.get();
+const material = MaterialAPI.get();
+const meetings = MeetingAPI.get();
+const join_data = ActivityJoinAPI.get();
 
 export default function MemberWorkbench() {
-	const [user, setUser] = useState<User | null>(null)
 	const [date, setDate] = useState<Date | undefined>(new Date())
 
-	useEffect(() => {
-		const storedUser = localStorage.getItem("user")
-		if (storedUser) {
-			setUser(JSON.parse(storedUser))
-		}
-	}, [])
+	const { user } = useAuth();
 
 	if (!user) return null
+
+	const duration = diffInYMD(user.join_date, new Date());
+	const duration_str = `${duration.years}年${duration.months}个月`
+
+	const join_times = join_data.filter((join) => join.member.id === user.id).length;
+
+	const todo_cnt = meetings.map((meeting) => !isComplete(meeting)).length;
 
 	return (
 		<div className="space-y-6">
@@ -40,10 +39,10 @@ export default function MemberWorkbench() {
 
 
 			<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 bg-white p-6 rounded-xl shadow-sm">
-				<CardStat title="党龄" value="3年2个月" icon={Users} description="入党时间：2021-02-15"/>
-				<CardStat title="参与活动" value="12次" icon={Activity} description="本年度已参与活动次数"/>
-				<CardStat title="学习资料" value="25篇" icon={BookOpen} description="已学习的党课资料数量"/>
-				<CardStat title="待办事项" value="3项" icon={Bell} description="您有3项待办需要处理"/>
+				<CardStat title="党龄" value={duration_str} icon={Users} description="入党时间：2021-02-15"/>
+				<CardStat title="参与活动" value={`${join_times}`} icon={Activity} description="本年度已参与活动次数"/>
+				<CardStat title="学习资料" value={`${material.length}篇`} icon={BookOpen} description="已学习的党课资料数量"/>
+				<CardStat title="待办事项" value={`${todo_cnt}项`} icon={Bell} description={`您有${todo_cnt}项待办需要处理`}/>
 			</div>
 
 
@@ -51,7 +50,6 @@ export default function MemberWorkbench() {
 				<TabsList>
 					<TabsTrigger value="notices">通知公告</TabsTrigger>
 					<TabsTrigger value="calendar">工作日历</TabsTrigger>
-					{/* <TabsTrigger value="portrait">党员画像</TabsTrigger> */}
 				</TabsList>
 
 				<TabsContent value="notices" className="space-y-4">
@@ -115,18 +113,7 @@ export default function MemberWorkbench() {
 									})} 活动
 								</h3>
 
-								{[
-									{
-										title: "支部党员大会",
-										time: "14:00-16:00",
-										place: "第一会议室",
-									},
-									{
-										title: "党课学习",
-										time: "19:00-20:30",
-										place: "线上会议",
-									},
-								].map((item, index) => (
+								{MeetingAPI.get().map((item, index) => (
 									<div
 										key={index}
 										className="bg-primary/5 rounded-lg p-4 shadow-sm border border-primary/10"
@@ -139,12 +126,12 @@ export default function MemberWorkbench() {
 												<div
 													className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
 													<Clock className="w-4 h-4"/>
-													{item.time}
+													{item.date.toDateString()}
 												</div>
 												<div
 													className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
 													<MapPin className="w-4 h-4"/>
-													{item.place}
+													{item.location}
 												</div>
 											</div>
 										</div>

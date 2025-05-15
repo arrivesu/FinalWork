@@ -1,6 +1,6 @@
 "use client"
 
-import type React from "react"
+import React, {useEffect} from "react"
 import {useMemo, useState} from "react"
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
 import {Button} from "@/components/ui/button"
@@ -23,7 +23,6 @@ import {CalendarIcon, CalendarPlus2Icon as CalendarIcon2, Clock, Edit, MapPin, P
 import {useToast} from "@/hooks/use-toast"
 import {Badge} from "@/components/ui/badge"
 import {ActivitiesAPI} from "@/lib/api";
-import dynamic from "next/dynamic";
 
 // 模拟活动数据 - 添加了更多事件
 const initialActivities = ActivitiesAPI.get();
@@ -43,12 +42,6 @@ const typeNames = {
 	activity: "党日活动",
 	other: "其他",
 }
-
-// 显式声明组件类型
-const DatePicker = dynamic(() =>
-		import("react-datepicker"),
-	{ ssr: false }
-);
 
 export default function WorkCalendarPage() {
 	const [date, setDate] = useState<Date | undefined>(new Date())
@@ -127,7 +120,6 @@ export default function WorkCalendarPage() {
 			return
 		}
 
-		const newId = (activities.length + 1).toString()
 		const activityToAdd = ActivitiesAPI.add(newActivity)
 
 		setActivities((prev) => [...prev, activityToAdd])
@@ -169,22 +161,6 @@ export default function WorkCalendarPage() {
 		})
 	}
 
-	// 自定义日历渲染，标记有事件的日期
-	const renderCalendarDay = ({displayMonth, date}: { displayMonth: Date; date: Date; }) => {
-		const hasEvent = eventDates.includes(date)
-
-		return (
-			<div className="relative">
-				<div>{date.getDate()}</div>
-				{hasEvent && (
-					<div className="absolute bottom-1 left-1/2 transform -translate-x-1/2">
-						<div className="h-1 w-1 rounded-full bg-primary"></div>
-					</div>
-				)}
-			</div>
-		)
-	}
-
 	return (
 		<div className="space-y-6">
 			<div className="flex items-center justify-between">
@@ -202,61 +178,48 @@ export default function WorkCalendarPage() {
 					<DialogContent>
 						<DialogHeader>
 							<DialogTitle>添加活动</DialogTitle>
-							<DialogDescription>添加新活动到工作日历</DialogDescription>
+							<DialogDescription>添加新的党组织活动</DialogDescription>
 						</DialogHeader>
 						<div className="grid gap-4 py-4">
 							<div className="space-y-2">
 								<Label htmlFor="title">活动标题</Label>
-								<Input id="title" placeholder="请输入活动标题" value={newActivity.name}
-									   onChange={handleInputChange}/>
+								<Input id="title" placeholder="请输入活动标题"/>
 							</div>
 							<div className="grid grid-cols-2 gap-4">
-								<DatePicker
-									selected={newActivity.date}
-									onChange={(d) => {
-										setNewActivity((prev) => ({
-											...prev,
-											date: d ?? new Date()
-										}))
-									}}
-									showTimeSelect
-									dateFormat="yyyy-MM-dd HH:mm"
-								/>
+								<div className="space-y-2">
+									<Label htmlFor="date">活动日期</Label>
+									<Input id="date" type="date"/>
+								</div>
+								<div className="space-y-2">
+									<Label htmlFor="time">活动时间</Label>
+									<Input id="time" placeholder="例如：14:00-16:00"/>
+								</div>
 							</div>
 							<div className="grid grid-cols-2 gap-4">
 								<div className="space-y-2">
 									<Label htmlFor="location">活动地点</Label>
-									<Input
-										id="location"
-										placeholder="请输入活动地点"
-										value={newActivity.location}
-										onChange={handleInputChange}
-									/>
+									<Input id="location" placeholder="请输入活动地点"/>
 								</div>
 								<div className="space-y-2">
 									<Label htmlFor="type">活动类型</Label>
-									<Select onValueChange={handleSelectChange} value={newActivity.type}>
-										<SelectTrigger id="type">
+									<Select>
+										<SelectTrigger>
 											<SelectValue placeholder="选择活动类型"/>
 										</SelectTrigger>
 										<SelectContent>
-											<SelectItem value="meeting">会议</SelectItem>
-											<SelectItem value="lecture">党课</SelectItem>
-											<SelectItem value="activity">党日活动</SelectItem>
-											<SelectItem value="other">其他</SelectItem>
+											<SelectItem value="支部党员大会">支部党员大会</SelectItem>
+											<SelectItem value="支部委员会">支部委员会</SelectItem>
+											<SelectItem value="党小组会">党小组会</SelectItem>
+											<SelectItem value="党课">党课</SelectItem>
+											<SelectItem value="党日活动">党日活动</SelectItem>
+											<SelectItem value="其他">其他</SelectItem>
 										</SelectContent>
 									</Select>
 								</div>
 							</div>
 							<div className="space-y-2">
 								<Label htmlFor="content">活动内容</Label>
-								<Textarea
-									id="content"
-									placeholder="请输入活动内容"
-									className="min-h-[100px]"
-									value={newActivity.content}
-									onChange={handleInputChange}
-								/>
+								<Textarea id="content" placeholder="请输入活动内容" className="min-h-[100px]"/>
 							</div>
 						</div>
 						<DialogFooter>
@@ -281,9 +244,6 @@ export default function WorkCalendarPage() {
 							selected={date}
 							onSelect={setDate}
 							className="rounded-md border"
-							components={{
-								Day: renderCalendarDay,
-							}}
 						/>
 						<div className="mt-4 flex flex-wrap gap-2">
 							<div className="flex items-center gap-2">
@@ -411,12 +371,12 @@ export default function WorkCalendarPage() {
 												<div className="flex items-center gap-1">
 													<CalendarIcon2 className="h-4 w-4"/>
 													<span>
-                            {new Date(activity.date).toLocaleDateString("zh-CN", {
-								year: "numeric",
-								month: "long",
-								day: "numeric",
-							})}
-                          </span>
+														{new Date(activity.date).toLocaleDateString("zh-CN", {
+															year: "numeric",
+															month: "long",
+															day: "numeric",
+														})}
+													</span>
 												</div>
 												<div className="flex items-center gap-1">
 													<Clock className="h-4 w-4"/>

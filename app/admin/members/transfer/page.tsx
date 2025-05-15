@@ -25,30 +25,6 @@ import {TransferAPI} from "@/lib/api/transfer";
 // 模拟转接申请数据
 const transferApplications = TransferAPI.get()
 
-// 模拟转入申请数据
-const incomingTransfers = [
-	{
-		id: "1",
-		name: "钱潮生",
-		avatar: "/placeholder.svg?key=9o9wr",
-		studentId: "2020010101",
-		sourceOrganization: "宁波万里学院计算机系党支部",
-		reason: "考研升学",
-		applyDate: "2024-11-20",
-		status: "approved",
-	},
-	{
-		id: "2",
-		name: "孙万璐",
-		avatar: "/placeholder.svg?key=pqxtu",
-		studentId: "2020010102",
-		sourceOrganization: "阿里巴巴集团党支部",
-		reason: "工作变动",
-		applyDate: "2023-10-15",
-		status: "pending",
-	},
-]
-
 export default function TransferManagementPage() {
 	const [searchTerm, setSearchTerm] = useState("")
 	const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false)
@@ -73,13 +49,6 @@ export default function TransferManagementPage() {
 	const approvedTransfers = filterTransfers("approved")
 	const rejectedTransfers = filterTransfers("rejected")
 
-	// 过滤转入申请
-	const filteredIncomingTransfers = incomingTransfers.filter(
-		(transfer) =>
-			transfer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			transfer.studentId.includes(searchTerm) ||
-			transfer.sourceOrganization.toLowerCase().includes(searchTerm.toLowerCase()),
-	)
 
 	const handleApprove = () => {
 		if (!selectedTransfer) return
@@ -124,7 +93,7 @@ export default function TransferManagementPage() {
 			<Tabs defaultValue="outgoing">
 				<TabsList>
 					<TabsTrigger value="outgoing">转出申请</TabsTrigger>
-					<TabsTrigger value="incoming">转入申请</TabsTrigger>
+					{/*<TabsTrigger value="incoming">转入申请</TabsTrigger>*/}
 				</TabsList>
 				<TabsContent value="outgoing">
 					<Tabs defaultValue="all">
@@ -434,91 +403,6 @@ export default function TransferManagementPage() {
 							</Card>
 						</TabsContent>
 					</Tabs>
-				</TabsContent>
-				<TabsContent value="incoming">
-					<Card>
-						<CardHeader>
-							<CardTitle>转入申请</CardTitle>
-							<CardDescription>组织关系转入申请，共 {filteredIncomingTransfers.length} 条</CardDescription>
-						</CardHeader>
-						<CardContent>
-							<div className="grid gap-4">
-								{filteredIncomingTransfers.length > 0 ? (
-									filteredIncomingTransfers.map((transfer) => (
-										<div key={transfer.id}
-											 className="flex items-center justify-between p-4 border rounded-lg">
-											<div className="flex items-center space-x-4">
-												<Avatar>
-													<AvatarFallback>{transfer.name.substring(transfer.name.length - 2)}</AvatarFallback>
-												</Avatar>
-												<div>
-													<p className="font-medium">{transfer.name}</p>
-													<p className="text-sm text-muted-foreground">{transfer.studentId}</p>
-												</div>
-											</div>
-											<div className="flex items-center space-x-4">
-												<div className="text-sm text-right">
-													<p>来源组织: {transfer.sourceOrganization}</p>
-													<p className="text-muted-foreground">申请日期: {transfer.applyDate}</p>
-												</div>
-												<Badge
-													variant={
-														transfer.status === "approved"
-															? "outline"
-															: transfer.status === "rejected"
-																? "destructive"
-																: "secondary"
-													}
-												>
-													{transfer.status === "pending"
-														? "待审核"
-														: transfer.status === "approved"
-															? "已批准"
-															: "已拒绝"}
-												</Badge>
-												{transfer.status === "pending" ? (
-													<div className="flex space-x-2">
-														<Button
-															size="sm"
-															variant="outline"
-															onClick={() =>
-																toast({
-																	title: "申请已拒绝",
-																	description: `已拒绝 ${transfer.name} 的组织关系转入申请`,
-																})
-															}
-														>
-															<XCircle className="mr-2 h-4 w-4"/>
-															拒绝
-														</Button>
-														<Button
-															size="sm"
-															onClick={() =>
-																toast({
-																	title: "申请已批准",
-																	description: `已批准 ${transfer.name} 的组织关系转入申请`,
-																})
-															}
-														>
-															<CheckCircle className="mr-2 h-4 w-4"/>
-															批准
-														</Button>
-													</div>
-												) : (
-													<Button variant="outline" size="sm">
-														查看详情
-													</Button>
-												)}
-											</div>
-										</div>
-									))
-								) : (
-									<div
-										className="text-center py-4 text-muted-foreground">未找到符合条件的转入申请</div>
-								)}
-							</div>
-						</CardContent>
-					</Card>
 				</TabsContent>
 			</Tabs>
 		</div>

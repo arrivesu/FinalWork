@@ -10,14 +10,16 @@ import {Button} from "@/components/ui/button"
 import {Bell} from "lucide-react"
 import {RoleSwitcher} from "@/components/ui/role-switcher"
 import {UserMenu} from "@/components/ui/user-menu"
+import {useAuth} from "@/hooks/use-auth";
 
 export default function MemberLayout({
 										 children,
 									 }: {
 	children: React.ReactNode
 }) {
-	// 模拟用户数据
-	const user = JSON.parse(localStorage?.getItem('user') ?? '{}')
+	const {user} = useAuth();
+
+	if(user === null) return null;
 
 	return (
 		<Shell>
@@ -35,16 +37,14 @@ export default function MemberLayout({
 								<span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-600"/>
 							</Button>
 
-							{/* 角色切换按钮 - 只有管理员可见 */}
-							{user.role.includes("admin") && (
-								<div className="flex items-center">
-									<span className="text-sm text-muted-foreground mr-2">党员视图</span>
-									<RoleSwitcher isAdmin={false} targetPath="/admin/workbench"/>
-								</div>
-							)}
+								{user.role.includes("admin") && (
+									<div className="flex items-center">
+										<span className="text-sm text-muted-foreground mr-2">党员视图</span>
+										<RoleSwitcher isAdmin={false} targetPath="/admin/workbench"/>
+									</div>
+								)}
 
-							{/* 用户头像和下拉菜单 */}
-							<UserMenu user={user}/>
+								<UserMenu user={user}/>
 						</div>
 					</div>
 					<div className="flex-1 overflow-auto p-6">

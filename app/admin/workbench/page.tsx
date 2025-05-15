@@ -19,7 +19,9 @@ import {Input} from "@/components/ui/input"
 import {Label} from "@/components/ui/label"
 import {Textarea} from "@/components/ui/textarea"
 import {Activity, Bell, BookOpen, CalendarIcon, Clock, MapPin, Plus, Users} from "lucide-react"
-import {NoticeAPI} from "@/lib/api";
+import {ActivitiesAPI, MaterialAPI, MeetingAPI, NoticeAPI} from "@/lib/api";
+import {useAuth} from "@/hooks/use-auth";
+import {getBranchMember, getCurrentSemesterActivityCount, isComplete} from "@/lib/utils";
 
 interface User {
 	id: string
@@ -32,18 +34,24 @@ interface User {
 const notices = NoticeAPI.get()
 
 export default function AdminWorkbench() {
-	const [user, setUser] = useState<User | null>(null)
 	const [date, setDate] = useState<Date | undefined>(new Date())
 	const [isDialogOpen, setIsDialogOpen] = useState(false)
 
-	useEffect(() => {
-		const storedUser = localStorage.getItem("user")
-		if (storedUser) {
-			setUser(JSON.parse(storedUser))
-		}
-	}, [])
+	const all_material = MaterialAPI.get();
+	const all_activities = ActivitiesAPI.get();
+	const all_meeting = MeetingAPI.get();
+
+	const {user} = useAuth();
 
 	if (!user) return null
+
+	const branch = user.branch;
+	const branch_user_list = getBranchMember(branch);
+
+	const learn_material_cnt = all_material.length;
+	const cur_year_activity_cnt = getCurrentSemesterActivityCount(all_activities);
+	const meeting_cnt = all_meeting.filter((meeting) => !isComplete(meeting)).length;
+	const branch_member_cnt = branch_user_list.filter((user) => user.identity_type === '正式党员' || user.identity_type === '预备党员').length
 
 	return (
 		<div className="space-y-6">
@@ -53,10 +61,10 @@ export default function AdminWorkbench() {
 			</div>
 
 			<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 bg-white p-6 rounded-xl shadow-sm">
-				<CardStat title="党员总数" value="34人" icon={Users} description="包含正式党员和预备党员"/>
-				<CardStat title="本学期活动" value="5次" icon={Activity} description="本学期已开展活动次数"/>
-				<CardStat title="学习资料" value="36篇" icon={BookOpen} description="已上传的党课资料数量"/>
-				<CardStat title="待办事项" value="7项" icon={Bell} description="您有7项待办需要处理"/>
+				<CardStat title="党员总数" value={`${branch_member_cnt}人`} icon={Users} description="包含正式党员和预备党员"/>
+				<CardStat title="本学期活动" value={`${cur_year_activity_cnt}次`} icon={Activity} description="本学期已开展活动次数"/>
+				<CardStat title="学习资料" value={`${learn_material_cnt}篇`} icon={BookOpen} description="已上传的党课资料数量"/>
+				<CardStat title="待办事项" value={`${meeting_cnt}项`} icon={Bell} description={`您有${meeting_cnt}项待办需要处理`}/>
 			</div>
 
 			<Tabs defaultValue="notices">

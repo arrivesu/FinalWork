@@ -61,11 +61,12 @@ export function SidebarNav({ items, className }: SidebarNavProps) {
                       isParentOfActive ? "bg-white hover:bg-white" : "",
                       item.disabled && "cursor-not-allowed opacity-60",
                     )}
+                    disabled
                   >
-                    <Link href={item.href}>
+                    <div>
                       {item.icon && <item.icon className="mr-2 h-4 w-4" />}
                       {item.title}
-                    </Link>
+                    </div>
                   </Button>
                   <div className="pl-4 border-l ml-3 space-y-1">
                     {item.submenu.map((subItem) => {

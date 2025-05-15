@@ -8,3 +8,6 @@ export * from './member'
 export * from './notice'
 export * from './transfer'
 export * from './userdata'
+export * from './userDocument'
+
+export * from './auth'

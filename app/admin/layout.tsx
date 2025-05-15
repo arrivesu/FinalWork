@@ -10,6 +10,7 @@ import {Button} from "@/components/ui/button"
 import {Bell} from "lucide-react"
 import {RoleSwitcher} from "@/components/ui/role-switcher"
 import {UserMenu} from "@/components/ui/user-menu"
+import {useAuth} from "@/hooks/use-auth";
 
 export default function AdminLayout({
 										children,
@@ -17,7 +18,9 @@ export default function AdminLayout({
 	children: React.ReactNode
 }) {
 	// 模拟管理员用户数据
-	const user = JSON.parse(localStorage?.getItem('user') ?? '{}')
+	const {user} = useAuth()
+
+	if(user === null) return null;
 
 	return (
 		<Shell>

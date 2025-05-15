@@ -9,6 +9,7 @@ import {Label} from "@/components/ui/label"
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card"
 import {useToast} from "@/hooks/use-toast"
 import Image from "next/image"
+import {useAuth} from "@/hooks/use-auth";
 
 export default function LoginPage() {
 	const [captcha, setCaptcha] = useState("")
@@ -19,63 +20,27 @@ export default function LoginPage() {
 	const captchaCanvasRef = useRef<HTMLCanvasElement>(null)
 	const router = useRouter()
 	const {toast} = useToast()
+	const auth = useAuth();
 
 	const handleLogin = async (e: React.FormEvent) => {
 		e.preventDefault()
 		setIsLoading(true)
 
+		if (captcha.toLowerCase() !== captchaText.toLowerCase()) {
+			toast({
+				variant: "destructive",
+				title: "验证失败",
+				description: "验证码输入错误，请重新输入",
+			})
+			generateCaptcha() // Refresh captcha after failed attempt
+			setCaptcha("") // Clear captcha input
+			setIsLoading(false)
+			return
+		}
+
 		try {
-			// 模拟登录验证
-			// 实际项目中应该调用API进行验证
-			await new Promise((resolve) => setTimeout(resolve, 1000))
-
-			if (username && password) {
-				// Add captcha validation
-				if (captcha.toLowerCase() !== captchaText.toLowerCase()) {
-					toast({
-						variant: "destructive",
-						title: "验证失败",
-						description: "验证码输入错误，请重新输入",
-					})
-					generateCaptcha() // Refresh captcha after failed attempt
-					setCaptcha("") // Clear captcha input
-					setIsLoading(false)
-					return
-				}
-
-				// 假设用户名包含admin的是管理员，其他是普通党员
-				// 所有用户默认都有member角色
-				const roles = ["member"]
-
-				// 如果用户名包含admin，添加admin角色
-				if (username.toLowerCase().includes("admin")) {
-					roles.push("admin")
-				}
-
-				localStorage.setItem(
-					"user",
-					JSON.stringify({
-						id: "1",
-						name: username,
-						role: roles, // 现在是数组
-						avatar: "/placeholder.svg?key=toqw7",
-					}),
-				)
-
-				// 所有用户默认进入党员界面
-				router.push("/member/workbench")
-
-				toast({
-					title: "登录成功",
-					description: `欢迎回来！${roles.includes("admin") ? "您拥有管理员权限" : ""}`,
-				})
-			} else {
-				toast({
-					variant: "destructive",
-					title: "登录失败",
-					description: "用户名或密码不能为空",
-				})
-			}
+			await auth.login(username, password);
+			router.push("/member/workbench")
 		} catch (error) {
 			toast({
 				variant: "destructive",

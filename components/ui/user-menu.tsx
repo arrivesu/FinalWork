@@ -14,15 +14,8 @@ import {
 import { Button } from "@/components/ui/button"
 import { LogOut, User } from "lucide-react"
 
-interface UserType {
-  id: string
-  name: string
-  role: string[]
-  avatar: string
-}
-
 interface UserMenuProps {
-  user: UserType
+  user: MemberType| null
 }
 
 export function UserMenu({ user }: UserMenuProps) {
@@ -42,7 +35,8 @@ export function UserMenu({ user }: UserMenuProps) {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-9 w-9 rounded-full">
           <Avatar className="h-9 w-9">
-            <AvatarFallback>{user.name.substring(user.name.length - 2)}</AvatarFallback>
+            { user && <AvatarFallback>{user.name.substring(user.name.length - 2)}</AvatarFallback>}
+            { <AvatarFallback></AvatarFallback>}
           </Avatar>
         </Button>
       </DropdownMenuTrigger>

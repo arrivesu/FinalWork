@@ -16,6 +16,7 @@ interface BranchType {
 interface MemberType {
 	id: number,									// 用户id
 	is_deleted: boolean,						// 是否被逻辑删除(如转出)
+	is_init_password: boolean,					// 是否是初始密码
 	username: string,							// 用户名
 	avatar: string,								// 用户头像
 	name: string,								// 名字
@@ -88,16 +89,25 @@ interface UserDataType {
 	assessment_score: number,					// 考核得分
 	dorm_score: number,							// 寝室卫生得分
 	behavior_score: number,						// 行为纪实得分
+	volunteering_time: number,					// 志愿服务时长 / 最大15
 	public_opinion_score: number,				// 群众调研得分
 }
 
 interface TransferDataType {
 	id: number,									// 转接id
 	user: MemberType,							// 转接的用户
-	targetOrganization: BranchType,
-	reason: string,
-	applyDate: Date,
-	status: 'pending' | 'approved' | 'rejected',
+	targetOrganization: BranchType,				// 转接目标党支部
+	reason: string,								// 转接理由
+	applyDate: Date,							// 转接申请时间
+	status: 'pending' | 'approved' | 'rejected',// 转接状态
+}
+
+interface UserDocumentType {
+	id: number,									// 文档id
+	user: MemberType,							// 文档的用户
+	type: string,								// 文档类型
+	submit_time: Date,							// 文档上传时间
+	content: string								// 文档内容
 }
 
 interface MeetingDataType 	{
