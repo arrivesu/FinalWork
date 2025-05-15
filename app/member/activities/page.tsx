@@ -17,14 +17,14 @@ import {
 	timeFilter,
 	TimeFilterType
 } from "@/lib/utils";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog"  // 这里假设你有类似的Dialog组件
 
-// 模拟党日活动数据
 const activities = ActivitiesAPI.data;
 
 export default function ActivitiesPage() {
 	const [searchTerm, setSearchTerm] = useState("")
+	const [selectedActivity, setSelectedActivity] = useState<typeof activities[0] | null>(null)
 
-	// 过滤活动
 	const filterActivities = (status: TimeFilterType) => {
 		return activities
 			.filter((activity) => status === "all" || timeFilter(activity.startTime, status))
@@ -34,7 +34,7 @@ export default function ActivitiesPage() {
 					activity.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
 					activity.location.toLowerCase().includes(searchTerm.toLowerCase()),
 			)
-			.sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime()) // 按日期降序排序
+			.sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime())
 	}
 
 	const allActivities = filterActivities(TimeFilterType.ALL)
@@ -43,6 +43,7 @@ export default function ActivitiesPage() {
 
 	return (
 		<div className="space-y-6">
+			{/* 标题和搜索 */}
 			<div>
 				<h1 className="text-3xl font-bold tracking-tight">党日活动</h1>
 				<p className="text-muted-foreground">查看党支部组织的党日活动</p>
@@ -65,6 +66,8 @@ export default function ActivitiesPage() {
 					<TabsTrigger value="upcoming">未开始</TabsTrigger>
 					<TabsTrigger value="completed">已完成</TabsTrigger>
 				</TabsList>
+
+				{/* 全部活动 Tab */}
 				<TabsContent value="all">
 					<div className="grid gap-4">
 						{allActivities.length > 0 ? (
@@ -74,10 +77,13 @@ export default function ActivitiesPage() {
 										<div className="flex items-center justify-between">
 											<CardTitle>{activity.title}</CardTitle>
 											<Badge
-												variant={isComplete(activity) ? "outline" : "secondary"}>{isComplete(activity)? '已完成': '未完成'}</Badge>
+												variant={isComplete(activity) ? "outline" : "secondary"}>
+												{isComplete(activity) ? '已完成' : '未完成'}
+											</Badge>
 										</div>
 										<CardDescription>
 											<div className="flex flex-wrap gap-4 mt-2">
+												{/* 时间、地点、人数... */}
 												<div className="flex items-center gap-1">
 													<Calendar className="h-4 w-4 text-muted-foreground"/>
 													<span>{getDateTimeParts(activity.startTime)}</span>
@@ -108,7 +114,10 @@ export default function ActivitiesPage() {
 											</div>
 											<p className="text-sm">{activity.content}</p>
 											<div className="flex justify-end mt-4">
-												<Button variant="outline">查看详情</Button>
+												<Button
+													variant="outline"
+													onClick={() => setSelectedActivity(activity)}
+												>查看详情</Button>
 											</div>
 										</div>
 									</CardContent>
@@ -119,6 +128,8 @@ export default function ActivitiesPage() {
 						)}
 					</div>
 				</TabsContent>
+
+				{/* 下面两个 Tab 结构类似，这里只示例一个，你可以类似处理 */}
 				<TabsContent value="upcoming">
 					<div className="grid gap-4">
 						{upcomingActivities.length > 0 ? (
@@ -131,6 +142,7 @@ export default function ActivitiesPage() {
 										</div>
 										<CardDescription>
 											<div className="flex flex-wrap gap-4 mt-2">
+												{/* 时间、地点、人数... */}
 												<div className="flex items-center gap-1">
 													<Calendar className="h-4 w-4 text-muted-foreground"/>
 													<span>{getDateTimeParts(activity.startTime)}</span>
@@ -157,7 +169,10 @@ export default function ActivitiesPage() {
 											</div>
 											<p className="text-sm">{activity.content}</p>
 											<div className="flex justify-end mt-4">
-												<Button variant="outline">查看详情</Button>
+												<Button
+													variant="outline"
+													onClick={() => setSelectedActivity(activity)}
+												>查看详情</Button>
 											</div>
 										</div>
 									</CardContent>
@@ -168,6 +183,8 @@ export default function ActivitiesPage() {
 						)}
 					</div>
 				</TabsContent>
+
+				{/* 完成的活动 */}
 				<TabsContent value="completed">
 					<div className="grid gap-4">
 						{completedActivities.length > 0 ? (
@@ -208,7 +225,10 @@ export default function ActivitiesPage() {
 											</div>
 											<p className="text-sm">{activity.content}</p>
 											<div className="flex justify-end mt-4">
-												<Button variant="outline">查看详情</Button>
+												<Button
+													variant="outline"
+													onClick={() => setSelectedActivity(activity)}
+												>查看详情</Button>
 											</div>
 										</div>
 									</CardContent>
@@ -220,6 +240,46 @@ export default function ActivitiesPage() {
 					</div>
 				</TabsContent>
 			</Tabs>
+
+			{/* 弹窗详情 */}
+			{selectedActivity && (
+				<Dialog open={true} onOpenChange={(open) => !open && setSelectedActivity(null)}>
+					<DialogContent className="max-w-lg">
+						<DialogHeader>
+							<DialogTitle>{selectedActivity.title}</DialogTitle>
+						</DialogHeader>
+						<div className="space-y-4">
+							<div className="flex flex-wrap gap-4">
+								<div className="flex items-center gap-1">
+									<Calendar className="h-5 w-5 text-muted-foreground"/>
+									<span>{selectedActivity.startTime.toDateString()}</span>
+								</div>
+								<div className="flex items-center gap-1">
+									<Clock className="h-5 w-5 text-muted-foreground"/>
+									<span>{getDayTimeParts(selectedActivity.startTime)}</span>
+								</div>
+								<div className="flex items-center gap-1">
+									<MapPin className="h-5 w-5 text-muted-foreground"/>
+									<span>{selectedActivity.location}</span>
+								</div>
+								<div className="flex items-center gap-1">
+									<Users className="h-5 w-5 text-muted-foreground"/>
+									<span>{getActivityMember(selectedActivity).length}/{getBranchMember(selectedActivity.branch).length}人参加</span>
+								</div>
+							</div>
+							<div>
+								<h3 className="font-medium">活动内容</h3>
+								<p className="whitespace-pre-line">{selectedActivity.content}</p>
+							</div>
+						</div>
+						<div className="flex justify-end mt-6">
+							<DialogClose asChild>
+								<Button>关闭</Button>
+							</DialogClose>
+						</div>
+					</DialogContent>
+				</Dialog>
+			)}
 		</div>
 	)
 }

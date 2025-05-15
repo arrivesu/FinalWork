@@ -1,5 +1,6 @@
 "use client"
 
+import {Dialog, DialogContent, DialogHeader, DialogTitle} from "@/components/ui/dialog"
 import {useState} from "react"
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
 import {Input} from "@/components/ui/input"
@@ -7,10 +8,19 @@ import {Button} from "@/components/ui/button"
 import {Badge} from "@/components/ui/badge"
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
 import {Download, ExternalLink, FileText, Search, Video} from "lucide-react"
-import {MaterialAPI} from "@/lib/api";
-
+import {MaterialAPI} from "@/lib/api"
 // 模拟学习资料数据
-const resources = MaterialAPI.data;
+const resources = MaterialAPI.data
+
+export default function ResourcesPage() {
+	const [searchTerm, setSearchTerm] = useState("")
+	const [selectedResource, setSelectedResource] = useState(null)
+	const [open, setOpen] = useState(false)
+
+	const handleView = (resource: any) => {
+		setSelectedResource(resource)
+		setOpen(true)
+	}
 
 export default function ResourcesPage() {
 	const [searchTerm, setSearchTerm] = useState("")
@@ -22,7 +32,7 @@ export default function ResourcesPage() {
 			.filter(
 				(resource) =>
 					resource.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-					resource.type.toLowerCase().includes(searchTerm.toLowerCase()),
+					resource.type.toLowerCase().includes(searchTerm.toLowerCase())
 			)
 	}
 
@@ -31,6 +41,7 @@ export default function ResourcesPage() {
 	const historyResources = filterResources("党史学习")
 	const charterResources = filterResources("党章学习")
 
+	// @ts-ignore
 	return (
 		<div className="space-y-6">
 			<div>
@@ -91,7 +102,7 @@ export default function ResourcesPage() {
 													<Download className="mr-2 h-4 w-4"/>
 													下载
 												</Button>
-												<Button variant="outline" size="sm">
+												<Button variant="outline" size="sm" onClick={() => handleView(resource)}>
 													<ExternalLink className="mr-2 h-4 w-4"/>
 													查看
 												</Button>
@@ -141,7 +152,7 @@ export default function ResourcesPage() {
 													<Download className="mr-2 h-4 w-4"/>
 													下载
 												</Button>
-												<Button variant="outline" size="sm">
+												<Button variant="outline" size="sm" onClick={() => handleView(resource)}>
 													<ExternalLink className="mr-2 h-4 w-4"/>
 													查看
 												</Button>
@@ -191,7 +202,7 @@ export default function ResourcesPage() {
 													<Download className="mr-2 h-4 w-4"/>
 													下载
 												</Button>
-												<Button variant="outline" size="sm">
+												<Button variant="outline" size="sm" onClick={() => handleView(resource)}>
 													<ExternalLink className="mr-2 h-4 w-4"/>
 													查看
 												</Button>
@@ -257,6 +268,30 @@ export default function ResourcesPage() {
 					</Card>
 				</TabsContent>
 			</Tabs>
+			<Dialog open={open} onOpenChange={setOpen}>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>{selectedResource?.title}</DialogTitle>
+					</DialogHeader>
+					<div className="space-y-2 text-sm text-muted-foreground">
+						<p><strong>类型：</strong>{selectedResource?.type === "document" ? "文档" : "视频"}</p>
+						<p><strong>分类：</strong>{selectedResource?.category}</p>
+						<p><strong>上传时间：</strong>{selectedResource?.upload_date?.toDateString()}</p>
+					</div>
+					<div className="mt-4 flex space-x-2">
+						<Button>
+							<Download className="mr-2 h-4 w-4"/>
+							下载
+						</Button>
+						<Button variant="secondary" onClick={() => {
+							if (selectedResource?.url) window.open(selectedResource.url, "_blank")
+						}}>
+							<ExternalLink className="mr-2 h-4 w-4"/>
+							打开原始资源
+						</Button>
+					</div>
+				</DialogContent>
+			</Dialog>
 		</div>
 	)
 }
