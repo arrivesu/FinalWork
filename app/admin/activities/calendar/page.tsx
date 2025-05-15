@@ -23,6 +23,7 @@ import { CalendarIcon, CalendarPlus2Icon as CalendarIcon2, Clock, Edit, MapPin, 
 import { useToast } from "@/hooks/use-toast"
 import { Badge } from "@/components/ui/badge"
 import { ActivitiesAPI } from "@/lib/api"
+import {isEventOnDate} from "@/lib/utils";
 
 // 模拟活动数据 - 添加了更多事件
 const initialActivities = ActivitiesAPI.data
@@ -55,7 +56,7 @@ export default function WorkCalendarPage() {
 	const getActivitiesByDate = (selectedDate: Date | undefined) => {
 		if (!selectedDate) return []
 
-		return activities.filter((activity) => activity.startTime === selectedDate)
+		return activities.filter(({startTime, endTime}) => isEventOnDate(startTime, endTime, selectedDate))
 	}
 
 	// 获取未来的活动
@@ -109,9 +110,9 @@ export default function WorkCalendarPage() {
 		}
 
 		try {
-			const activityToAdd = await ActivitiesAPI.add(newActivity)
+			await ActivitiesAPI.add(newActivity)
 
-			setActivities((prev) => [...prev, activityToAdd])
+			setActivities((prev) => [...prev, newActivity])
 			setIsAddDialogOpen(false)
 			setNewActivity(ActivitiesAPI.createEmpty())
 

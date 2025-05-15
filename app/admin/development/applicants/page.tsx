@@ -1,9 +1,11 @@
 "use client"
 
-import {useState} from "react"
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
-import {Input} from "@/components/ui/input"
-import {Button} from "@/components/ui/button"
+import type React from "react"
+
+import { useState } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 import {
 	Dialog,
 	DialogContent,
@@ -13,23 +15,35 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog"
-import {Label} from "@/components/ui/label"
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
-import {Textarea} from "@/components/ui/textarea"
-import {Checkbox} from "@/components/ui/checkbox"
-import {ArrowRight, Edit, Plus, Search, Trash2} from "lucide-react"
-import {useToast} from "@/hooks/use-toast"
-import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table"
-import {MemberAPI} from "@/lib/api";
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
+import { Checkbox } from "@/components/ui/checkbox"
+import { ArrowRight, Edit, Plus, Search, Trash2 } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { MemberAPI } from "@/lib/api"
 
-const applicant_member_list = MemberAPI.data.filter((member) => member.identity_type === '入党申请人')
+const applicant_member_list = MemberAPI.data.filter((member) => member.identity_type === "入党申请人")
 
 export default function ApplicantsPage() {
 	const [searchTerm, setSearchTerm] = useState("")
 	const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
 	const [isPromoteDialogOpen, setIsPromoteDialogOpen] = useState(false)
 	const [selectedApplicants, setSelectedApplicants] = useState<number[]>([])
-	const {toast} = useToast()
+	const { toast } = useToast()
+
+	// Add state for the new applicant form
+	const [newApplicant, setNewApplicant] = useState({
+		name: "",
+		gender: "",
+		ethnicity: "",
+		contact: "",
+		student_id: "",
+		class_name: "",
+		apply_date: "",
+		reason: "",
+	})
 
 	// 过滤申请人
 	const filteredApplicants = applicant_member_list.filter(
@@ -39,28 +53,146 @@ export default function ApplicantsPage() {
 			applicant.class_name.toLowerCase().includes(searchTerm.toLowerCase()),
 	)
 
-	const handleAddApplicant = () => {
-		setIsAddDialogOpen(false)
-		toast({
-			title: "添加成功",
-			description: "入党申请人信息已成功添加",
-		})
+	// Update the handleInputChange function
+	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+		const { id, value } = e.target
+		setNewApplicant((prev) => ({
+			...prev,
+			[id]: value,
+		}))
 	}
 
-	const handlePromote = () => {
-		setIsPromoteDialogOpen(false)
-		toast({
-			title: "转为入党积极分子成功",
-			description: `已将 ${selectedApplicants.length} 名入党申请人转为入党积极分子`,
-		})
-		setSelectedApplicants([])
+	// Update the handleSelectChange function
+	const handleSelectChange = (id: string, value: string) => {
+		setNewApplicant((prev) => ({
+			...prev,
+			[id]: value,
+		}))
 	}
 
-	const handleDeleteApplicant = (applicant: any) => {
-		toast({
-			title: "删除成功",
-			description: `入党申请人 ${applicant.name} 已成功删除`,
-		})
+	// Update the handleAddApplicant function to use the MemberAPI
+	const handleAddApplicant = async () => {
+		try {
+			// Validate required fields
+			if (
+				!newApplicant.name ||
+				!newApplicant.gender ||
+				!newApplicant.student_id ||
+				!newApplicant.class_name ||
+				!newApplicant.apply_date
+			) {
+				toast({
+					title: "添加失败",
+					description: "请填写所有必填字段",
+					variant: "destructive",
+				})
+				return
+			}
+
+			// Create a new member object with the applicant data
+			const newMember = MemberAPI.createEmpty()
+			newMember.id = Math.max(...applicant_member_list.map((m) => m.id)) + 1
+			newMember.name = newApplicant.name
+			newMember.gender = newApplicant.gender as "男" | "女"
+			newMember.ethnicity = newApplicant.ethnicity
+			newMember.phone = newApplicant.contact
+			newMember.student_number = newApplicant.student_id
+			newMember.class_name = newApplicant.class_name
+			newMember.join_date = new Date(newApplicant.apply_date)
+			newMember.identity_type = "入党申请人"
+
+			// Add the new member to the API
+			await MemberAPI.add(newMember)
+
+			// Update the local state
+			applicant_member_list.push(newMember)
+
+			setIsAddDialogOpen(false)
+
+			// Reset the form
+			setNewApplicant({
+				name: "",
+				gender: "",
+				ethnicity: "",
+				contact: "",
+				student_id: "",
+				class_name: "",
+				apply_date: "",
+				reason: "",
+			})
+
+			toast({
+				title: "添加成功",
+				description: "入党申请人信息已成功添加",
+			})
+		} catch (error) {
+			toast({
+				title: "添加失败",
+				description: "添加入党申请人时发生错误，请重试",
+				variant: "destructive",
+			})
+		}
+	}
+
+	// Update the handleDeleteApplicant function to use the MemberAPI
+	const handleDeleteApplicant = async (applicant: any) => {
+		try {
+			await MemberAPI.del(applicant.id)
+
+			// Update the local state
+			const index = applicant_member_list.findIndex((a) => a.id === applicant.id)
+			if (index !== -1) {
+				applicant_member_list.splice(index, 1)
+			}
+
+			toast({
+				title: "删除成功",
+				description: `入党申请人 ${applicant.name} 已成功删除`,
+			})
+		} catch (error) {
+			toast({
+				title: "删除失败",
+				description: "删除入党申请人时发生错误，请重试",
+				variant: "destructive",
+			})
+		}
+	}
+
+	// Update the handlePromote function
+	const handlePromote = async () => {
+		try {
+			// Update each selected applicant to be an activist
+			for (const id of selectedApplicants) {
+				const applicant = applicant_member_list.find((a) => a.id === id)
+				if (applicant) {
+					const updatedApplicant = {
+						...applicant,
+						identity_type: "入党积极分子",
+					}
+
+					await MemberAPI.save(id, updatedApplicant)
+
+					// Update the local state
+					const index = applicant_member_list.findIndex((a) => a.id === id)
+					if (index !== -1) {
+						applicant_member_list.splice(index, 1)
+					}
+				}
+			}
+
+			setIsPromoteDialogOpen(false)
+			toast({
+				title: "转为入党积极分子成功",
+				description: `已将 ${selectedApplicants.length} 名入党申请人转为入党积极分子`,
+			})
+			setSelectedApplicants([])
+		} catch (error) {
+			toast({
+				title: "操作失败",
+				description: "转为入党积极分子时发生错误，请重试",
+				variant: "destructive",
+			})
+		}
 	}
 
 	const toggleSelectApplicant = (id: number) => {
@@ -78,7 +210,7 @@ export default function ApplicantsPage() {
 					<Dialog open={isPromoteDialogOpen} onOpenChange={setIsPromoteDialogOpen}>
 						<DialogTrigger asChild>
 							<Button variant="outline" disabled={selectedApplicants.length === 0}>
-								<ArrowRight className="mr-2 h-4 w-4"/>
+								<ArrowRight className="mr-2 h-4 w-4" />
 								转为入党积极分子
 							</Button>
 						</DialogTrigger>
@@ -114,7 +246,7 @@ export default function ApplicantsPage() {
 					<Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
 						<DialogTrigger asChild>
 							<Button>
-								<Plus className="mr-2 h-4 w-4"/>
+								<Plus className="mr-2 h-4 w-4" />
 								添加申请人
 							</Button>
 						</DialogTrigger>
@@ -127,13 +259,13 @@ export default function ApplicantsPage() {
 								<div className="grid grid-cols-2 gap-4">
 									<div className="space-y-2">
 										<Label htmlFor="name">姓名</Label>
-										<Input id="name" placeholder="请输入姓名"/>
+										<Input id="name" placeholder="请输入姓名" value={newApplicant.name} onChange={handleInputChange} />
 									</div>
 									<div className="space-y-2">
 										<Label htmlFor="gender">性别</Label>
-										<Select>
+										<Select onValueChange={(value) => handleSelectChange("gender", value)}>
 											<SelectTrigger>
-												<SelectValue placeholder="选择性别"/>
+												<SelectValue placeholder="选择性别" />
 											</SelectTrigger>
 											<SelectContent>
 												<SelectItem value="male">男</SelectItem>
@@ -145,9 +277,9 @@ export default function ApplicantsPage() {
 								<div className="grid grid-cols-2 gap-4">
 									<div className="space-y-2">
 										<Label htmlFor="ethnicity">民族</Label>
-										<Select>
+										<Select onValueChange={(value) => handleSelectChange("ethnicity", value)}>
 											<SelectTrigger>
-												<SelectValue placeholder="选择民族"/>
+												<SelectValue placeholder="选择民族" />
 											</SelectTrigger>
 											<SelectContent>
 												<SelectItem value="汉族">汉族</SelectItem>
@@ -161,26 +293,46 @@ export default function ApplicantsPage() {
 									</div>
 									<div className="space-y-2">
 										<Label htmlFor="contact">联系方式</Label>
-										<Input id="contact" placeholder="请输入联系方式"/>
+										<Input
+											id="contact"
+											placeholder="请输入联系方式"
+											value={newApplicant.contact}
+											onChange={handleInputChange}
+										/>
 									</div>
 								</div>
 								<div className="grid grid-cols-2 gap-4">
 									<div className="space-y-2">
-										<Label htmlFor="student-id">学号</Label>
-										<Input id="student-id" placeholder="请输入学号"/>
+										<Label htmlFor="student_id">学号</Label>
+										<Input
+											id="student_id"
+											placeholder="请输入学号"
+											value={newApplicant.student_id}
+											onChange={handleInputChange}
+										/>
 									</div>
 									<div className="space-y-2">
-										<Label htmlFor="class">班级</Label>
-										<Input id="class" placeholder="请输入班级"/>
+										<Label htmlFor="class_name">班级</Label>
+										<Input
+											id="class_name"
+											placeholder="请输入班级"
+											value={newApplicant.class_name}
+											onChange={handleInputChange}
+										/>
 									</div>
 								</div>
 								<div className="space-y-2">
-									<Label htmlFor="apply-date">申请日期</Label>
-									<Input id="apply-date" type="date"/>
+									<Label htmlFor="apply_date">申请日期</Label>
+									<Input id="apply_date" type="date" value={newApplicant.apply_date} onChange={handleInputChange} />
 								</div>
 								<div className="space-y-2">
 									<Label htmlFor="reason">入党动机</Label>
-									<Textarea id="reason" placeholder="请输入入党动机"/>
+									<Textarea
+										id="reason"
+										placeholder="请输入入党动机"
+										value={newApplicant.reason}
+										onChange={handleInputChange}
+									/>
 								</div>
 							</div>
 							<DialogFooter>
@@ -195,7 +347,7 @@ export default function ApplicantsPage() {
 			</div>
 
 			<div className="relative">
-				<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"/>
+				<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
 				<Input
 					type="search"
 					placeholder="搜索申请人姓名、学号或班级..."
@@ -254,16 +406,17 @@ export default function ApplicantsPage() {
 											<TableCell className="text-center">{applicant.ethnicity}</TableCell>
 											<TableCell className="text-center">{applicant.student_number}</TableCell>
 											<TableCell className="text-center">{applicant.class_name}</TableCell>
-											<TableCell className="text-center">{applicant.join_date.toDateString()}</TableCell>
+											<TableCell className="text-center">
+												{new Date(applicant.join_date).toLocaleDateString()}
+											</TableCell>
 											<TableCell className="text-center">{applicant.phone}</TableCell>
 											<TableCell className="text-right">
 												<div className="flex justify-end gap-2">
 													<Button variant="ghost" size="icon">
-														<Edit className="h-4 w-4"/>
+														<Edit className="h-4 w-4" />
 													</Button>
-													<Button variant="ghost" size="icon"
-															onClick={() => handleDeleteApplicant(applicant)}>
-														<Trash2 className="h-4 w-4"/>
+													<Button variant="ghost" size="icon" onClick={() => handleDeleteApplicant(applicant)}>
+														<Trash2 className="h-4 w-4" />
 													</Button>
 												</div>
 											</TableCell>

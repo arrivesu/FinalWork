@@ -10,6 +10,16 @@ import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} f
 import {useToast} from "@/hooks/use-toast"
 import Image from "next/image"
 import {useAuth} from "@/hooks/use-auth";
+import {
+	ActivitiesAPI,
+	ActivityJoinAPI,
+	BranchAPI,
+	EventAPI,
+	MaterialAPI,
+	MemberAPI,
+	NoticeAPI,
+	TransferAPI, UserDataAPI, UserDocumentAPI
+} from "@/lib/api";
 
 export default function LoginPage() {
 	const [captcha, setCaptcha] = useState("")
@@ -21,6 +31,19 @@ export default function LoginPage() {
 	const router = useRouter()
 	const {toast} = useToast()
 	const auth = useAuth();
+
+	useEffect(() => {
+		ActivitiesAPI.get();
+		ActivityJoinAPI.get();
+		BranchAPI.get();
+		EventAPI.get();
+		MaterialAPI.get();
+		MemberAPI.get();
+		NoticeAPI.get();
+		TransferAPI.get();
+		UserDataAPI.get();
+		UserDocumentAPI.get();
+	}, [])
 
 	const handleLogin = async (e: React.FormEvent) => {
 		e.preventDefault()

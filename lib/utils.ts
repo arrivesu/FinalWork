@@ -9,6 +9,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import axios from "axios";
 
 dayjs.extend(duration);
 dayjs.extend(customParseFormat);
@@ -153,3 +154,12 @@ export function diffInYMD(from: Date, to: Date): { years: number, months: number
 
   return { years, months, days };
 }
+
+export const axiosApi = axios.create({
+  baseURL: 'https://127.0.0.1:8080/api', // 替换为你的后端URL
+  timeout: 10000, // 请求超时时间（可选）
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+

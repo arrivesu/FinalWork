@@ -1,11 +1,11 @@
 "use client"
 
-import {useState} from "react"
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
-import {Input} from "@/components/ui/input"
-import {Button} from "@/components/ui/button"
-import {Avatar, AvatarFallback} from "@/components/ui/avatar"
-import {Badge} from "@/components/ui/badge"
+import { useState } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
 import {
 	Dialog,
 	DialogContent,
@@ -15,12 +15,12 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog"
-import {Label} from "@/components/ui/label"
-import {Textarea} from "@/components/ui/textarea"
-import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
-import {CheckCircle, Search, XCircle} from "lucide-react"
-import {useToast} from "@/hooks/use-toast"
-import {TransferAPI} from "@/lib/api/transfer";
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Search } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
+import { TransferAPI } from "@/lib/api/transfer"
 
 // 模拟转接申请数据
 const transferApplications = TransferAPI.data
@@ -30,7 +30,7 @@ export default function TransferManagementPage() {
 	const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false)
 	const [selectedTransfer, setSelectedTransfer] = useState<any>(null)
 	const [reviewComment, setReviewComment] = useState("")
-	const {toast} = useToast()
+	const { toast } = useToast()
 
 	// 过滤转出申请
 	const filterTransfers = (status: string) => {
@@ -49,27 +49,78 @@ export default function TransferManagementPage() {
 	const approvedTransfers = filterTransfers("approved")
 	const rejectedTransfers = filterTransfers("rejected")
 
-
-	const handleApprove = () => {
+	// Update the handleApprove function to use the TransferAPI
+	const handleApprove = async () => {
 		if (!selectedTransfer) return
 
-		toast({
-			title: "申请已批准",
-			description: `已批准 ${selectedTransfer.name} 的组织关系转接申请`,
-		})
-		setIsReviewDialogOpen(false)
-		setReviewComment("")
+		try {
+			// Update the transfer status to approved
+			const updatedTransfer = {
+				...selectedTransfer,
+				status: "approved",
+				reviewComment: reviewComment,
+			}
+
+			await TransferAPI.save(selectedTransfer.id, updatedTransfer)
+
+			// Update the local state to reflect the change
+			const updatedTransfers = transferApplications.map((transfer) =>
+				transfer.id === selectedTransfer.id ? updatedTransfer : transfer,
+			)
+
+			// Update the state with the new data
+			transferApplications.splice(0, transferApplications.length, ...updatedTransfers)
+
+			toast({
+				title: "申请已批准",
+				description: `已批准 ${selectedTransfer.user.name} 的组织关系转接申请`,
+			})
+			setIsReviewDialogOpen(false)
+			setReviewComment("")
+		} catch (error) {
+			toast({
+				title: "操作失败",
+				description: "批准申请时发生错误，请重试",
+				variant: "destructive",
+			})
+		}
 	}
 
-	const handleReject = () => {
+	// Update the handleReject function to use the TransferAPI
+	const handleReject = async () => {
 		if (!selectedTransfer) return
 
-		toast({
-			title: "申请已拒绝",
-			description: `已拒绝 ${selectedTransfer.name} 的组织关系转接申请`,
-		})
-		setIsReviewDialogOpen(false)
-		setReviewComment("")
+		try {
+			// Update the transfer status to rejected
+			const updatedTransfer = {
+				...selectedTransfer,
+				status: "rejected",
+				reviewComment: reviewComment,
+			}
+
+			await TransferAPI.save(selectedTransfer.id, updatedTransfer)
+
+			// Update the local state to reflect the change
+			const updatedTransfers = transferApplications.map((transfer) =>
+				transfer.id === selectedTransfer.id ? updatedTransfer : transfer,
+			)
+
+			// Update the state with the new data
+			transferApplications.splice(0, transferApplications.length, ...updatedTransfers)
+
+			toast({
+				title: "申请已拒绝",
+				description: `已拒绝 ${selectedTransfer.user.name} 的组织关系转接申请`,
+			})
+			setIsReviewDialogOpen(false)
+			setReviewComment("")
+		} catch (error) {
+			toast({
+				title: "操作失败",
+				description: "拒绝申请时发生错误，请重试",
+				variant: "destructive",
+			})
+		}
 	}
 
 	return (
@@ -80,7 +131,7 @@ export default function TransferManagementPage() {
 			</div>
 
 			<div className="relative">
-				<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"/>
+				<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
 				<Input
 					type="search"
 					placeholder="搜索党员姓名、学号或组织..."
@@ -113,11 +164,12 @@ export default function TransferManagementPage() {
 									<div className="grid gap-4">
 										{allTransfers.length > 0 ? (
 											allTransfers.map((transfer) => (
-												<div key={transfer.id}
-													 className="flex items-center justify-between p-4 border rounded-lg">
+												<div key={transfer.id} className="flex items-center justify-between p-4 border rounded-lg">
 													<div className="flex items-center space-x-4">
 														<Avatar>
-															<AvatarFallback>{transfer.user.name.substring(transfer.user.name.length - 2)}</AvatarFallback>
+															<AvatarFallback>
+																{transfer.user.name.substring(transfer.user.name.length - 2)}
+															</AvatarFallback>
 														</Avatar>
 														<div>
 															<p className="font-medium">{transfer.user.name}</p>
@@ -194,14 +246,11 @@ export default function TransferManagementPage() {
 																			/>
 																		</div>
 																	</div>
-																	<DialogFooter
-																		className="flex space-x-2 justify-end">
-																		<Button variant="outline"
-																				onClick={() => setIsReviewDialogOpen(false)}>
+																	<DialogFooter className="flex space-x-2 justify-end">
+																		<Button variant="outline" onClick={() => setIsReviewDialogOpen(false)}>
 																			取消
 																		</Button>
-																		<Button variant="destructive"
-																				onClick={handleReject}>
+																		<Button variant="destructive" onClick={handleReject}>
 																			拒绝
 																		</Button>
 																		<Button onClick={handleApprove}>批准</Button>
@@ -213,8 +262,7 @@ export default function TransferManagementPage() {
 												</div>
 											))
 										) : (
-											<div
-												className="text-center py-4 text-muted-foreground">未找到符合条件的转出申请</div>
+											<div className="text-center py-4 text-muted-foreground">未找到符合条件的转出申请</div>
 										)}
 									</div>
 								</CardContent>
@@ -230,11 +278,12 @@ export default function TransferManagementPage() {
 									<div className="grid gap-4">
 										{pendingTransfers.length > 0 ? (
 											pendingTransfers.map((transfer) => (
-												<div key={transfer.id}
-													 className="flex items-center justify-between p-4 border rounded-lg">
+												<div key={transfer.id} className="flex items-center justify-between p-4 border rounded-lg">
 													<div className="flex items-center space-x-4">
 														<Avatar>
-															<AvatarFallback>{transfer.user.name.substring(transfer.user.name.length - 2)}</AvatarFallback>
+															<AvatarFallback>
+																{transfer.user.name.substring(transfer.user.name.length - 2)}
+															</AvatarFallback>
 														</Avatar>
 														<div>
 															<p className="font-medium">{transfer.user.name}</p>
@@ -297,12 +346,10 @@ export default function TransferManagementPage() {
 																	</div>
 																</div>
 																<DialogFooter className="flex space-x-2 justify-end">
-																	<Button variant="outline"
-																			onClick={() => setIsReviewDialogOpen(false)}>
+																	<Button variant="outline" onClick={() => setIsReviewDialogOpen(false)}>
 																		取消
 																	</Button>
-																	<Button variant="destructive"
-																			onClick={handleReject}>
+																	<Button variant="destructive" onClick={handleReject}>
 																		拒绝
 																	</Button>
 																	<Button onClick={handleApprove}>批准</Button>
@@ -313,8 +360,7 @@ export default function TransferManagementPage() {
 												</div>
 											))
 										) : (
-											<div
-												className="text-center py-4 text-muted-foreground">未找到符合条件的待审核转出申请</div>
+											<div className="text-center py-4 text-muted-foreground">未找到符合条件的待审核转出申请</div>
 										)}
 									</div>
 								</CardContent>
@@ -330,11 +376,12 @@ export default function TransferManagementPage() {
 									<div className="grid gap-4">
 										{approvedTransfers.length > 0 ? (
 											approvedTransfers.map((transfer) => (
-												<div key={transfer.id}
-													 className="flex items-center justify-between p-4 border rounded-lg">
+												<div key={transfer.id} className="flex items-center justify-between p-4 border rounded-lg">
 													<div className="flex items-center space-x-4">
 														<Avatar>
-															<AvatarFallback>{transfer.user.name.substring(transfer.user.name.length - 2)}</AvatarFallback>
+															<AvatarFallback>
+																{transfer.user.name.substring(transfer.user.name.length - 2)}
+															</AvatarFallback>
 														</Avatar>
 														<div>
 															<p className="font-medium">{transfer.user.name}</p>
@@ -354,8 +401,7 @@ export default function TransferManagementPage() {
 												</div>
 											))
 										) : (
-											<div
-												className="text-center py-4 text-muted-foreground">未找到符合条件的已批准转出申请</div>
+											<div className="text-center py-4 text-muted-foreground">未找到符合条件的已批准转出申请</div>
 										)}
 									</div>
 								</CardContent>
@@ -371,11 +417,12 @@ export default function TransferManagementPage() {
 									<div className="grid gap-4">
 										{rejectedTransfers.length > 0 ? (
 											rejectedTransfers.map((transfer) => (
-												<div key={transfer.id}
-													 className="flex items-center justify-between p-4 border rounded-lg">
+												<div key={transfer.id} className="flex items-center justify-between p-4 border rounded-lg">
 													<div className="flex items-center space-x-4">
 														<Avatar>
-															<AvatarFallback>{transfer.user.name.substring(transfer.user.name.length - 2)}</AvatarFallback>
+															<AvatarFallback>
+																{transfer.user.name.substring(transfer.user.name.length - 2)}
+															</AvatarFallback>
 														</Avatar>
 														<div>
 															<p className="font-medium">{transfer.user.name}</p>
@@ -395,8 +442,7 @@ export default function TransferManagementPage() {
 												</div>
 											))
 										) : (
-											<div
-												className="text-center py-4 text-muted-foreground">未找到符合条件的已拒绝转出申请</div>
+											<div className="text-center py-4 text-muted-foreground">未找到符合条件的已拒绝转出申请</div>
 										)}
 									</div>
 								</CardContent>

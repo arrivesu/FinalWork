@@ -1,11 +1,11 @@
 "use client"
 
-import {useState} from "react"
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
-import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
-import {Button} from "@/components/ui/button"
-import {BookOpen, Calendar, Download, Users} from "lucide-react"
+import { useState } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Button } from "@/components/ui/button"
+import { BookOpen, Calendar, Download, Users } from "lucide-react"
 import {
 	ArcElement,
 	BarElement,
@@ -18,81 +18,84 @@ import {
 	Title,
 	Tooltip,
 } from "chart.js"
-import {Bar, Doughnut, Line, Pie} from "react-chartjs-2"
-import {ActivitiesAPI, MemberAPI} from "@/lib/api";
+import { Bar, Doughnut, Line } from "react-chartjs-2"
+import { ActivitiesAPI, MemberAPI } from "@/lib/api"
+import { toast } from "@/components/ui/use-toast"
 
 // Register ChartJS components
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Title, Tooltip, Legend)
 
-const member_list = MemberAPI.data;
-const activities_list = ActivitiesAPI.data;
+const member_list = MemberAPI.data
+const activities_list = ActivitiesAPI.data
 
-const isEducation = (activity: ActivityType) => activity.type === '党课' || activity.type === '党日活动';
-const isMeeting = (activity: ActivityType) => activity.type === '党小组会' || activity.type === '支部委员会' || activity.type === '支部党员大会';
+type ActivityType = {
+	type: string
+	startTime: Date
+}
+
+const isEducation = (activity: ActivityType) => activity.type === "党课" || activity.type === "党日活动"
+const isMeeting = (activity: ActivityType) =>
+	activity.type === "党小组会" || activity.type === "支部委员会" || activity.type === "支部党员大会"
 
 function getStatisticsData() {
-
 	function getAge(birthday: Date): number {
-		const today = new Date();
-		let age = today.getFullYear() - birthday.getFullYear();
+		const today = new Date()
+		let age = today.getFullYear() - birthday.getFullYear()
 		const hasHadBirthdayThisYear =
 			today.getMonth() > birthday.getMonth() ||
-			(today.getMonth() === birthday.getMonth() &&
-				today.getDate() >= birthday.getDate());
+			(today.getMonth() === birthday.getMonth() && today.getDate() >= birthday.getDate())
 		if (!hasHadBirthdayThisYear) {
-			age--;
+			age--
 		}
-		return age;
+		return age
 	}
 
 	const membershipData = {
 		total: member_list.length,
-		active: member_list.filter((member) => member.identity_type === '正式党员').length,
-		inactive: member_list.filter((member) => member.identity_type === '预备党员').length,
+		active: member_list.filter((member) => member.identity_type === "正式党员").length,
+		inactive: member_list.filter((member) => member.identity_type === "预备党员").length,
 		byGender: {
-			male: member_list.filter((member) => member.gender === '男').length,
-			female: member_list.filter((member) => member.gender === '女').length,
+			male: member_list.filter((member) => member.gender === "男").length,
+			female: member_list.filter((member) => member.gender === "女").length,
 		},
-		byAge: member_list.reduce(
-			(acc: Record<string, number>, member, idx, arr) => {
-				const age = getAge(member.birth_date);
-				const groupStart = Math.floor(age / 10) * 10;
-				const groupLabel = `${groupStart}-${groupStart + 9}岁`;
-				acc[groupLabel] = (acc[groupLabel] || 0) + 1;
-				return acc;
-			}, {}),
-		byClass: member_list.reduce(
-			(acc: Record<string, number>, member, idx, arr) => {
-				acc[member.class_name] = (acc[member.class_name] || 0) + 1;
-				return acc;
-			}, {})
+		byAge: member_list.reduce((acc: Record<string, number>, member, idx, arr) => {
+			const age = getAge(member.birth_date)
+			const groupStart = Math.floor(age / 10) * 10
+			const groupLabel = `${groupStart}-${groupStart + 9}岁`
+			acc[groupLabel] = (acc[groupLabel] || 0) + 1
+			return acc
+		}, {}),
+		byClass: member_list.reduce((acc: Record<string, number>, member, idx, arr) => {
+			acc[member.class_name] = (acc[member.class_name] || 0) + 1
+			return acc
+		}, {}),
 	}
 
-	return membershipData;
+	return membershipData
 }
 
 function getDevelopmentData() {
-	const userData = member_list;
+	const userData = member_list
 
 	const developmentData = {
-		applicants: userData.filter((member) => member.identity_type === '入党申请人').length,
-		activists: userData.filter((member) => member.identity_type === '入党积极分子').length,
-		candidates: userData.filter((member) => member.identity_type === '发展对象').length,
+		applicants: userData.filter((member) => member.identity_type === "入党申请人").length,
+		activists: userData.filter((member) => member.identity_type === "入党积极分子").length,
+		candidates: userData.filter((member) => member.identity_type === "发展对象").length,
 
 		byStage: {
-			'入党申请人': userData.filter((member) => member.identity_type === '入党申请人').length,
-			'入党积极分子': userData.filter((member) => member.identity_type === '入党积极分子').length,
-			'发展对象': userData.filter((member) => member.identity_type === '发展对象').length,
-			'预备党员': userData.filter((member) => member.identity_type === '预备党员').length,
-			'正式党员': userData.filter((member) => member.identity_type === '正式党员').length,
-		}
+			入党申请人: userData.filter((member) => member.identity_type === "入党申请人").length,
+			入党积极分子: userData.filter((member) => member.identity_type === "入党积极分子").length,
+			发展对象: userData.filter((member) => member.identity_type === "发展对象").length,
+			预备党员: userData.filter((member) => member.identity_type === "预备党员").length,
+			正式党员: userData.filter((member) => member.identity_type === "正式党员").length,
+		},
 	}
 
-	return developmentData;
+	return developmentData
 }
 
 function getActivitiesData() {
-	const activities_data = activities_list;
+	const activities_data = activities_list
 
 	const activityData = {
 		meetingsCount: activities_data.filter(isMeeting).length,
@@ -102,29 +105,31 @@ function getActivitiesData() {
 
 		byMonth: activities_data.reduce(
 			(acc: Record<string, { meetings: number; education: number }>, activity, idx, arr) => {
-				const month = activity.startTime.getMonth() + 1; // 1 - 12
-				const key = `${month}月`;
+				const month = activity.startTime.getMonth() + 1 // 1 - 12
+				const key = `${month}月`
 
 				if (!acc[key]) {
-					acc[key] = { meetings: 0, education: 0 };
+					acc[key] = { meetings: 0, education: 0 }
 				}
 
 				if (isMeeting(activity)) {
-					acc[key].meetings += 1;
+					acc[key].meetings += 1
 				} else if (isEducation(activity)) {
-					acc[key].education += 1;
+					acc[key].education += 1
 				}
 
-				return acc;
-			}, {}),
+				return acc
+			},
+			{},
+		),
 	}
 
-	return activityData;
+	return activityData
 }
 
-const membershipData = getStatisticsData();
-const activityData = getActivitiesData();
-const developmentData = getDevelopmentData();
+const membershipData = getStatisticsData()
+const activityData = getActivitiesData()
+const developmentData = getDevelopmentData()
 
 // Chart color palette
 const chartColors = {
@@ -163,6 +168,29 @@ const chartColors = {
 		"rgba(59, 130, 246, 0.2)",
 	],
 }
+
+// Add a function to export reports
+const exportReport = (format: "csv" | "excel" | "pdf") => {
+	// In a real implementation, this would generate and download the report
+	// For this example, we'll just show a toast message
+
+	const formatName = format.toUpperCase()
+
+	toast({
+		title: `导出${formatName}报告成功`,
+		description: `数据统计报告已成功导出为${formatName}格式`,
+	})
+}
+
+// Update the Download button to show a dropdown menu
+const renderExportButton = () => (
+	<div className="relative">
+		<Button variant="outline" onClick={() => exportReport("csv")}>
+			<Download className="mr-2 h-4 w-4" />
+			导出报告
+		</Button>
+	</div>
+)
 
 export default function StatisticsPage() {
 	const [timeRange, setTimeRange] = useState("year")
@@ -208,7 +236,6 @@ export default function StatisticsPage() {
 		],
 	}
 
-
 	// Activity by month chart data
 	const activityByMonthChartData = {
 		labels: Object.keys(activityData.byMonth),
@@ -245,7 +272,6 @@ export default function StatisticsPage() {
 			},
 		],
 	}
-
 
 	// Chart options
 	const pieChartOptions = {
@@ -298,7 +324,7 @@ export default function StatisticsPage() {
 				<div className="flex items-center gap-2">
 					<Select value={timeRange} onValueChange={setTimeRange}>
 						<SelectTrigger className="w-[180px]">
-							<SelectValue placeholder="选择时间范围"/>
+							<SelectValue placeholder="选择时间范围" />
 						</SelectTrigger>
 						<SelectContent>
 							<SelectItem value="month">本月</SelectItem>
@@ -307,10 +333,7 @@ export default function StatisticsPage() {
 							<SelectItem value="all">全部时间</SelectItem>
 						</SelectContent>
 					</Select>
-					<Button variant="outline">
-						<Download className="mr-2 h-4 w-4"/>
-						导出报告
-					</Button>
+					{renderExportButton()}
 				</div>
 			</div>
 
@@ -318,7 +341,7 @@ export default function StatisticsPage() {
 				<Card>
 					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
 						<CardTitle className="text-sm font-medium">党员总数</CardTitle>
-						<Users className="h-4 w-4 text-muted-foreground"/>
+						<Users className="h-4 w-4 text-muted-foreground" />
 					</CardHeader>
 					<CardContent>
 						<div className="text-2xl font-bold">{membershipData.total}</div>
@@ -330,7 +353,7 @@ export default function StatisticsPage() {
 				<Card>
 					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
 						<CardTitle className="text-sm font-medium">会议活动</CardTitle>
-						<Calendar className="h-4 w-4 text-muted-foreground"/>
+						<Calendar className="h-4 w-4 text-muted-foreground" />
 					</CardHeader>
 					<CardContent>
 						<div className="text-2xl font-bold">{activityData.meetingsCount}</div>
@@ -340,7 +363,7 @@ export default function StatisticsPage() {
 				<Card>
 					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
 						<CardTitle className="text-sm font-medium">学习教育</CardTitle>
-						<BookOpen className="h-4 w-4 text-muted-foreground"/>
+						<BookOpen className="h-4 w-4 text-muted-foreground" />
 					</CardHeader>
 					<CardContent>
 						<div className="text-2xl font-bold">{activityData.educationCount}</div>
@@ -370,7 +393,7 @@ export default function StatisticsPage() {
 							</CardHeader>
 							<CardContent className="flex justify-center">
 								<div className="w-full h-[250px]">
-									<Doughnut data={genderChartData} options={pieChartOptions}/>
+									<Doughnut data={genderChartData} options={pieChartOptions} />
 								</div>
 							</CardContent>
 							<div className="px-6 pb-6">
@@ -399,7 +422,7 @@ export default function StatisticsPage() {
 							</CardHeader>
 							<CardContent className="flex justify-center">
 								<div className="w-full h-[250px]">
-									<Bar data={ageChartData} options={barChartOptions}/>
+									<Bar data={ageChartData} options={barChartOptions} />
 								</div>
 							</CardContent>
 							<div className="px-6 pb-6">
@@ -423,7 +446,7 @@ export default function StatisticsPage() {
 							</CardHeader>
 							<CardContent className="flex justify-center">
 								<div className="w-full h-[250px]">
-									<Bar data={departmentChartData} options={barChartOptions}/>
+									<Bar data={departmentChartData} options={barChartOptions} />
 								</div>
 							</CardContent>
 							<div className="px-6 pb-6">
@@ -451,7 +474,7 @@ export default function StatisticsPage() {
 						<CardContent>
 							<div className="space-y-8">
 								<div className="w-full h-[300px]">
-									<Line data={activityByMonthChartData} options={lineChartOptions}/>
+									<Line data={activityByMonthChartData} options={lineChartOptions} />
 								</div>
 								<div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
 									<div className="space-y-2">
@@ -480,7 +503,6 @@ export default function StatisticsPage() {
 											</div>
 										</div>
 									</div>
-
 								</div>
 							</div>
 						</CardContent>
@@ -495,7 +517,7 @@ export default function StatisticsPage() {
 							</CardHeader>
 							<CardContent>
 								<div className="w-full h-[300px]">
-									<Bar data={developmentByStageChartData} options={barChartOptions}/>
+									<Bar data={developmentByStageChartData} options={barChartOptions} />
 								</div>
 								<div className="grid grid-cols-3 md:grid-cols-5 gap-2 mt-4">
 									{Object.entries(developmentData.byStage).map(([stage, count]) => (
@@ -569,7 +591,6 @@ export default function StatisticsPage() {
 							</CardContent>
 						</Card>
 					</div>
-
 				</TabsContent>
 			</Tabs>
 		</div>

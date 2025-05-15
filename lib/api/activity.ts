@@ -5,6 +5,7 @@
  * @date 2025/5/12
  */
 import {activitiesData} from "@/lib/mock/activity";
+import {axiosApi} from "@/lib/utils";
 
 let data = activitiesData;
 
@@ -31,11 +32,7 @@ export const ActivitiesAPI = {
 		}
 	},
 	async add(activity: DataType) {
-		return {
-			...activity,
-			// TODO 修改id
-			id: 0,
-		}
+		data.push(activity)
 	},
 	async del(id: IdType) {
 		data = data.filter((d) => d.id !== id);

@@ -56,7 +56,7 @@ function usePasswordChange() {
 				return { success: false, message: "两次输入的密码不一致" }
 			}
 
-			const data = await AuthAPI.changePassword({currentPassword, newPassword} );
+			await AuthAPI.changePassword({currentPassword, newPassword} );
 
 			await new Promise((resolve) => setTimeout(resolve, 1000))
 

@@ -1,19 +1,20 @@
 "use client"
 
-import {useState} from "react"
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
-import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
-import {Input} from "@/components/ui/input"
-import {Button} from "@/components/ui/button"
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
-import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"
-import {RadarChart, type RadarChartData} from "@/components/ui/radar-chart"
-import {Download, Filter, Search, UserPlus} from "lucide-react"
-import {MemberAPI, UserDataAPI} from "@/lib/api";
+import { useState } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { RadarChart, type RadarChartData } from "@/components/ui/radar-chart"
+import { Download, Filter, Search, UserPlus } from "lucide-react"
+import { MemberAPI, UserDataAPI } from "@/lib/api"
+import { toast } from "@/components/ui/use-toast"
 
 // Mock data for party members
-const party_member_list = MemberAPI.data;
-const user_data_list = UserDataAPI.data;
+const party_member_list = MemberAPI.data
+const user_data_list = UserDataAPI.data
 
 type MemberData = {
 	ideologicalAwareness: number
@@ -23,11 +24,11 @@ type MemberData = {
 	socialContribution: number
 }
 
-const getMemberData = (member: MemberType, record_time: string): MemberData| null => {
-	const userdata = user_data_list.filter((data) => (data.record_time === record_time) && (data.user.id === member.id));
+const getMemberData = (member: MemberType, record_time: string): MemberData | null => {
+	const userdata = user_data_list.filter((data) => data.record_time === record_time && data.user.id === member.id)
 
-	if(userdata.length !== 1) {
-		return null;
+	if (userdata.length !== 1) {
+		return null
 	}
 
 	const calcData = {
@@ -35,19 +36,18 @@ const getMemberData = (member: MemberType, record_time: string): MemberData| nul
 		partyDiscipline: 0,
 		workPerformance: 0,
 		learningAttitude: 0,
-		socialContribution: 0
+		socialContribution: 0,
 	}
 
-	return calcData;
+	return calcData
 }
 
 const getMemberAvgData = (member: MemberType, record_time: string): number => {
-	const data = getMemberData(member, record_time);
-	if(data === null) return 0;
+	const data = getMemberData(member, record_time)
+	if (data === null) return 0
 
 	return Math.round(
-		(
-			data.ideologicalAwareness +
+		(data.ideologicalAwareness +
 			data.partyDiscipline +
 			data.workPerformance +
 			data.learningAttitude +
@@ -58,9 +58,9 @@ const getMemberAvgData = (member: MemberType, record_time: string): number => {
 
 // Function to convert member scores to radar chart data
 const getMemberRadarData = (member: MemberType, record_time: string): RadarChartData => {
-	const calcData = getMemberData(member, record_time);
+	const calcData = getMemberData(member, record_time)
 
-	if(calcData === null) {
+	if (calcData === null) {
 		return {
 			labels: [
 				"思想锋领指数", // Ideological Awareness
@@ -106,12 +106,12 @@ const getAverageScores = (record_time: string) => {
 		partyDiscipline: 0,
 		workPerformance: 0,
 		learningAttitude: 0,
-		socialContribution: 0
+		socialContribution: 0,
 	}
 
 	party_member_list.forEach((member) => {
-		const scores = getMemberData(member, record_time);
-		if(scores === null) return;
+		const scores = getMemberData(member, record_time)
+		if (scores === null) return
 
 		avgScores.ideologicalAwareness += scores.ideologicalAwareness
 		avgScores.partyDiscipline += scores.partyDiscipline
@@ -162,10 +162,10 @@ const getAverageRadarData = (record_time: string): RadarChartData => {
 
 // Get comparison radar data for a member and the average
 const getComparisonRadarData = (member: MemberType, record_time: string): RadarChartData => {
-	const memberData = getMemberData(member, record_time);
+	const memberData = getMemberData(member, record_time)
 	const avgScores = getAverageScores(record_time)
 
-	if(memberData === null) {
+	if (memberData === null) {
 		return {
 			labels: [
 				"思想锋领指数", // Ideological Awareness
@@ -237,15 +237,41 @@ export default function PartyMemberPortraits() {
 	const [selectedMember, setSelectedMember] = useState<(typeof party_member_list)[0] | null>(null)
 	const [activeTab, setActiveTab] = useState("individual")
 
+	// Add a function to export portraits
+	const exportPortraits = (format: "pdf" | "image") => {
+		// In a real implementation, this would generate and download the portraits
+		// For this example, we'll just show a toast message
+
+		const formatName = format === "pdf" ? "PDF" : "图片"
+		const message = selectedMember
+			? `已成功导出 ${selectedMember.name} 的党员画像为${formatName}格式`
+			: `已成功导出所有党员画像为${formatName}格式`
+
+		toast({
+			title: "导出成功",
+			description: message,
+		})
+	}
+
+	// Update the Download button to call the export function
+	const renderExportButton = () => (
+		<Button variant="outline" size="icon" onClick={() => exportPortraits("pdf")}>
+			<Download className="h-4 w-4" />
+		</Button>
+	)
+
+
 	// 添加筛选
-	const [term, setTerm] = useState('1921-1922-1')
+	const [term, setTerm] = useState("1921-1922-1")
 
 	// Filter members based on search term and department
 	const filteredMembers = party_member_list.filter((member) => {
 		const matchesSearch = member.name.includes(searchTerm) || (member.party_position?.includes(searchTerm) ?? false)
-		const matchesIdentityType = identityType === "all" || (member.identity_type === identityType)
+		const matchesIdentityType = identityType === "all" || member.identity_type === identityType
 		return matchesSearch && matchesIdentityType
 	})
+
+	console.log(JSON.stringify(filteredMembers))
 
 	return (
 		<div className="container mx-auto py-6 space-y-6">
@@ -253,7 +279,7 @@ export default function PartyMemberPortraits() {
 				<h1 className="text-2xl font-bold">党员画像</h1>
 				<div className="flex flex-col sm:flex-row gap-2">
 					<div className="relative">
-						<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"/>
+						<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
 						<Input
 							type="search"
 							placeholder="搜索党员..."
@@ -264,7 +290,7 @@ export default function PartyMemberPortraits() {
 					</div>
 					<Select value={identityType} onValueChange={setIdentityType}>
 						<SelectTrigger className="w-full sm:w-[180px]">
-							<SelectValue placeholder="选择身份类型"/>
+							<SelectValue placeholder="选择身份类型" />
 						</SelectTrigger>
 						<SelectContent>
 							<SelectItem value="all">所有身份类型</SelectItem>
@@ -274,11 +300,9 @@ export default function PartyMemberPortraits() {
 						</SelectContent>
 					</Select>
 					<Button variant="outline" size="icon">
-						<Filter className="h-4 w-4"/>
+						<Filter className="h-4 w-4" />
 					</Button>
-					<Button variant="outline" size="icon">
-						<Download className="h-4 w-4"/>
-					</Button>
+					{renderExportButton()}
 				</div>
 			</div>
 
@@ -302,7 +326,7 @@ export default function PartyMemberPortraits() {
 										onClick={() => setSelectedMember(member)}
 									>
 										<Avatar className="h-10 w-10 mr-3">
-											<AvatarImage src={member.avatar || "/placeholder.svg"} alt={member.name}/>
+											<AvatarImage src={member.avatar || "/placeholder.svg"} alt={member.name} />
 											<AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
 										</Avatar>
 										<div className="flex-1 min-w-0">
@@ -327,8 +351,7 @@ export default function PartyMemberPortraits() {
 									<div className="flex justify-between items-start">
 										<div className="flex items-center">
 											<Avatar className="h-12 w-12 mr-4">
-												<AvatarImage src={selectedMember.avatar || "/placeholder.svg"}
-															 alt={selectedMember.name}/>
+												<AvatarImage src={selectedMember.avatar || "/placeholder.svg"} alt={selectedMember.name} />
 												<AvatarFallback>{selectedMember.name.charAt(0)}</AvatarFallback>
 											</Avatar>
 											<div>
@@ -339,7 +362,7 @@ export default function PartyMemberPortraits() {
 											</div>
 										</div>
 										<Button variant="outline" size="sm">
-											<UserPlus className="h-4 w-4 mr-2"/>
+											<UserPlus className="h-4 w-4 mr-2" />
 											更新画像
 										</Button>
 									</div>
@@ -348,10 +371,7 @@ export default function PartyMemberPortraits() {
 									<div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-4">
 										<div>
 											<p className="text-sm text-muted-foreground">综合评分</p>
-											<p className="font-medium">
-												{ getMemberAvgData(selectedMember, term) }
-												分
-											</p>
+											<p className="font-medium">{getMemberAvgData(selectedMember, term)}分</p>
 										</div>
 									</div>
 								</CardContent>
@@ -371,8 +391,11 @@ export default function PartyMemberPortraits() {
 									/>
 								</TabsContent>
 								<TabsContent value="comparison" className="mt-4">
-									<RadarChart title="与组织平均水平对比" data={getComparisonRadarData(selectedMember, term)}
-												height={400}/>
+									<RadarChart
+										title="与组织平均水平对比"
+										data={getComparisonRadarData(selectedMember, term)}
+										height={400}
+									/>
 								</TabsContent>
 								<TabsContent value="history" className="mt-4">
 									<Card>
@@ -405,12 +428,10 @@ export default function PartyMemberPortraits() {
 				</CardHeader>
 				<CardContent>
 					<div className="grid grid-cols-1 gap-6">
-						<RadarChart title="" data={getAverageRadarData(term)} height={350}/>
+						<RadarChart title="" data={getAverageRadarData(term)} height={350} />
 					</div>
 				</CardContent>
 			</Card>
-
-
 		</div>
 	)
 }

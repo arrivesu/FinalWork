@@ -1,11 +1,11 @@
 "use client"
 
-import {useState} from "react"
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
-import {Input} from "@/components/ui/input"
-import {Button} from "@/components/ui/button"
-import {Avatar, AvatarFallback} from "@/components/ui/avatar"
-import {Badge} from "@/components/ui/badge"
+import { useState, useEffect } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
 import {
 	Dialog,
 	DialogContent,
@@ -13,16 +13,15 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-	DialogTrigger,
 } from "@/components/ui/dialog"
-import {Label} from "@/components/ui/label"
-import {Edit, Key, Search, Trash2} from "lucide-react"
-import {useToast} from "@/hooks/use-toast"
-import {MemberAPI} from "@/lib/api";
-import {MultiSelect} from "@/components/multi-select";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Label } from "@/components/ui/label"
+import { Edit, Key, Search, Trash2 } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
+import { MemberAPI } from "@/lib/api"
+import { MultiSelect } from "@/components/multi-select"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { useAuth } from "@/hooks/use-auth"
 
 // 模拟用户数据
@@ -33,18 +32,20 @@ export default function UsersPage() {
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
 	const [isResetPasswordDialogOpen, setIsResetPasswordDialogOpen] = useState(false)
 	const [selectedUser, setSelectedUser] = useState<any>(null)
-	const {toast} = useToast()
+	const { toast } = useToast()
 
-	const { user } = useAuth();
+	const { user } = useAuth()
+	const [defaultRoles, setDefaultRoles] = useState<string[]>([])
 
-	if(user === null) return null;
+	useEffect(() => {
+		if (user) {
+			setDefaultRoles(user.role as string[])
+		}
+	}, [user])
 
 	const FormSchema = z.object({
-		roles: z
-			.array(z.string().min(1))
-			.min(1)
-			.nonempty("Please select at least one framework."),
-	});
+		roles: z.array(z.string().min(1)).min(1).nonempty("Please select at least one framework."),
+	})
 
 	const {
 		setValue,
@@ -53,9 +54,12 @@ export default function UsersPage() {
 	} = useForm({
 		resolver: zodResolver(FormSchema),
 		defaultValues: {
-			roles: user.role as string[],
+			roles: defaultRoles,
 		},
-	});
+		mode: "onChange",
+	})
+
+	if (user === null) return null
 
 	// 过滤用户
 	const filteredUsers = users.filter(
@@ -74,7 +78,7 @@ export default function UsersPage() {
 			value: "member",
 			label: "member",
 		},
-	];
+	]
 
 	const handleEditUser = () => {
 		setIsEditDialogOpen(false)
@@ -99,6 +103,17 @@ export default function UsersPage() {
 		})
 	}
 
+	const openEditDialog = (user: any) => {
+		setSelectedUser(user)
+		setIsEditDialogOpen(true)
+		setValue("roles", user.role)
+	}
+
+	const openResetPasswordDialog = (user: any) => {
+		setSelectedUser(user)
+		setIsResetPasswordDialogOpen(true)
+	}
+
 	return (
 		<div className="space-y-6">
 			<div className="flex items-center justify-between">
@@ -109,7 +124,7 @@ export default function UsersPage() {
 			</div>
 
 			<div className="relative">
-				<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"/>
+				<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
 				<Input
 					type="search"
 					placeholder="搜索用户姓名、用户名或部门..."
@@ -143,108 +158,14 @@ export default function UsersPage() {
 											{user.role.includes("admin") ? "管理员" : "党员"}
 										</Badge>
 										<div className="flex space-x-2">
-											<Dialog
-												open={isResetPasswordDialogOpen && selectedUser?.id === user.id}
-												onOpenChange={(open) => {
-													setIsResetPasswordDialogOpen(open)
-													if (open) setSelectedUser(user)
-												}}
-											>
-												<DialogTrigger asChild>
-													<Button variant="ghost" size="icon">
-														<Key className="h-4 w-4"/>
-													</Button>
-												</DialogTrigger>
-												<DialogContent>
-													<DialogHeader>
-														<DialogTitle>重置密码</DialogTitle>
-														<DialogDescription>为用户 {user.name} 重置密码</DialogDescription>
-													</DialogHeader>
-													<div className="grid gap-4 py-4">
-														<div className="space-y-2">
-															<Label htmlFor="new-password">新密码</Label>
-															<Input id="new-password" type="password"
-																   placeholder="请输入新密码"/>
-														</div>
-														<div className="space-y-2">
-															<Label htmlFor="confirm-new-password">确认新密码</Label>
-															<Input id="confirm-new-password" type="password"
-																   placeholder="请再次输入新密码"/>
-														</div>
-													</div>
-													<DialogFooter>
-														<Button variant="outline"
-																onClick={() => setIsResetPasswordDialogOpen(false)}>
-															取消
-														</Button>
-														<Button onClick={handleResetPassword}>重置</Button>
-													</DialogFooter>
-												</DialogContent>
-											</Dialog>
-
-											<Dialog
-												open={isEditDialogOpen && selectedUser?.id === user.id}
-												onOpenChange={(open) => {
-													setIsEditDialogOpen(open)
-													if (open) setSelectedUser(user)
-												}}
-											>
-												<DialogTrigger asChild>
-													<Button variant="ghost" size="icon">
-														<Edit className="h-4 w-4"/>
-													</Button>
-												</DialogTrigger>
-												<DialogContent>
-													<DialogHeader>
-														<DialogTitle>编辑用户</DialogTitle>
-														<DialogDescription>修改用户 {user.name} 的信息</DialogDescription>
-													</DialogHeader>
-													<div className="grid gap-4 py-4">
-														<div className="grid grid-cols-2 gap-4">
-															<div className="space-y-2">
-																<Label htmlFor="edit-name">姓名</Label>
-																<Input id="edit-name" defaultValue={user.name}/>
-															</div>
-															<div className="space-y-2">
-																<Label htmlFor="edit-username">用户名</Label>
-																<Input id="edit-username" defaultValue={user.username}/>
-															</div>
-														</div>
-														<div className="grid grid-cols-2 gap-4">
-															<div className="space-y-2">
-																<Label htmlFor="edit-role">角色</Label>
-																<MultiSelect
-																	options={rolesList}
-																	onValueChange={(value) => setValue("roles", [value[0], ...value.slice(1)] )}
-																	defaultValue={getValues("roles")}
-																	placeholder="Select options"
-																	variant="inverted"
-																	animation={2}
-																	maxCount={3}
-																/>
-																{errors.roles && (
-																	<p className="text-red-500 text-sm">{errors.roles.message}</p>
-																)}
-															</div>
-															<div className="space-y-2">
-																<Label htmlFor="edit-department">所属部门</Label>
-																<Input id="edit-department"
-																	   defaultValue={user.class_name}/>
-															</div>
-														</div>
-													</div>
-													<DialogFooter>
-														<Button variant="outline"
-																onClick={() => setIsEditDialogOpen(false)}>
-															取消
-														</Button>
-														<Button onClick={handleEditUser}>保存</Button>
-													</DialogFooter>
-												</DialogContent>
-											</Dialog>
-
+											<Button variant="ghost" size="icon" onClick={() => openResetPasswordDialog(user)}>
+												<Key className="h-4 w-4" />
+											</Button>
+											<Button variant="ghost" size="icon" onClick={() => openEditDialog(user)}>
+												<Edit className="h-4 w-4" />
+											</Button>
 											<Button variant="ghost" size="icon" onClick={() => handleDeleteUser(user)}>
-												<Trash2 className="h-4 w-4"/>
+												<Trash2 className="h-4 w-4" />
 											</Button>
 										</div>
 									</div>
@@ -256,6 +177,91 @@ export default function UsersPage() {
 					</div>
 				</CardContent>
 			</Card>
+
+			{/* 编辑用户对话框 - 从循环中拆分出来 */}
+			<Dialog
+				open={isEditDialogOpen}
+				onOpenChange={(open) => {
+					setIsEditDialogOpen(open)
+					if (!open) setSelectedUser(null)
+				}}
+			>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>编辑用户</DialogTitle>
+						<DialogDescription>修改用户 {selectedUser?.name} 的信息</DialogDescription>
+					</DialogHeader>
+					<div className="grid gap-4 py-4">
+						<div className="grid grid-cols-2 gap-4">
+							<div className="space-y-2">
+								<Label htmlFor="edit-name">姓名</Label>
+								<Input id="edit-name" defaultValue={selectedUser?.name} />
+							</div>
+							<div className="space-y-2">
+								<Label htmlFor="edit-username">用户名</Label>
+								<Input id="edit-username" defaultValue={selectedUser?.username} />
+							</div>
+						</div>
+						<div className="grid grid-cols-2 gap-4">
+							<div className="space-y-2">
+								<Label htmlFor="edit-role">角色</Label>
+								<MultiSelect
+									options={rolesList}
+									onValueChange={(value) => setValue("roles", value)}
+									defaultValue={getValues("roles")}
+									placeholder="Select options"
+									variant="inverted"
+									animation={2}
+									maxCount={3}
+								/>
+								{errors.roles && <p className="text-red-500 text-sm">{errors.roles.message}</p>}
+							</div>
+							<div className="space-y-2">
+								<Label htmlFor="edit-department">所属部门</Label>
+								<Input id="edit-department" defaultValue={selectedUser?.class_name} />
+							</div>
+						</div>
+					</div>
+					<DialogFooter>
+						<Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+							取消
+						</Button>
+						<Button onClick={handleEditUser}>保存</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
+
+			{/* 重置密码对话框 - 从循环中拆分出来 */}
+			<Dialog
+				open={isResetPasswordDialogOpen}
+				onOpenChange={(open) => {
+					setIsResetPasswordDialogOpen(open)
+					if (!open) setSelectedUser(null)
+				}}
+			>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>重置密码</DialogTitle>
+						<DialogDescription>为用户 {selectedUser?.name} 重置密码</DialogDescription>
+					</DialogHeader>
+					<div className="grid gap-4 py-4">
+						<div className="space-y-2">
+							<Label htmlFor="new-password">新密码</Label>
+							<Input id="new-password" type="password" placeholder="请输入新密码" />
+						</div>
+						<div className="space-y-2">
+							<Label htmlFor="confirm-new-password">确认新密码</Label>
+							<Input id="confirm-new-password" type="password" placeholder="请再次输入新密码" />
+						</div>
+					</div>
+					<DialogFooter>
+						<Button variant="outline" onClick={() => setIsResetPasswordDialogOpen(false)}>
+							取消
+						</Button>
+						<Button onClick={handleResetPassword}>重置</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 		</div>
 	)
 }
