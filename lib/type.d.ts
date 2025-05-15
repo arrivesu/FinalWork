@@ -37,7 +37,7 @@ interface MemberType {
 interface ActivityType {
 	id: number,									// 活动id
 	title: string,								// 活动名
-	type: '会议' | '学习教育活动' | '支部党员大会' | '支部委员会' | '党小组会' | '党课',					// 活动类型
+	type: '支部党员大会' | '支部委员会' | '党小组会' | '党课' | '党日活动' | '其他',					// 活动类型
 	startTime: Date,							// 活动开始时间
 	endTime: Date,								// 活动结束时间
 	location: string,							// 活动地点
@@ -49,7 +49,7 @@ interface ActivityType {
 interface ActivityJoinType {
 	activity: ActivityType,						// 参加的活动
 	member: MemberType,						// 参加的成员
-	status: string,								// 参加状态
+	status: '正常参会' | '请假' | '迟到' | '旷会'	// 参加状态
 }
 
 interface EventType {
