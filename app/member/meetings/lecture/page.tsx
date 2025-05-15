@@ -20,8 +20,8 @@ const meetings = MeetingAPI.get().filter((meeting) => meeting.type === '党课')
 
 export default function PartyLecturePage() {
 	// 过滤会议
-	const completedMeetings = meetings.filter((meeting) => timeFilter(meeting.date, TimeFilterType.COMPLETE))
-	const upcomingMeetings = meetings.filter((meeting) => timeFilter(meeting.date, TimeFilterType.BEFORE))
+	const completedMeetings = meetings.filter((meeting) => timeFilter(meeting.startTime, TimeFilterType.COMPLETE))
+	const upcomingMeetings = meetings.filter((meeting) => timeFilter(meeting.startTime, TimeFilterType.BEFORE))
 
 	return (
 		<div className="space-y-6">
@@ -49,14 +49,14 @@ export default function PartyLecturePage() {
 										<div className="flex flex-wrap gap-4 mt-2">
 											<div className="flex items-center gap-1">
 												<Calendar className="h-4 w-4 text-muted-foreground"/>
-												<span>{meeting.date.toDateString()}</span>
+												<span>{meeting.startTime.toDateString()}</span>
 											</div>
 											<div className="flex items-center gap-1">
-												<span>{getDateTimeParts(meeting.date)}</span>
+												<span>{getDateTimeParts(meeting.startTime)}</span>
 											</div>
 											<div className="flex items-center gap-1">
 												<Clock className="h-4 w-4 text-muted-foreground"/>
-												<span>{getDayTimeParts(meeting.date)}</span>
+												<span>{getDayTimeParts(meeting.startTime)}</span>
 											</div>
 											<div className="flex items-center gap-1">
 												<MapPin className="h-4 w-4 text-muted-foreground"/>
@@ -99,14 +99,14 @@ export default function PartyLecturePage() {
 										<div className="flex flex-wrap gap-4 mt-2">
 											<div className="flex items-center gap-1">
 												<Calendar className="h-4 w-4 text-muted-foreground"/>
-												<span>{meeting.date.toDateString()}</span>
+												<span>{meeting.startTime.toDateString()}</span>
 											</div>
 											<div className="flex items-center gap-1">
-												<span>{getDateTimeParts(meeting.date)}</span>
+												<span>{getDateTimeParts(meeting.startTime)}</span>
 											</div>
 											<div className="flex items-center gap-1">
 												<Clock className="h-4 w-4 text-muted-foreground"/>
-												<span>{getDayTimeParts(meeting.date)}</span>
+												<span>{getDayTimeParts(meeting.startTime)}</span>
 											</div>
 											<div className="flex items-center gap-1">
 												<MapPin className="h-4 w-4 text-muted-foreground"/>
@@ -149,14 +149,14 @@ export default function PartyLecturePage() {
 										<div className="flex flex-wrap gap-4 mt-2">
 											<div className="flex items-center gap-1">
 												<Calendar className="h-4 w-4 text-muted-foreground"/>
-												<span>{meeting.date.toDateString()}</span>
+												<span>{meeting.startTime.toDateString()}</span>
 											</div>
 											<div className="flex items-center gap-1">
-												<span>{getDateTimeParts(meeting.date)}</span>
+												<span>{getDateTimeParts(meeting.startTime)}</span>
 											</div>
 											<div className="flex items-center gap-1">
 												<Clock className="h-4 w-4 text-muted-foreground"/>
-												<span>{getDayTimeParts(meeting.date)}</span>
+												<span>{getDayTimeParts(meeting.startTime)}</span>
 											</div>
 											<div className="flex items-center gap-1">
 												<MapPin className="h-4 w-4 text-muted-foreground"/>

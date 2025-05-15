@@ -126,7 +126,7 @@ export default function MemberWorkbench() {
 												<div
 													className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
 													<Clock className="w-4 h-4"/>
-													{item.date.toDateString()}
+													{item.startTime.toDateString()}
 												</div>
 												<div
 													className="text-sm text-muted-foreground mt-1 flex items-center gap-2">

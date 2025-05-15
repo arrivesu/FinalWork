@@ -56,7 +56,7 @@ export default function WorkCalendarPage() {
 			superior_org: ""
 		},
 		content: "",
-		date: new Date(),
+		startTime: new Date(),
 		location: "",
 		remark: "",
 		type: '会议',
@@ -68,7 +68,7 @@ export default function WorkCalendarPage() {
 	const getActivitiesByDate = (selectedDate: Date | undefined) => {
 		if (!selectedDate) return []
 
-		return activities.filter((activity) => activity.date === selectedDate)
+		return activities.filter((activity) => activity.startTime === selectedDate)
 	}
 
 	// 获取未来的活动
@@ -78,17 +78,17 @@ export default function WorkCalendarPage() {
 
 		return activities
 			.filter((activity) => {
-				const activityDate = new Date(activity.date)
+				const activityDate = new Date(activity.startTime)
 				return activityDate >= today
 			})
-			.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+			.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
 	}, [activities])
 
 	// 获取有活动的日期
 	const eventDates = useMemo(() => {
 		const dates = new Set<Date>()
 		activities.forEach((activity) => {
-			dates.add(activity.date)
+			dates.add(activity.startTime)
 		})
 		return Array.from(dates)
 	}, [activities])
@@ -111,7 +111,7 @@ export default function WorkCalendarPage() {
 	}
 
 	const handleAddActivity = () => {
-		if (!newActivity.name || !newActivity.date || !newActivity.date || !newActivity.location || !newActivity.type) {
+		if (!newActivity.name || !newActivity.startTime || !newActivity.startTime || !newActivity.location || !newActivity.type) {
 			toast({
 				title: "添加失败",
 				description: "请填写所有必填字段",
@@ -132,7 +132,7 @@ export default function WorkCalendarPage() {
 				superior_org: ""
 			},
 			content: "",
-			date: new Date(),
+			startTime: new Date(),
 			location: "",
 			remark: "",
 			type: '会议',
@@ -321,7 +321,7 @@ export default function WorkCalendarPage() {
 											<div className="flex flex-wrap gap-4 mt-2 text-sm text-muted-foreground">
 												<div className="flex items-center gap-1">
 													<Clock className="h-4 w-4"/>
-													<span>{activity.date.toDateString()}</span>
+													<span>{activity.startTime.toDateString()}</span>
 												</div>
 												<div className="flex items-center gap-1">
 													<MapPin className="h-4 w-4"/>
@@ -371,7 +371,7 @@ export default function WorkCalendarPage() {
 												<div className="flex items-center gap-1">
 													<CalendarIcon2 className="h-4 w-4"/>
 													<span>
-														{new Date(activity.date).toLocaleDateString("zh-CN", {
+														{new Date(activity.startTime).toLocaleDateString("zh-CN", {
 															year: "numeric",
 															month: "long",
 															day: "numeric",
@@ -380,7 +380,7 @@ export default function WorkCalendarPage() {
 												</div>
 												<div className="flex items-center gap-1">
 													<Clock className="h-4 w-4"/>
-													<span>{activity.date.toDateString()}</span>
+													<span>{activity.startTime.toDateString()}</span>
 												</div>
 												<div className="flex items-center gap-1">
 													<MapPin className="h-4 w-4"/>

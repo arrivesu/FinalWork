@@ -108,7 +108,7 @@ export function getCurrentSemesterActivityCount(activities: ActivityType[]): num
   const { start, end } = getCurrentSemesterRange();
 
   return activities.filter(activity => {
-    const date = new Date(activity.date); // 确保是 Date 对象
+    const date = new Date(activity.startTime); // 确保是 Date 对象
     return date >= start && date <= end;
   }).length;
 }

@@ -27,14 +27,14 @@ export default function ActivitiesPage() {
 	// 过滤活动
 	const filterActivities = (status: TimeFilterType) => {
 		return activities
-			.filter((activity) => status === "all" || timeFilter(activity.date, status))
+			.filter((activity) => status === "all" || timeFilter(activity.startTime, status))
 			.filter(
 				(activity) =>
 					activity.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
 					activity.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
 					activity.location.toLowerCase().includes(searchTerm.toLowerCase()),
 			)
-			.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()) // 按日期降序排序
+			.sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime()) // 按日期降序排序
 	}
 
 	const allActivities = filterActivities(TimeFilterType.ALL)
@@ -80,11 +80,11 @@ export default function ActivitiesPage() {
 											<div className="flex flex-wrap gap-4 mt-2">
 												<div className="flex items-center gap-1">
 													<Calendar className="h-4 w-4 text-muted-foreground"/>
-													<span>{getDateTimeParts(activity.date)}</span>
+													<span>{getDateTimeParts(activity.startTime)}</span>
 												</div>
 												<div className="flex items-center gap-1">
 													<Clock className="h-4 w-4 text-muted-foreground"/>
-													<span>{getDayTimeParts(activity.date)}</span>
+													<span>{getDayTimeParts(activity.startTime)}</span>
 												</div>
 												<div className="flex items-center gap-1">
 													<MapPin className="h-4 w-4 text-muted-foreground"/>
@@ -133,11 +133,11 @@ export default function ActivitiesPage() {
 											<div className="flex flex-wrap gap-4 mt-2">
 												<div className="flex items-center gap-1">
 													<Calendar className="h-4 w-4 text-muted-foreground"/>
-													<span>{getDateTimeParts(activity.date)}</span>
+													<span>{getDateTimeParts(activity.startTime)}</span>
 												</div>
 												<div className="flex items-center gap-1">
 													<Clock className="h-4 w-4 text-muted-foreground"/>
-													<span>{getDayTimeParts(activity.date)}</span>
+													<span>{getDayTimeParts(activity.startTime)}</span>
 												</div>
 												<div className="flex items-center gap-1">
 													<MapPin className="h-4 w-4 text-muted-foreground"/>
@@ -182,11 +182,11 @@ export default function ActivitiesPage() {
 											<div className="flex flex-wrap gap-4 mt-2">
 												<div className="flex items-center gap-1">
 													<Calendar className="h-4 w-4 text-muted-foreground"/>
-													<span>{getDateTimeParts(activity.date)}</span>
+													<span>{getDateTimeParts(activity.startTime)}</span>
 												</div>
 												<div className="flex items-center gap-1">
 													<Clock className="h-4 w-4 text-muted-foreground"/>
-													<span>{getDayTimeParts(activity.date)}</span>
+													<span>{getDayTimeParts(activity.startTime)}</span>
 												</div>
 												<div className="flex items-center gap-1">
 													<MapPin className="h-4 w-4 text-muted-foreground"/>

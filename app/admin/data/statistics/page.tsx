@@ -97,7 +97,7 @@ function getActivitiesData() {
 
 		byMonth: activities_data.reduce(
 			(acc: Record<string, { meetings: number; education: number }>, activity, idx, arr) => {
-				const month = activity.date.getMonth() + 1; // 1 - 12
+				const month = activity.startTime.getMonth() + 1; // 1 - 12
 				const key = `${month}月`;
 
 				if (!acc[key]) {
