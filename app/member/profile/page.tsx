@@ -211,7 +211,7 @@ function PasswordChangeForm() {
 }
 
 export default function MemberProfile() {
-	const [selectedTerm, setSelectedTerm] = useState("2023-1")
+	const [selectedTerm, setSelectedTerm] = useState("2024-2025-2")
 	const { toast } = useToast()
 	const { user } = useAuth()
 
@@ -247,7 +247,7 @@ export default function MemberProfile() {
 
 	const A1 = 100*(1-cur_data.moral_rank);
 	const A2 = 100*(1-cur_data.academic_rank);
-	const A3 = 0.6*(cur_data.assessment_score)+40*cur_data.volunteering_time/15;
+	const A3 = 0.6*(cur_data.assessment_score)+40*(cur_data.volunteering_time > 15 ? 15 : cur_data.volunteering_time)/15;
 	const A4 = 50*(1-cur_data.dorm_score)+(50+cur_data.behavior_score);
 	const A5 = cur_data.public_opinion_score*20;
 

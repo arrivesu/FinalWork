@@ -28,8 +28,6 @@ export function UserMenu({ user }: UserMenuProps) {
     router.push("/login")
   }
 
-  console.log(user)
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

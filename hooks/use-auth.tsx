@@ -69,7 +69,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		try {
 			setLoading(true)
 			const storageUser = localStorage.getItem('curUser');
-			console.log(`storageUser: ${storageUser}`)
 			if(storageUser !== null) {
 				const curUser = JSON.parse(storageUser);
 				setUser(curUser)

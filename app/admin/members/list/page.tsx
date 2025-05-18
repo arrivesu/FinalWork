@@ -1,8 +1,7 @@
 "use client"
 
-import type React from "react"
+import React, {useState} from "react"
 
-import { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -150,14 +149,14 @@ export default function MembersList() {
 	}
 
 	const handleAddMember = async () => {
-		const memberToAdd:MemberType = {
+		let memberToAdd:MemberType = {
 			...newMember,
 			id: 0,
 			branch: user.branch,
 			role: ['member'],
 		}
 
-		await MemberAPI.add(memberToAdd)
+		memberToAdd = await MemberAPI.add(memberToAdd)
 		setMembers([...members, memberToAdd])
 		setIsAddDialogOpen(false)
 		setNewMember(MemberAPI.createEmpty())

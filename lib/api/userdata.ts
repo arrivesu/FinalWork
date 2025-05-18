@@ -29,7 +29,17 @@ export const UserDataAPI = {
 		}
 	},
 	async add(new_data: DataType) {
-		data.push(new_data)
+		const maxId = data.reduce((max, item) => {
+			return item.id > max ? item.id : max;
+		}, -Infinity);
+		data.push({
+			...new_data,
+			id: maxId + 1,
+		})
+		return  {
+			...new_data,
+			id: maxId + 1,
+		}
 	},
 	async del(id: IdType) {
 		data = data.filter((d) => d.id === id);

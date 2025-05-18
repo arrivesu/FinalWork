@@ -40,7 +40,7 @@ export const noticeData: NoticeType[] = [
         id: 2,
         title: "关于开展数据学生党支部党日活动的通知",
         content: "我支部将于2025年05月02日赴宁波大学开展主题党日活动，请全体党员做好准备。",
-        publish_date: new Date(2025,4,21),
+        publish_date: new Date(2025,4,1),
         publisher: {
             id: 1,
             is_deleted: false,

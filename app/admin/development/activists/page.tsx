@@ -36,8 +36,15 @@ export default function ActivistsPage() {
 			activist.class_name.toLowerCase().includes(searchTerm.toLowerCase()),
 	)
 
-	const handlePromote = () => {
+	const handlePromote = async () => {
 		setIsPromoteDialogOpen(false)
+		for (const i of selectedActivists) {
+			const new_data: MemberType = {
+				...activist_member_list[i],
+				identity_type: '入党积极分子',
+			}
+			await MemberAPI.save(i, new_data)
+		}
 		toast({
 			title: "转为发展对象成功",
 			description: `已将 ${selectedActivists.length} 名入党积极分子转为发展对象`,
@@ -53,7 +60,9 @@ export default function ActivistsPage() {
 	}
 
 	const toggleSelectActivist = (id: number) => {
-		setSelectedActivists((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]))
+		setSelectedActivists((prev) => (
+			prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id])
+		)
 	}
 
 	return (

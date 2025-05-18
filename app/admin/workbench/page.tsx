@@ -238,7 +238,7 @@ export default function AdminWorkbench() {
 						</CardHeader>
 
 						<CardContent className="space-y-4">
-							{all_notices.map((notice, index) => (
+							{all_notices.sort(((lhs, rhs) => (rhs.publish_date.getTime() - lhs.publish_date.getTime()))).map((notice, index) => (
 								<div
 									key={index}
 									className="rounded-xl border p-4 shadow-sm hover:shadow transition duration-200 bg-white"

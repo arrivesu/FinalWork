@@ -123,16 +123,16 @@ export default function UsersPage() {
 				</div>
 			</div>
 
-			<div className="relative">
-				<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-				<Input
-					type="search"
-					placeholder="搜索用户姓名、用户名或部门..."
-					className="pl-8"
-					value={searchTerm}
-					onChange={(e) => setSearchTerm(e.target.value)}
-				/>
-			</div>
+			{/*<div className="relative">*/}
+			{/*	<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />*/}
+			{/*	<Input*/}
+			{/*		type="search"*/}
+			{/*		placeholder="搜索用户姓名、用户名或部门..."*/}
+			{/*		className="pl-8"*/}
+			{/*		value={searchTerm}*/}
+			{/*		onChange={(e) => setSearchTerm(e.target.value)}*/}
+			{/*	/>*/}
+			{/*</div>*/}
 
 			<Card>
 				<CardHeader>

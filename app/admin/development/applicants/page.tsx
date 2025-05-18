@@ -165,18 +165,13 @@ export default function ApplicantsPage() {
 			for (const id of selectedApplicants) {
 				const applicant = applicant_member_list.find((a) => a.id === id)
 				if (applicant) {
-					const updatedApplicant = {
+					const updatedApplicant: MemberType = {
 						...applicant,
 						identity_type: "入党积极分子",
 					}
 
-					await MemberAPI.save(id, updatedApplicant)
-
-					// Update the local state
-					const index = applicant_member_list.findIndex((a) => a.id === id)
-					if (index !== -1) {
-						applicant_member_list.splice(index, 1)
-					}
+					await MemberAPI.del(id)
+					await MemberAPI.add(updatedApplicant)
 				}
 			}
 

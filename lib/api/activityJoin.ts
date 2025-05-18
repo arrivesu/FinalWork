@@ -24,7 +24,17 @@ export const ActivityJoinAPI = {
 		}
 	},
 	async add(activity_join: DataType) {
-		data.push(activity_join)
+		const maxId = data.reduce((max, item) => {
+			return item.id > max ? item.id : max;
+		}, -Infinity);
+		data.push({
+			...activity_join,
+			id: maxId + 1,
+		})
+		return  {
+			...activity_join,
+			id: maxId + 1,
+		}
 	},
 	async del(id: IdType) {
 		data = data.filter((d) => d.id === id);

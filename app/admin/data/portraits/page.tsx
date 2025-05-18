@@ -31,12 +31,20 @@ const getMemberData = (member: MemberType, record_time: string): MemberData | nu
 		return null
 	}
 
+	const cur_data = userdata[0];
+
+	const A1 = 100*(1-cur_data.moral_rank);
+	const A2 = 100*(1-cur_data.academic_rank);
+	const A3 = 0.6*(cur_data.assessment_score)+40* (cur_data.volunteering_time > 15 ? 15 : cur_data.volunteering_time)/15;
+	const A4 = 50*(1-cur_data.dorm_score)+(50+cur_data.behavior_score);
+	const A5 = cur_data.public_opinion_score*20;
+
 	const calcData = {
-		ideologicalAwareness: 0,
-		partyDiscipline: 0,
-		workPerformance: 0,
-		learningAttitude: 0,
-		socialContribution: 0,
+		ideologicalAwareness: A1,
+		partyDiscipline: A2,
+		workPerformance: A3,
+		learningAttitude: A4,
+		socialContribution: A5,
 	}
 
 	return calcData
@@ -239,9 +247,6 @@ export default function PartyMemberPortraits() {
 
 	// Add a function to export portraits
 	const exportPortraits = (format: "pdf" | "image") => {
-		// In a real implementation, this would generate and download the portraits
-		// For this example, we'll just show a toast message
-
 		const formatName = format === "pdf" ? "PDF" : "图片"
 		const message = selectedMember
 			? `已成功导出 ${selectedMember.name} 的党员画像为${formatName}格式`
@@ -262,7 +267,7 @@ export default function PartyMemberPortraits() {
 
 
 	// 添加筛选
-	const [term, setTerm] = useState("1921-1922-1")
+	const [term, setTerm] = useState("2024-2025-2")
 
 	// Filter members based on search term and department
 	const filteredMembers = party_member_list.filter((member) => {
@@ -270,8 +275,6 @@ export default function PartyMemberPortraits() {
 		const matchesIdentityType = identityType === "all" || member.identity_type === identityType
 		return matchesSearch && matchesIdentityType
 	})
-
-	console.log(JSON.stringify(filteredMembers))
 
 	return (
 		<div className="container mx-auto py-6 space-y-6">
