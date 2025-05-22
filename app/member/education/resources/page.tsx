@@ -8,22 +8,21 @@ import {Button} from "@/components/ui/button"
 import {Badge} from "@/components/ui/badge"
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
 import {Download, ExternalLink, FileText, Search, Video} from "lucide-react"
-import {MaterialAPI} from "@/lib/api"
+import {useData} from "@/context/data-context";
 // 模拟学习资料数据
-const resources = MaterialAPI.data
 
 export default function ResourcesPage() {
+	const {MaterialAPI} = useData();
+	const resources = MaterialAPI.data
+
 	const [searchTerm, setSearchTerm] = useState("")
-	const [selectedResource, setSelectedResource] = useState(null)
+	const [selectedResource, setSelectedResource] = useState<MaterialType| null>(null)
 	const [open, setOpen] = useState(false)
 
 	const handleView = (resource: any) => {
 		setSelectedResource(resource)
 		setOpen(true)
 	}
-
-export default function ResourcesPage() {
-	const [searchTerm, setSearchTerm] = useState("")
 
 	// 过滤资料
 	const filterResources = (category: string) => {
@@ -282,12 +281,6 @@ export default function ResourcesPage() {
 						<Button>
 							<Download className="mr-2 h-4 w-4"/>
 							下载
-						</Button>
-						<Button variant="secondary" onClick={() => {
-							if (selectedResource?.url) window.open(selectedResource.url, "_blank")
-						}}>
-							<ExternalLink className="mr-2 h-4 w-4"/>
-							打开原始资源
 						</Button>
 					</div>
 				</DialogContent>

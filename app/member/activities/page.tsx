@@ -7,21 +7,25 @@ import {Button} from "@/components/ui/button"
 import {Badge} from "@/components/ui/badge"
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
 import {Calendar, Clock, MapPin, Search, Users} from "lucide-react"
-import {ActivitiesAPI} from "@/lib/api";
 import {
-	getActivityMember, getStatus,
-	getBranchMember,
+	getStatus,
 	getDateTimeParts,
 	getDayTimeParts,
 	isComplete,
 	timeFilter,
 	TimeFilterType
 } from "@/lib/utils";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog"  // 这里假设你有类似的Dialog组件
-
-const activities = ActivitiesAPI.data;
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog"
+import {useData} from "@/context/data-context";  // 这里假设你有类似的Dialog组件
 
 export default function ActivitiesPage() {
+	const {ActivitiesAPI, MemberAPI} = useData()
+	const activities = ActivitiesAPI.data;
+	const members = MemberAPI.data;
+
+	const getActivityMember = (activity: ActivityType) => members.filter(d => d.branch.id === activity.branch.id);
+	const getBranchMember = (branch: BranchType) => members.filter(d => d.branch.id === branch.id)
+
 	const [searchTerm, setSearchTerm] = useState("")
 	const [selectedActivity, setSelectedActivity] = useState<typeof activities[0] | null>(null)
 

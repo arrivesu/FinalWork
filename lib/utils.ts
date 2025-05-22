@@ -1,6 +1,5 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-import {ActivityJoinAPI, MemberAPI} from "@/lib/api";
 
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
@@ -45,18 +44,6 @@ export const timeFilter = (time: Date, filter: TimeFilterType) => {
     case TimeFilterType.ALL:
       return true;
   }
-}
-
-export const getActivityMember = (activity: ActivityType) => {
-  const join_list = ActivityJoinAPI.data;
-  return join_list
-      .filter((join_item) => join_item.activity.id === activity.id)
-      .map((join_item) => join_item.member);
-}
-
-export const getBranchMember = (branch: BranchType) => {
-  const member_list = MemberAPI.data;
-  return member_list.filter((member) => member.branch.id === branch.id)
 }
 
 export function isEventOnDate(start: Date, end: Date, targetDate: Date): boolean {
@@ -155,11 +142,8 @@ export function diffInYMD(from: Date, to: Date): { years: number, months: number
   return { years, months, days };
 }
 
-export const axiosApi = axios.create({
-  baseURL: 'https://127.0.0.1:8080/api', // 替换为你的后端URL
-  timeout: 10000, // 请求超时时间（可选）
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
+export const getMaxIdOfArr =  <T extends {id: number}> (arr: T[]) => {
+  return arr.reduce((max, item) => {
+    return item.id > max ? item.id : max;
+  }, -Infinity);
+}

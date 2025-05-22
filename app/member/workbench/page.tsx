@@ -6,20 +6,37 @@ import {CardStat} from "@/components/ui/card-stat"
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
 import {Calendar} from "@/components/ui/calendar"
 import {Activity, Bell, BookOpen, CalendarIcon, Clock, MapPin, Users} from "lucide-react"
-import {ActivityJoinAPI, MaterialAPI, ActivitiesAPI, NoticeAPI} from "@/lib/api";
 import {useAuth} from "@/hooks/use-auth";
 import {diffInYMD, isComplete} from "@/lib/utils";
-
-// 模拟数据
-const notices = NoticeAPI.data;
-const material = MaterialAPI.data;
-const meetings = ActivitiesAPI.data;
-const join_data = ActivityJoinAPI.data;
+import {useData} from "@/context/data-context";
 
 export default function MemberWorkbench() {
-	const [date, setDate] = useState<Date | undefined>(new Date())
+	const {user} = useAuth();
 
-	const { user } = useAuth();
+	if(user === null) return null;
+	const cur_branch = user.branch;
+
+	const {ActivitiesAPI, MaterialAPI, MemberAPI, NoticeAPI, UserDocumentAPI, ActivityJoinAPI, UserDataAPI, EventAPI, BranchAPI, TransferAPI, refreshData, loading} = useData();
+
+	const all_activities = ActivitiesAPI.data.filter(d => d.branch.id === cur_branch.id);
+	const all_material = MaterialAPI.data.filter(d => d.branch.id === cur_branch.id);
+	const all_member = MemberAPI.data.filter(d => d.branch.id === cur_branch.id);
+	const all_notice = NoticeAPI.data.filter(d => d.publisher.branch.id === cur_branch.id);
+	const all_user_documents = UserDocumentAPI.data.filter(d => d.user.branch.id === cur_branch.id);
+	const all_activity_join = ActivityJoinAPI.data.filter(d => d.member.branch.id === cur_branch.id);
+	const all_user_data = UserDataAPI.data.filter(d => d.user.branch.id === cur_branch.id);
+	const all_event = EventAPI.data.filter(d => d.user.branch.id === cur_branch.id);
+	const all_transfer = TransferAPI.data.filter(d => d.user.branch.id === cur_branch.id);
+
+	const getActivityMember = (activity: ActivityType) => MemberAPI.data.filter(d => d.branch.id === activity.branch.id);
+	const getBranchMember = (branch: BranchType) => MemberAPI.data.filter(d => d.branch.id === branch.id)
+
+	const join_data = all_activity_join;
+	const meetings = all_activities;
+	const material = all_material;
+	const notices = all_notice;
+
+	const [date, setDate] = useState<Date | undefined>(new Date())
 
 	if (!user) return null
 

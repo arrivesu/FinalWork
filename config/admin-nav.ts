@@ -1,4 +1,4 @@
-import { LayoutDashboard, User, Users, BookOpen, Activity, Settings, BarChart } from "lucide-react"
+import { LayoutDashboard, Users, BookOpen, Activity, Settings, BarChart } from "lucide-react"
 
 export const adminNavItems = [
   {

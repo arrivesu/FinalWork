@@ -17,17 +17,17 @@ import {
 import { Label } from "@/components/ui/label"
 import { Edit, Key, Search, Trash2 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
-import { MemberAPI } from "@/lib/api"
 import { MultiSelect } from "@/components/multi-select"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useAuth } from "@/hooks/use-auth"
-
-// 模拟用户数据
-const users = MemberAPI.data
+import {useData} from "@/context/data-context";
 
 export default function UsersPage() {
+	const {MemberAPI} = useData()
+	const users = MemberAPI.data
+
 	const [searchTerm, setSearchTerm] = useState("")
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
 	const [isResetPasswordDialogOpen, setIsResetPasswordDialogOpen] = useState(false)

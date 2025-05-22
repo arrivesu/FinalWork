@@ -28,11 +28,10 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { MemberAPI } from "@/lib/api"
-import { UserDocumentAPI } from "@/lib/api"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
 import {useAuth} from "@/hooks/use-auth";
+import {useData} from "@/context/data-context";
 
 // 党员身份类型
 const identityTypes = ["已毕业党员", "正式党员", "预备党员"]
@@ -42,6 +41,8 @@ const partyPositions = ["党支部书记", "党支部委员", "普通党员"]
 const documentTypes = ["入党申请书", "思想汇报", "转正申请书", "党费缴纳记录", "其他材料"]
 
 export default function MembersList() {
+	const {MemberAPI, UserDocumentAPI} = useData();
+
 	const [searchTerm, setSearchTerm] = useState("")
 	const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
@@ -171,7 +172,7 @@ export default function MembersList() {
 	const handleEditMember = async () => {
 		if (!currentMember) return
 
-		await MemberAPI.save(currentMember.id, currentMember)
+		await MemberAPI.save(currentMember)
 		setMembers(members.map((m) => (m.id === currentMember.id ? currentMember : m)))
 		setIsEditDialogOpen(false)
 

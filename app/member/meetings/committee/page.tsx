@@ -5,9 +5,7 @@ import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
 import {Badge} from "@/components/ui/badge"
 import {Button} from "@/components/ui/button"
 import {Calendar, Clock, MapPin, Users} from "lucide-react"
-import {ActivitiesAPI} from "@/lib/api";
 import {
-	getActivityMember, getBranchMember,
 	getDateTimeParts,
 	getDayTimeParts,
 	getStatus,
@@ -15,11 +13,16 @@ import {
 	timeFilter,
 	TimeFilterType
 } from "@/lib/utils";
-
-// 模拟支部委员会会议数据
-const meetings = ActivitiesAPI.data.filter((meeting) => meeting.type === '支部委员会')
+import {useData} from "@/context/data-context";
 
 export default function CommitteeMeetings() {
+	const {ActivitiesAPI, MemberAPI} = useData()
+	const members = MemberAPI.data;
+	const meetings = ActivitiesAPI.data.filter((meeting) => meeting.type === '支部委员会')
+
+	const getActivityMember = (activity: ActivityType) => members.filter(d => d.branch.id === activity.branch.id);
+	const getBranchMember = (branch: BranchType) => members.filter(d => d.branch.id === branch.id)
+
 	// 过滤会议
 	const completedMeetings = meetings.filter((meeting) => timeFilter(meeting.startTime, TimeFilterType.COMPLETE))
 	const upcomingMeetings = meetings.filter((meeting) => timeFilter(meeting.startTime, TimeFilterType.BEFORE))

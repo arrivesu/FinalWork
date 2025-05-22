@@ -20,12 +20,12 @@ import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Search } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
-import { TransferAPI } from "@/lib/api/transfer"
-
-// 模拟转接申请数据
-const transferApplications = TransferAPI.data
+import {useData} from "@/context/data-context";
 
 export default function TransferManagementPage() {
+	const {TransferAPI} = useData();
+	const transferApplications = TransferAPI.data
+
 	const [searchTerm, setSearchTerm] = useState("")
 	const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false)
 	const [selectedTransfer, setSelectedTransfer] = useState<any>(null)
@@ -55,13 +55,14 @@ export default function TransferManagementPage() {
 
 		try {
 			// Update the transfer status to approved
-			const updatedTransfer = {
+			const updatedTransfer:TransferType = {
 				...selectedTransfer,
+				id: selectedTransfer.id,
 				status: "approved",
 				reviewComment: reviewComment,
 			}
 
-			await TransferAPI.save(selectedTransfer.id, updatedTransfer)
+			await TransferAPI.save(updatedTransfer)
 
 			// Update the local state to reflect the change
 			const updatedTransfers = transferApplications.map((transfer) =>
@@ -94,11 +95,12 @@ export default function TransferManagementPage() {
 			// Update the transfer status to rejected
 			const updatedTransfer = {
 				...selectedTransfer,
+				id: selectedTransfer.id,
 				status: "rejected",
 				reviewComment: reviewComment,
 			}
 
-			await TransferAPI.save(selectedTransfer.id, updatedTransfer)
+			await TransferAPI.save(updatedTransfer)
 
 			// Update the local state to reflect the change
 			const updatedTransfers = transferApplications.map((transfer) =>

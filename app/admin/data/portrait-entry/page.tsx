@@ -9,7 +9,7 @@ import {FileDown, FileUp, Plus, Save, Search, Trash2} from "lucide-react"
 import {useToast} from "@/hooks/use-toast"
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table"
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
-import {MemberAPI} from "@/lib/api";
+import {useData} from "@/context/data-context";
 
 // 党员身份类型
 const memberTypes = [
@@ -20,9 +20,6 @@ const memberTypes = [
 	{id: "probationary", name: "预备党员"},
 	{id: "formal", name: "正式党员"},
 ]
-
-// 模拟党员数据
-const initialPartyMembers = MemberAPI.data;
 
 // 生成学年选项
 const generateAcademicYears = () => {
@@ -40,10 +37,13 @@ const generateAcademicYears = () => {
 const academicYears = generateAcademicYears()
 
 const PortraitEntryPageContent: React.FC = () => {
+	const { MemberAPI } = useData();
+	const { data } = MemberAPI;
+
 	const [searchTerm, setSearchTerm] = useState("")
 	const [selectedYear, setSelectedYear] = useState(academicYears[0])
 	const [selectedMemberType, setSelectedMemberType] = useState("all")
-	const [partyMembers, setPartyMembers] = useState([...initialPartyMembers])
+	const [partyMembers, setPartyMembers] = useState(data)
 	const [editingCell, setEditingCell] = useState<{ rowId: number | null; field: string | null }>({
 		rowId: null,
 		field: null,

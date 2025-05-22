@@ -3,17 +3,30 @@
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"
 import {useAuth} from "@/hooks/use-auth";
-import {MemberAPI} from "@/lib/api";
-import {undefined} from "zod";
+import {useData} from "@/context/data-context";
 
 export default function OrganizationInfo() {
-	const { user } = useAuth();
+	const {user} = useAuth();
 
 	if(user === null) return null;
+	const cur_branch = user.branch;
 
-	const branch = user.branch;
+	const {ActivitiesAPI, MaterialAPI, MemberAPI, NoticeAPI, UserDocumentAPI, ActivityJoinAPI, UserDataAPI, EventAPI, BranchAPI, TransferAPI, refreshData, loading} = useData();
 
-	const branch_member_list = MemberAPI.data.filter((member) => member.branch.id === branch.id);
+	const all_activities = ActivitiesAPI.data.filter(d => d.branch.id === cur_branch.id);
+	const all_material = MaterialAPI.data.filter(d => d.branch.id === cur_branch.id);
+	const all_member = MemberAPI.data.filter(d => d.branch.id === cur_branch.id);
+	const all_notice = NoticeAPI.data.filter(d => d.publisher.branch.id === cur_branch.id);
+	const all_user_documents = UserDocumentAPI.data.filter(d => d.user.branch.id === cur_branch.id);
+	const all_activity_join = ActivityJoinAPI.data.filter(d => d.member.branch.id === cur_branch.id);
+	const all_user_data = UserDataAPI.data.filter(d => d.user.branch.id === cur_branch.id);
+	const all_event = EventAPI.data.filter(d => d.user.branch.id === cur_branch.id);
+	const all_transfer = TransferAPI.data.filter(d => d.user.branch.id === cur_branch.id);
+
+	const getActivityMember = (activity: ActivityType) => MemberAPI.data.filter(d => d.branch.id === activity.branch.id);
+	const getBranchMember = (branch: BranchType) => MemberAPI.data.filter(d => d.branch.id === branch.id)
+
+	const branch_member_list = MemberAPI.data.filter((member) => member.branch.id === cur_branch.id);
 
 	let user1: MemberType;
 	const user_power_list = branch_member_list.filter((user) => user.party_position === '党支部书记')

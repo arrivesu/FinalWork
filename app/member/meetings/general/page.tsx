@@ -18,9 +18,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Calendar, Clock, MapPin, Users } from "lucide-react"
-import { ActivitiesAPI } from "@/lib/api"
 import {
-	getBranchMember,
 	getDateTimeParts,
 	getDayTimeParts,
 	getStatus,
@@ -28,10 +26,17 @@ import {
 	timeFilter,
 	TimeFilterType,
 } from "@/lib/utils"
+import {useData} from "@/context/data-context";
 
 export default function GeneralMeetings() {
-	const [selectedMeeting, setSelectedMeeting] = useState(null)
+	const {ActivitiesAPI, MemberAPI} = useData()
+	const members = MemberAPI.data
+
+	const [selectedMeeting, setSelectedMeeting] = useState<ActivityType| null>(null)
 	const [dialogOpen, setDialogOpen] = useState(false)
+
+	const getActivityMember = (activity: ActivityType) => members.filter(d => d.branch.id === activity.branch.id);
+	const getBranchMember = (branch: BranchType) => members.filter(d => d.branch.id === branch.id)
 
 	const openDialog = (meeting: any) => {
 		setSelectedMeeting(meeting)

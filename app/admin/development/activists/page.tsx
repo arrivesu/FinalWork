@@ -17,12 +17,15 @@ import {Checkbox} from "@/components/ui/checkbox"
 import {ArrowRight, Edit, Search, Trash2} from "lucide-react"
 import {useToast} from "@/hooks/use-toast"
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table"
-import {MemberAPI} from "@/lib/api";
+import {useData} from "@/context/data-context";
 
 // 模拟入党积极分子数据
-const activist_member_list = MemberAPI.data.filter((member) => member.identity_type === '入党积极分子')
 
 export default function ActivistsPage() {
+	const {MemberAPI} = useData();
+
+	const activist_member_list = MemberAPI.data.filter((member) => member.identity_type === '入党积极分子')
+
 	const [searchTerm, setSearchTerm] = useState("")
 	const [isPromoteDialogOpen, setIsPromoteDialogOpen] = useState(false)
 	const [selectedActivists, setSelectedActivists] = useState<number[]>([])

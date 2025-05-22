@@ -22,11 +22,12 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { ArrowRight, Edit, Plus, Search, Trash2 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { MemberAPI } from "@/lib/api"
-
-const applicant_member_list = MemberAPI.data.filter((member) => member.identity_type === "入党申请人")
+import {useData} from "@/context/data-context";
 
 export default function ApplicantsPage() {
+	const {MemberAPI} = useData();
+	const applicant_member_list = MemberAPI.data.filter((member) => member.identity_type === "入党申请人")
+
 	const [searchTerm, setSearchTerm] = useState("")
 	const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
 	const [isPromoteDialogOpen, setIsPromoteDialogOpen] = useState(false)

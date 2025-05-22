@@ -22,12 +22,13 @@ import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Download, Edit, FileText, Plus, Search, Trash2, Upload, Video } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
-import { MaterialAPI } from "@/lib/api"
-
-// 模拟学习资料数据
-const resources = MaterialAPI.data
+import {useData} from "@/context/data-context";
 
 export default function AdminResourcesPage() {
+	const {MaterialAPI} = useData()
+
+	const resources = MaterialAPI.data
+
 	const [searchTerm, setSearchTerm] = useState("")
 	const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
@@ -104,7 +105,7 @@ export default function AdminResourcesPage() {
 			resource.id = Math.max(...resources.map((r) => r.id)) + 1
 			resource.title = newResource.title
 			resource.type = newResource.type as "document" | "video"
-			resource.category = newResource.category
+			resource.category = newResource.category as MaterialType['category']
 			resource.content = newResource.description
 			resource.upload_date = new Date()
 
@@ -147,15 +148,16 @@ export default function AdminResourcesPage() {
 			const description = (document.getElementById("edit-description") as HTMLTextAreaElement)?.value
 
 			// Update the resource
-			const updatedResource = {
+			const updatedResource: MaterialType = {
 				...selectedResource,
+				id: selectedResource.id,
 				title,
 				type: type as "document" | "video",
 				category,
 				content: description,
 			}
 
-			await MaterialAPI.save(selectedResource.id, updatedResource)
+			await MaterialAPI.save(updatedResource)
 
 			// Update the local state
 			const index = resources.findIndex((r) => r.id === selectedResource.id)

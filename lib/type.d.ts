@@ -5,14 +5,17 @@
  * @date 2025/5/12
  */
 
+// 用户角色类型
 type RoleType = 'admin' | 'member'
 
+// 党支部类型
 interface BranchType {
 	id: number,									// 党支部id
 	name: string,								// 党支部名
 	superior_org: string						// 上级组织
 }
 
+// 用户类型，必须包含至少一个用户角色
 interface MemberType {
 	id: number,									// 用户id
 	is_deleted: boolean,						// 是否被逻辑删除(如转出)
@@ -34,6 +37,7 @@ interface MemberType {
 	role: [RoleType, ...RoleType[]]
 }
 
+// 活动类型
 interface ActivityType {
 	id: number,									// 活动id
 	title: string,								// 活动名
@@ -46,6 +50,7 @@ interface ActivityType {
 	branch: BranchType							// 负责活动的支部
 }
 
+// 活动参加类型，正常来说活动所属的党支部中的所有人都要参加，没参加都是 非正常参会（'请假' | '迟到' | '旷会'）
 interface ActivityJoinType {
 	id: number									// 参加的id
 	activity: ActivityType,						// 参加的活动
@@ -53,6 +58,7 @@ interface ActivityJoinType {
 	status: '正常参会' | '请假' | '迟到' | '旷会'	// 参加状态
 }
 
+// 事件类型，用于记录用户操作事件，在前端只读，事件由后端记录
 interface EventType {
 	id: number									// 事件id
 	user: MemberType							// 事件所属用户
@@ -64,6 +70,7 @@ interface EventType {
 	content: string								// 事件内容
 }
 
+// 学习资料类型
 interface MaterialType {
 	id: number,									// 学习资料id
 	title: string								// 资料名
@@ -74,6 +81,7 @@ interface MaterialType {
 	branch: BranchType,							// 资料所属支部
 }
 
+// 公告类型，前端初始化时从后端读取一次，之后的增量更新由SSE提供
 interface NoticeType {
 	id: number,									// 公告id
 	title: string,								// 公告标题
@@ -82,6 +90,7 @@ interface NoticeType {
 	publisher: MemberType						// 公告发起者
 }
 
+// 用户数据，由/admin/data/portrait-entry页面录入，record_time是学期形式，如 '2024-2025-1' 就是2024-2025学年第一学期
 interface UserDataType {
 	id: number,									// 用户数据id
 	user: MemberType,							// 数据所属用户
@@ -95,7 +104,8 @@ interface UserDataType {
 	public_opinion_score: number,				// 群众调研得分
 }
 
-interface TransferDataType {
+// 组织转接关系
+interface TransferType {
 	id: number,									// 转接id
 	user: MemberType,							// 转接的用户
 	targetOrganization: BranchType,				// 转接目标党支部
@@ -104,6 +114,7 @@ interface TransferDataType {
 	status: 'pending' | 'approved' | 'rejected',// 转接状态
 }
 
+// 用户文档，以文件形式存储一些用户资料，content是一个指向用户资料文件的URL
 interface UserDocumentType {
 	id: number,									// 文档id
 	user: MemberType,							// 文档的用户

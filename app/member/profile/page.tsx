@@ -12,7 +12,8 @@ import { RadarChart, type RadarChartData } from "@/components/ui/radar-chart"
 import { useToast } from "@/hooks/use-toast"
 import { useAuth } from "@/hooks/use-auth"
 import {Eye, EyeOff} from "lucide-react";
-import {AuthAPI, UserDataAPI, UserDocumentAPI} from "@/lib/api";
+import {AuthAPI} from "@/lib/api";
+import {useData} from "@/context/data-context";
 
 interface PasswordChangeParams {
 	currentPassword: string
@@ -211,9 +212,28 @@ function PasswordChangeForm() {
 }
 
 export default function MemberProfile() {
+	const {user} = useAuth();
+
+	if(user === null) return null;
+	const cur_branch = user.branch;
+
+	const {ActivitiesAPI, MaterialAPI, MemberAPI, NoticeAPI, UserDocumentAPI, ActivityJoinAPI, UserDataAPI, EventAPI, BranchAPI, TransferAPI, refreshData, loading} = useData();
+
+	const all_activities = ActivitiesAPI.data.filter(d => d.branch.id === cur_branch.id);
+	const all_material = MaterialAPI.data.filter(d => d.branch.id === cur_branch.id);
+	const all_member = MemberAPI.data.filter(d => d.branch.id === cur_branch.id);
+	const all_notice = NoticeAPI.data.filter(d => d.publisher.branch.id === cur_branch.id);
+	const all_user_documents = UserDocumentAPI.data.filter(d => d.user.branch.id === cur_branch.id);
+	const all_activity_join = ActivityJoinAPI.data.filter(d => d.member.branch.id === cur_branch.id);
+	const all_user_data = UserDataAPI.data.filter(d => d.user.branch.id === cur_branch.id);
+	const all_event = EventAPI.data.filter(d => d.user.branch.id === cur_branch.id);
+	const all_transfer = TransferAPI.data.filter(d => d.user.branch.id === cur_branch.id);
+
+	const getActivityMember = (activity: ActivityType) => MemberAPI.data.filter(d => d.branch.id === activity.branch.id);
+	const getBranchMember = (branch: BranchType) => MemberAPI.data.filter(d => d.branch.id === branch.id)
+
 	const [selectedTerm, setSelectedTerm] = useState("2023-1")
 	const { toast } = useToast()
-	const { user } = useAuth()
 
 	const handleSave = () => {
 		toast({

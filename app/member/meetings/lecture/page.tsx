@@ -7,9 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { ActivitiesAPI } from "@/lib/api"
 import {
-	getBranchMember,
 	getDateTimeParts,
 	getDayTimeParts,
 	getStatus,
@@ -17,23 +15,44 @@ import {
 	timeFilter,
 	TimeFilterType
 } from "@/lib/utils"
-
-// 模拟党课数据
-const meetings = ActivitiesAPI.data.filter((meeting) => meeting.type === '党课')
+import {useAuth} from "@/hooks/use-auth";
+import {useData} from "@/context/data-context";
 
 export default function PartyLecturePage() {
-	const [selectedMeeting, setSelectedMeeting] = useState(null)
+	const {user} = useAuth();
+
+	if(user === null) return null;
+	const cur_branch = user.branch;
+
+	const {ActivitiesAPI, MaterialAPI, MemberAPI, NoticeAPI, UserDocumentAPI, ActivityJoinAPI, UserDataAPI, EventAPI, BranchAPI, TransferAPI, refreshData, loading} = useData();
+
+	const all_activities = ActivitiesAPI.data.filter(d => d.branch.id === cur_branch.id);
+	const all_material = MaterialAPI.data.filter(d => d.branch.id === cur_branch.id);
+	const all_member = MemberAPI.data.filter(d => d.branch.id === cur_branch.id);
+	const all_notice = NoticeAPI.data.filter(d => d.publisher.branch.id === cur_branch.id);
+	const all_user_documents = UserDocumentAPI.data.filter(d => d.user.branch.id === cur_branch.id);
+	const all_activity_join = ActivityJoinAPI.data.filter(d => d.member.branch.id === cur_branch.id);
+	const all_user_data = UserDataAPI.data.filter(d => d.user.branch.id === cur_branch.id);
+	const all_event = EventAPI.data.filter(d => d.user.branch.id === cur_branch.id);
+	const all_transfer = TransferAPI.data.filter(d => d.user.branch.id === cur_branch.id);
+
+	const getActivityMember = (activity: ActivityType) => MemberAPI.data.filter(d => d.branch.id === activity.branch.id);
+	const getBranchMember = (branch: BranchType) => MemberAPI.data.filter(d => d.branch.id === branch.id)
+
+	const meetings = all_activities.filter((meeting) => meeting.type === '党课');
+
+	const [selectedMeeting, setSelectedMeeting] = useState<ActivityType| null>(null)
 	const [dialogOpen, setDialogOpen] = useState(false)
 
 	const completedMeetings = meetings.filter((meeting) => timeFilter(meeting.startTime, TimeFilterType.COMPLETE))
 	const upcomingMeetings = meetings.filter((meeting) => timeFilter(meeting.startTime, TimeFilterType.BEFORE))
 
-	const openDialog = (meeting) => {
+	const openDialog = (meeting:ActivityType) => {
 		setSelectedMeeting(meeting)
 		setDialogOpen(true)
 	}
 
-	const renderMeetingCard = (meeting) => (
+	const renderMeetingCard = (meeting:ActivityType) => (
 		<Card key={meeting.id}>
 			<CardHeader className="pb-2">
 				<div className="flex items-center justify-between">

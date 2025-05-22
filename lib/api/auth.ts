@@ -5,6 +5,7 @@
  * @date 2025/5/14
  */
 import {MemberAPI} from "@/lib/api/member";
+import {useState} from "react";
 
 type LoginDTOType = {
 	status: 'success' | 'reject',
@@ -18,8 +19,9 @@ interface PasswordChangeParams {
 }
 
 export const AuthAPI = {
+	data: useState<MemberType| null>(null),
 	async logout() {
-
+		this.data.
 	},
 	async me(): Promise<MemberType | null> {
 		return MemberAPI.data[0]

@@ -19,17 +19,10 @@ import {Input} from "@/components/ui/input"
 import {Label} from "@/components/ui/label"
 import {Textarea} from "@/components/ui/textarea"
 import {Activity, Bell, BookOpen, CalendarIcon, Clock, MapPin, Plus, Users} from "lucide-react"
-import {ActivitiesAPI, MaterialAPI, MemberAPI, NoticeAPI} from "@/lib/api";
 import {useAuth} from "@/hooks/use-auth";
-import {getBranchMember, getCurrentSemesterActivityCount, isBetween, isComplete, isEventOnDate} from "@/lib/utils";
+import {getCurrentSemesterActivityCount, isComplete, isEventOnDate} from "@/lib/utils";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-
-// 模拟数据
-const all_notices = NoticeAPI.data
-const all_member = MemberAPI.data
-const all_material = MaterialAPI.data
-const all_activities = ActivitiesAPI.data
-const all_meeting = ActivitiesAPI.data
+import {useData} from "@/context/data-context";
 
 function countActivitiesThisYear(activities: ActivityType[], type: ActivityType['type']): number {
 	const currentYear = new Date().getFullYear();
@@ -43,6 +36,14 @@ function countActivitiesThisYear(activities: ActivityType[], type: ActivityType[
 
 
 export default function AdminWorkbench() {
+	const {NoticeAPI, MemberAPI, MaterialAPI, ActivitiesAPI} = useData();
+
+	const all_notices = NoticeAPI.data
+	const all_member = MemberAPI.data
+	const all_material = MaterialAPI.data
+	const all_activities = ActivitiesAPI.data
+	const all_meeting = ActivitiesAPI.data
+
 	const [notifyTitle, setNotifyTitle] = useState('')
 	const [notifyContent, setNotifyContent] = useState('')
 	const [notifyDate, setNotifyDate] = useState<Date | undefined>(new Date())
@@ -62,7 +63,7 @@ export default function AdminWorkbench() {
 	if (!user) return null
 
 	const branch = user.branch;
-	const branch_user_list = getBranchMember(branch);
+	const branch_user_list = all_member.filter(d => d.branch.id === branch.id);
 
 	const learn_material_cnt = all_material.length;
 	const cur_year_activity_cnt = getCurrentSemesterActivityCount(all_activities);
@@ -91,7 +92,7 @@ export default function AdminWorkbench() {
 
 	const handlePublishNotify = async () => {
 		if(selectNotify !== null) {
-			await NoticeAPI.save(selectNotify, {
+			await NoticeAPI.save({
 				id: selectNotify,
 				title: notifyTitle,
 				content: notifyContent,
@@ -128,7 +129,7 @@ export default function AdminWorkbench() {
 		const endDateTimeStr = `${activityDate}T${endTime}:00`;
 
 		if(selectActivity !== null) {
-			await ActivitiesAPI.save(selectActivity, {
+			await ActivitiesAPI.save({
 				id: selectActivity,
 				title: activityTitle,
 				type: activityType as ActivityType['type'],

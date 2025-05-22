@@ -19,14 +19,12 @@ import {
 	Tooltip,
 } from "chart.js"
 import { Bar, Doughnut, Line } from "react-chartjs-2"
-import { ActivitiesAPI, MemberAPI } from "@/lib/api"
 import { toast } from "@/components/ui/use-toast"
+import {useData} from "@/context/data-context";
+import {useAuth} from "@/hooks/use-auth";
 
 // Register ChartJS components
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Title, Tooltip, Legend)
-
-const member_list = MemberAPI.data
-const activities_list = ActivitiesAPI.data
 
 type ActivityType = {
 	type: string
@@ -38,6 +36,11 @@ const isMeeting = (activity: ActivityType) =>
 	activity.type === "党小组会" || activity.type === "支部委员会" || activity.type === "支部党员大会"
 
 function getStatisticsData() {
+	const {MemberAPI} = useData();
+	const {user} = useAuth();
+
+	const member_list = MemberAPI.data.filter(d => d.branch.id === user?.branch.id)
+
 	function getAge(birthday: Date): number {
 		const today = new Date()
 		let age = today.getFullYear() - birthday.getFullYear()
@@ -75,6 +78,11 @@ function getStatisticsData() {
 }
 
 function getDevelopmentData() {
+	const {MemberAPI} = useData();
+	const {user} = useAuth();
+
+	const member_list = MemberAPI.data.filter(d => d.branch.id === user?.branch.id)
+
 	const userData = member_list
 
 	const developmentData = {
@@ -95,6 +103,11 @@ function getDevelopmentData() {
 }
 
 function getActivitiesData() {
+	const {ActivitiesAPI} = useData();
+	const {user} = useAuth();
+
+	const activities_list = ActivitiesAPI.data.filter(d => d.branch.id === user?.branch.id)
+
 	const activities_data = activities_list
 
 	const activityData = {
